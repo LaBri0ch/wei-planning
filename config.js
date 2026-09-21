@@ -11,12 +11,12 @@
 ------------------------------------------------------------------ */
 window.WEI_CONFIG = {
   firebase: {
-    apiKey: "",
-    authDomain: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: ""
+    apiKey: "AIzaSyBPKyAyhcqXKClq2id8lH23nLOIpBABJbA",
+    authDomain: "wei-2026-226af.firebaseapp.com",
+    projectId: "wei-2026-226af",
+    storageBucket: "wei-2026-226af.firebasestorage.app",
+    messagingSenderId: "785616465292",
+    appId: "1:785616465292:web:92fb6d032f53ef9673baa9"
   },
 
   // Emplacement du planning dans Firestore. À ne changer que si tu veux
