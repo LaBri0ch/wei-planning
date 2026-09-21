@@ -1,0 +1,4629 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WEI — Planning des shifts</title>
+<style>
+  :root{
+    color-scheme:dark;
+    --bg:#0A1119; --panel:#111C27; --panel-2:#16232F; --line:#22333F;
+    --txt:#EAF2F7; --dim:#8098A8; --dim2:#5E7484;
+    --live:#57E08A; --soon:#FFB000; --done:#5E7484; --alert:#FF6B5E;
+    --c1:#FFB000; --c2:#FF7A6B; --c3:#5FD8EE;
+    --font:"Helvetica Neue",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;background:var(--bg)}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  body{background:var(--bg);color:var(--txt);font-family:var(--font);font-size:17px;line-height:1.45;
+       -webkit-text-size-adjust:100%;
+       padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .wrap{max-width:620px;margin:0 auto;padding:14px 14px 96px}
+  body[data-mode="admin"] .wrap{max-width:620px;padding:16px 16px 40px}
+  @media(min-width:1000px){
+    body[data-mode="admin"] .wrap{max-width:1520px;padding:20px 28px 40px}
+  }
+
+  h1,h2,h3{margin:0;letter-spacing:-.02em}
+  button{font-family:inherit}
+  [hidden]{display:none !important}
+
+  /* barre haute */
+  .top{display:flex;align-items:center;justify-content:space-between;gap:12px;
+       border-bottom:2px solid var(--line);padding-bottom:12px;margin-bottom:18px}
+  .top h1{font-size:1.15rem;font-weight:800}
+  .top .sub{color:var(--dim);font-size:.8rem;font-weight:600}
+  .lnk{background:none;border:none;color:var(--dim);font-size:.85rem;font-weight:700;
+       cursor:pointer;padding:8px;border-radius:8px}
+  .lnk:active{color:var(--txt)}
+
+  .btn{display:block;width:100%;padding:16px;margin-top:10px;background:none;
+       border:2px solid var(--line);border-radius:13px;color:var(--txt);
+       font-size:1rem;font-weight:700;cursor:pointer;text-align:left}
+  .btn:active{background:var(--panel)}
+  .btn.ghost{color:var(--dim);text-align:center}
+  .btn.go{border-color:var(--c1);color:var(--c1);text-align:center}
+  .btn:focus-visible,.lnk:focus-visible{outline:3px solid var(--c1);outline-offset:2px}
+  .row2{display:flex;gap:10px;flex-wrap:wrap}
+  .row2 .btn{width:auto;flex:1;min-width:140px;text-align:center}
+
+  input,textarea,select{width:100%;padding:13px 15px;background:var(--panel-2);
+       border:2px solid var(--line);border-radius:12px;color:var(--txt);
+       font-family:inherit;font-size:1rem;font-weight:600}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--c1)}
+  textarea{min-height:88px;font-weight:500;line-height:1.5}
+  label{display:block;color:var(--dim);font-size:.78rem;font-weight:800;
+        letter-spacing:.04em;text-transform:uppercase;margin:14px 0 6px}
+
+  /* choix identité */
+  .lead{font-size:1.5rem;font-weight:800;margin:6px 0 4px}
+  .lead+p{color:var(--dim);margin:0 0 18px}
+  .bdegrid{display:grid;gap:10px;grid-template-columns:1fr}
+  @media(min-width:620px){.bdegrid{grid-template-columns:repeat(3,1fr)}}
+  .bdecard{padding:20px 16px;border:2px solid var(--line);border-left-width:10px;
+           border-radius:14px;background:var(--panel);cursor:pointer;color:var(--txt);
+           font-size:1.15rem;font-weight:800;text-align:left}
+  .bdecard span{display:block;color:var(--dim);font-size:.82rem;font-weight:600;margin-top:2px}
+  .bdecard:active{background:var(--panel-2)}
+
+  .people{display:grid;gap:9px;grid-template-columns:1fr;margin-top:12px}
+  @media(min-width:620px){.people{grid-template-columns:1fr 1fr}}
+  @media(min-width:1000px){.people{grid-template-columns:repeat(3,1fr)}}
+  .pbtn{display:flex;align-items:center;gap:12px;padding:16px;min-height:58px;
+        background:var(--panel);border:2px solid var(--line);border-radius:13px;
+        color:var(--txt);font-size:1.1rem;font-weight:700;text-align:left;cursor:pointer}
+  .pbtn:active{background:var(--panel-2)}
+  .pip{width:11px;height:11px;border-radius:50%;flex:0 0 auto}
+
+  /* onglets jours */
+  .days{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;margin-bottom:6px}
+  .day{flex:0 0 auto;padding:11px 15px;border:2px solid var(--line);border-radius:11px;
+       background:none;color:var(--dim);font-size:.92rem;font-weight:800;cursor:pointer;white-space:nowrap}
+  .day.on{border-color:var(--c1);color:var(--c1);background:#1C1608}
+  .day .tag{display:block;font-size:.68rem;font-weight:700;color:var(--dim2);letter-spacing:.06em}
+  .day.on .tag{color:var(--c1);opacity:.75}
+
+  /* cartes de shift */
+  .card{display:block;width:100%;text-align:left;background:var(--panel);
+        border:2px solid var(--line);border-left-width:10px;border-radius:16px;
+        padding:16px;margin-bottom:12px;color:var(--txt);cursor:pointer}
+  .card:active{background:var(--panel-2)}
+  .card .hd{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .pill{font-size:.7rem;font-weight:800;letter-spacing:.06em;padding:3px 9px;border-radius:999px;
+        border:1.5px solid var(--dim2);color:var(--dim)}
+  .pill.live{border-color:var(--live);color:#06210F;background:var(--live)}
+  .pill.soon{border-color:var(--soon);color:var(--soon)}
+  .pill.done{opacity:.6}
+  .card h3{font-size:1.2rem;font-weight:800;margin-bottom:4px}
+  .hours{font-size:2.05rem;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+         line-height:1.1;margin:4px 0 6px}
+  .hours .ar{color:var(--dim2);font-weight:400}
+  .meta{color:var(--dim);font-size:.9rem}
+  .more{color:var(--c1);font-size:.85rem;font-weight:800;margin-top:10px}
+
+  .none{border:2px dashed var(--line);border-radius:16px;padding:26px 20px;text-align:center;color:var(--dim)}
+  .none b{display:block;color:var(--txt);font-size:1.15rem;margin-bottom:6px}
+
+  /* fiche de poste */
+  .fh{font-size:1.9rem;font-weight:800;letter-spacing:-.03em;margin:6px 0 2px}
+  .fsec{margin-top:22px}
+  .fsec h4{margin:0 0 8px;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+  .fsec p{margin:0;font-size:1.05rem}
+  .fsec ul{margin:0;padding-left:20px}
+  .fsec li{margin-bottom:7px}
+  .team{display:flex;flex-wrap:wrap;gap:8px}
+  .tm{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:11px;
+      background:var(--panel-2);border:2px solid var(--line);font-size:.95rem;font-weight:700}
+  .quota{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .qz{font-size:.85rem;font-weight:700;padding:7px 11px;border-radius:10px;
+      background:var(--panel-2);border:2px solid var(--line)}
+  .qz.ko{border-color:var(--alert);color:var(--alert)}
+
+  /* admin */
+  .adm{border:2px solid var(--line);border-radius:16px;background:var(--panel);padding:14px;margin-bottom:12px}
+  .adm .t{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .adm h3{font-size:1.05rem;font-weight:800}
+  .adm .h{color:var(--dim);font-size:.88rem;font-weight:700;font-variant-numeric:tabular-nums}
+  .mini{background:none;border:2px solid var(--line);border-radius:9px;color:var(--dim);
+        font-size:.78rem;font-weight:800;padding:7px 11px;cursor:pointer;margin:8px 6px 0 0}
+  .mini:active{color:var(--txt);background:var(--panel-2)}
+  .mini.warn:active{border-color:var(--alert);color:var(--alert)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .chip{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:9px 13px;
+        border-radius:11px;background:var(--panel-2);border:2px solid var(--line);
+        color:var(--dim);font-size:.95rem;font-weight:700;cursor:pointer}
+  .chip.on{border-color:var(--live);color:var(--txt);background:#122A1C}
+  .chip .mk{font-size:.9rem;color:var(--live)}
+  .grp{margin-top:14px}
+  .grp .gt{font-size:.78rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+  .fld{display:grid;gap:10px;grid-template-columns:1fr 1fr}
+  .warnbox{border:2px solid var(--alert);background:#1D1416;border-radius:13px;padding:12px 14px;
+           margin-bottom:14px;font-size:.92rem}
+  .okbox{border:2px solid var(--live);background:#0F2117;border-radius:13px;padding:12px 14px;
+         margin-bottom:14px;font-size:.92rem}
+  .demo{border:2px dashed var(--soon);border-radius:13px;padding:11px 14px;margin-bottom:16px;
+        color:var(--soon);font-size:.85rem;font-weight:700}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85em}
+  /* ---------- participant : pensé pour le pouce ---------- */
+  .days{position:sticky;top:0;z-index:6;background:var(--bg);scroll-snap-type:x proximity;
+        padding-top:6px;margin:0 -14px 8px;padding-left:14px;padding-right:14px}
+  .days .day{scroll-snap-align:start;min-height:56px}
+  .hero{display:block;width:100%;text-align:left;border-radius:16px;padding:15px 16px;margin-bottom:14px;
+        border:2px solid var(--line);background:var(--panel);color:var(--txt);cursor:pointer}
+  .hero.on{border-color:var(--live);background:#0F2117}
+  .hero .k{font-size:.7rem;font-weight:800;letter-spacing:.08em;color:var(--dim)}
+  .hero.on .k{color:var(--live)}
+  .hero .v{font-size:1.45rem;font-weight:800;letter-spacing:-.02em;margin-top:3px}
+  .hero .w{color:var(--dim);font-size:.95rem;margin-top:2px}
+  .dock{position:fixed;left:0;right:0;bottom:0;z-index:10;padding:10px 14px;
+        padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));
+        background:linear-gradient(to top,var(--bg) 62%,rgba(10,17,25,0))}
+  .dockin{max-width:620px;margin:0 auto;display:flex;gap:8px}
+  .dbtn{flex:1;min-height:52px;padding:13px;border-radius:13px;border:2px solid var(--line);
+        background:var(--panel);color:var(--txt);font-size:.95rem;font-weight:800;cursor:pointer}
+  .dbtn.alt{flex:0 0 auto;color:var(--dim);background:none}
+  .dbtn:active{background:var(--panel-2)}
+  body[data-mode="user"] .card{padding:18px 16px}
+  body[data-mode="user"] .hours{font-size:clamp(2.4rem,12vw,3.1rem)}
+  body[data-mode="user"] .pbtn{min-height:64px;font-size:1.15rem}
+  body[data-mode="user"] .bdecard{min-height:76px}
+  body[data-mode="user"] .fsec p,body[data-mode="user"] .fsec li{font-size:1.08rem}
+  .sticky-back{position:sticky;top:0;z-index:6;background:var(--bg);padding:6px 0 8px;margin:0}
+
+  /* ---------- admin : pensé pour un écran large ---------- */
+  .pcnote{display:none;border:2px dashed var(--line);border-radius:12px;padding:10px 13px;
+          margin-bottom:14px;color:var(--dim);font-size:.85rem;font-weight:700}
+  @media(max-width:760px){ body[data-mode="admin"] .pcnote{display:block} }
+  .agrid{display:grid;gap:12px;grid-template-columns:1fr}
+  .ecols{display:grid;gap:14px;grid-template-columns:1fr}
+  .rgrid{display:grid;gap:12px;grid-template-columns:1fr}
+  .abar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between}
+  .abar .days{position:static;margin:0;padding:0;flex:1}
+  .abar .btn{width:auto;margin:0;padding:13px 18px;white-space:nowrap}
+  @media(min-width:1000px){
+    .agrid{grid-template-columns:repeat(auto-fill,minmax(310px,1fr))}
+    .ecols{grid-template-columns:minmax(320px,.85fr) minmax(340px,1fr) minmax(360px,1.15fr);
+           align-items:start}
+    .rgrid{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+    body[data-mode="admin"] .adm{margin-bottom:0}
+    body[data-mode="admin"] .top{position:sticky;top:0;background:var(--bg);z-index:8;
+                                 padding-top:6px;margin-bottom:14px}
+    .ecol{position:sticky;top:78px}
+    .ecol.scroll{position:static}
+    .chips{max-height:none}
+    .adm .chip{min-height:38px;padding:7px 11px;font-size:.9rem}
+  }
+  @media(max-width:430px){
+    .top h1{font-size:1.02rem}
+    .top .sub{font-size:.72rem}
+    .sync{padding:5px 7px} .sync #syncT{display:none}
+    .ico{padding:8px 9px;font-size:.72rem}
+    .lnk{padding:8px 4px;font-size:.78rem}
+  }
+  .ico{background:none;border:2px solid var(--line);border-radius:10px;color:var(--dim);
+       font-size:.76rem;font-weight:800;letter-spacing:.04em;padding:8px 10px;cursor:pointer}
+  .ico:active{color:var(--txt);background:var(--panel)}
+  .ico.sos{border-color:#4A2326;color:var(--alert)}
+  .ico:focus-visible{outline:3px solid var(--c1);outline-offset:2px}
+
+  .sos-big{border:2px solid var(--alert);border-radius:16px;background:#170F11;padding:16px;margin:0 0 16px}
+  .sos-big h3{font-size:.76rem;letter-spacing:.1em;color:var(--alert);margin-bottom:10px}
+  .tel{display:flex;align-items:center;justify-content:space-between;gap:12px;
+       padding:14px 15px;margin-bottom:8px;border-radius:12px;background:var(--panel);
+       border:2px solid var(--line);text-decoration:none;color:var(--txt);min-height:56px}
+  .tel b{font-size:1.35rem;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tel span{font-size:.92rem;color:var(--dim);font-weight:700}
+  .tel.first{border-color:var(--alert)}
+  .tel.first b{color:var(--alert);font-size:1.6rem}
+  .canaux{display:grid;gap:6px;margin-top:12px}
+  .can{display:flex;gap:10px;font-size:.92rem}
+  .can b{color:var(--c1);font-weight:800;min-width:66px}
+  .csg{margin:12px 0 0;font-size:.92rem;color:var(--dim)}
+  .sos-mini{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0;padding-top:12px;
+            border-top:1px solid var(--line)}
+  .sos-mini a{text-decoration:none;color:var(--dim);font-size:.82rem;font-weight:700;
+              border:1.5px solid var(--line);border-radius:9px;padding:7px 10px}
+  .sos-mini a b{color:var(--alert)}
+
+  .planbox{border:2px solid var(--line);border-radius:14px;background:var(--panel-2);
+           overflow:auto;-webkit-overflow-scrolling:touch;padding:8px;margin-top:10px}
+  .planbox img,.planbox svg{display:block;max-width:none;height:auto}
+  .zoom{display:flex;gap:8px;margin-top:10px;align-items:center}
+  .zoom button{min-width:52px;min-height:46px;border:2px solid var(--line);border-radius:11px;
+               background:var(--panel);color:var(--txt);font-size:1.1rem;font-weight:800;cursor:pointer}
+  .zoom .lvl{color:var(--dim);font-size:.85rem;font-weight:700;font-variant-numeric:tabular-nums}
+  .snote{margin-top:10px;padding:9px 12px;border-radius:10px;border-left:4px solid var(--c1);
+         background:#1C1608;color:var(--txt);font-size:.88rem;font-weight:600}
+  .snote.big{font-size:1rem;margin:16px 0 0}
+  .grh{grid-column:1 / -1;display:flex;align-items:baseline;gap:10px;margin:14px 0 2px;
+       font-size:.8rem;font-weight:800;letter-spacing:.06em;color:var(--dim)}
+  .grh b{color:var(--txt);font-size:1rem;letter-spacing:0}
+  .grh:first-child{margin-top:0}
+  .adm .code{color:var(--dim2);font-size:.75rem;font-weight:800;letter-spacing:.05em;margin-right:6px}
+  .pill.resp{border-color:var(--alert);color:var(--alert)}
+  .tm.rsp{border-color:var(--alert)}
+  .tm em{font-style:normal;color:var(--alert);font-size:.78rem;font-weight:800}
+  .tg{flex:0 0 auto;height:34px;padding:0 10px;border-radius:9px;border:2px solid var(--line);
+      background:none;color:var(--dim2);font-size:.72rem;font-weight:800;letter-spacing:.04em;cursor:pointer}
+  .tg.on{border-color:var(--alert);color:var(--alert)}
+  .tg.off{border-color:var(--line);color:var(--dim2);text-decoration:line-through}
+  .opt{display:flex;gap:12px;align-items:flex-start;padding:12px;margin:8px 0 0;border-radius:12px;
+       border:2px solid var(--line);background:var(--panel-2);cursor:pointer;
+       text-transform:none;letter-spacing:0;font-size:.92rem;font-weight:500;color:var(--txt)}
+  .opt input{width:auto;margin-top:3px;accent-color:var(--c1)}
+  .opt:has(input:checked){border-color:var(--c1)}
+  .mems{display:grid;gap:6px;margin-top:10px}
+  .mem{display:flex;align-items:center;gap:10px;padding:6px 6px 6px 12px;border-radius:11px;
+       background:var(--panel-2);border:2px solid var(--line)}
+  .mem .mn{flex:1;font-weight:700;font-size:.95rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mem .mc{color:var(--dim2);font-size:.8rem;font-weight:700;white-space:nowrap}
+  .mem .mc.on{color:var(--dim)}
+  .mx{flex:0 0 auto;width:38px;height:38px;border-radius:9px;border:2px solid transparent;
+      background:none;color:var(--dim);font-size:1rem;font-weight:800;cursor:pointer}
+  .mx:hover,.mx:focus-visible{border-color:var(--alert);color:var(--alert);outline:none}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);z-index:30;
+         bottom:calc(18px + env(safe-area-inset-bottom,0px));
+         display:flex;align-items:center;gap:14px;max-width:calc(100% - 28px);
+         padding:12px 12px 12px 18px;border-radius:14px;background:#1B2A36;
+         border:2px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.5);font-weight:700;font-size:.92rem}
+  .toast button{border:2px solid var(--c1);background:none;color:var(--c1);border-radius:10px;
+                padding:9px 14px;font-weight:800;cursor:pointer;white-space:nowrap}
+  .sync{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:800;
+        letter-spacing:.04em;color:var(--dim);padding:6px 10px;border:1.5px solid var(--line);
+        border-radius:999px;white-space:nowrap}
+  .sync .sdot{width:8px;height:8px;border-radius:50%;background:var(--dim2)}
+  .sync.ok{color:var(--live);border-color:#1E3D2B} .sync.ok .sdot{background:var(--live)}
+  .sync.ko{color:var(--alert);border-color:#3A1F20} .sync.ko .sdot{background:var(--alert)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1 id="topT">WEI — Shifts</h1>
+      <div class="sub" id="topS"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <span id="sync" class="sync" hidden><span class="sdot"></span><span id="syncT"></span></span>
+      <button class="ico" id="topP" title="Plan du camping">Plan</button>
+      <button class="ico sos" id="topU" title="Numéros d'urgence">SOS</button>
+      <button class="lnk" id="topA">Admin</button>
+    </div>
+  </div>
+  <div id="app"></div>
+</div>
+<div class="dock" id="dock" hidden><div class="dockin" id="dockin"></div></div>
+<div class="toast" id="toast" hidden role="status"><span id="toastT"></span><button id="toastU">Annuler</button></div>
+
+<script src="config.js"></script>
+
+<script id="planSvg" type="text/plain">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 520" width="700" height="520" font-family="Helvetica,Arial,sans-serif">
+  <rect width="700" height="520" fill="#0E1922"/>
+  <path d="M0 400 Q200 370 380 400 T700 380 L700 520 L0 520Z" fill="#12241B"/>
+  <path d="M40 0 L40 520" stroke="#2B3D49" stroke-width="26" stroke-dasharray="18 14"/>
+  <text x="10" y="270" fill="#6E8493" font-size="12" transform="rotate(-90 14,270)">Route d'accès</text>
+  <rect x="70" y="40" width="150" height="90" rx="10" fill="#16232F" stroke="#3A5060" stroke-width="2"/>
+  <text x="82" y="70" fill="#EAF2F7" font-size="15" font-weight="bold">Parking</text>
+  <text x="82" y="90" fill="#8098A8" font-size="12">Dépose des bus</text>
+  <text x="82" y="110" fill="#8098A8" font-size="12">Point de rassemblement</text>
+  <rect x="270" y="60" width="230" height="130" rx="12" fill="#1C1608" stroke="#FFB000" stroke-width="3"/>
+  <text x="290" y="95" fill="#FFB000" font-size="19" font-weight="bold">Chapiteau</text>
+  <text x="290" y="120" fill="#C9A24B" font-size="13">Bar, repas, soirées</text>
+  <text x="290" y="142" fill="#C9A24B" font-size="13">Canal 3</text>
+  <rect x="545" y="60" width="115" height="75" rx="10" fill="#1D1416" stroke="#FF6B5E" stroke-width="3"/>
+  <text x="560" y="90" fill="#FF6B5E" font-size="15" font-weight="bold">PC orga</text>
+  <text x="560" y="112" fill="#D08A84" font-size="12">Soins · 24h/24</text>
+  <rect x="70" y="200" width="180" height="120" rx="10" fill="#122A1C" stroke="#57E08A" stroke-width="2"/>
+  <text x="86" y="232" fill="#57E08A" font-size="16" font-weight="bold">Tentes A</text>
+  <text x="86" y="254" fill="#7FBF9A" font-size="12">BDE Paris</text>
+  <rect x="270" y="215" width="180" height="120" rx="10" fill="#241A18" stroke="#FF7A6B" stroke-width="2"/>
+  <text x="286" y="247" fill="#FF7A6B" font-size="16" font-weight="bold">Tentes B</text>
+  <text x="286" y="269" fill="#C58A80" font-size="12">BDE Toulouse</text>
+  <rect x="470" y="200" width="180" height="120" rx="10" fill="#10242B" stroke="#5FD8EE" stroke-width="2"/>
+  <text x="486" y="232" fill="#5FD8EE" font-size="16" font-weight="bold">Tentes C</text>
+  <text x="486" y="254" fill="#88BCC9" font-size="12">BDE Lyon</text>
+  <rect x="70" y="355" width="140" height="70" rx="10" fill="#16232F" stroke="#3A5060" stroke-width="2"/>
+  <text x="84" y="385" fill="#EAF2F7" font-size="14" font-weight="bold">Sanitaires</text>
+  <text x="84" y="405" fill="#8098A8" font-size="12">Douches · WC</text>
+  <circle cx="300" cy="395" r="34" fill="#16232F" stroke="#5FD8EE" stroke-width="2"/>
+  <text x="300" y="392" fill="#5FD8EE" font-size="12" font-weight="bold" text-anchor="middle">Point</text>
+  <text x="300" y="407" fill="#5FD8EE" font-size="12" font-weight="bold" text-anchor="middle">d'eau</text>
+  <rect x="400" y="360" width="250" height="110" rx="10" fill="#16232F" stroke="#3A5060" stroke-width="2"/>
+  <text x="418" y="392" fill="#EAF2F7" font-size="15" font-weight="bold">Grande prairie</text>
+  <text x="418" y="414" fill="#8098A8" font-size="12">Grands jeux · feu de camp</text>
+  <text x="418" y="436" fill="#8098A8" font-size="12">Zone de rassemblement en cas d'alerte</text>
+  <text x="70" y="500" fill="#5E7484" font-size="12">Plan fictif — à remplacer par le plan réel du site</text>
+</svg>
+</script>
+
+<script id="seed" type="application/json">
+{
+ "revision": "2026-09-21-sans-enchainement",
+ "version": 2,
+ "event": {
+  "nom": "WEI 2026",
+  "lieu": "Camping Lou Broustaricq — Sanguinet"
+ },
+ "mdp": 3207802196,
+ "bdes": [
+  {
+   "id": "par",
+   "nom": "BDE Paris",
+   "court": "PAR",
+   "couleur": "#FFB000"
+  },
+  {
+   "id": "tls",
+   "nom": "BDE Toulouse",
+   "court": "TLS",
+   "couleur": "#FF7A6B"
+  },
+  {
+   "id": "lyo",
+   "nom": "BDE Lyon",
+   "court": "LYO",
+   "couleur": "#5FD8EE"
+  }
+ ],
+ "urgences": {
+  "numeros": [
+   {
+    "quoi": "Secours — SAMU, pompiers, police",
+    "tel": "112"
+   },
+   {
+    "quoi": "PC orga — 24h/24",
+    "tel": "0612345678"
+   },
+   {
+    "quoi": "Responsable sécurité",
+    "tel": "0698765432"
+   },
+   {
+    "quoi": "Poste de soins",
+    "tel": "0611223344"
+   }
+  ],
+  "canaux": [
+   {
+    "quoi": "Canal 1",
+    "role": "Sécurité, veille de nuit, urgences"
+   },
+   {
+    "quoi": "Canal 2",
+    "role": "Logistique et technique"
+   },
+   {
+    "quoi": "Canal 3",
+    "role": "Bar et soirée"
+   },
+   {
+    "quoi": "Canal 4",
+    "role": "Animation et grands jeux"
+   }
+  ],
+  "consigne": "En cas de malaise, appelle le PC orga avant de déplacer la personne. Ne reste jamais seul face à une situation à risque."
+ },
+ "plan": {
+  "src": "plan.jpg",
+  "w": 2200,
+  "legende": "Camping Lou Broustaricq, Sanguinet — bungalows réservés entourés en rouge. Sorties de secours, points de rassemblement, extincteurs et bornes incendie dans la légende."
+ },
+ "jours": [
+  {
+   "id": "j1",
+   "nom": "Vendredi",
+   "date": "2026-10-02"
+  },
+  {
+   "id": "j2",
+   "nom": "Samedi",
+   "date": "2026-10-03"
+  },
+  {
+   "id": "j3",
+   "nom": "Dimanche",
+   "date": "2026-10-04"
+  }
+ ],
+ "people": [
+  {
+   "id": "p01",
+   "nom": "Etienne GEMPP",
+   "bde": "par"
+  },
+  {
+   "id": "p02",
+   "nom": "Lucas CUREAUX",
+   "bde": "par"
+  },
+  {
+   "id": "p03",
+   "nom": "Eric COCCOLI",
+   "bde": "par"
+  },
+  {
+   "id": "p04",
+   "nom": "Lou DELATTRE",
+   "bde": "par"
+  },
+  {
+   "id": "p05",
+   "nom": "Tom FERRUS",
+   "bde": "par"
+  },
+  {
+   "id": "p06",
+   "nom": "Rafaël JAMET",
+   "bde": "par"
+  },
+  {
+   "id": "p07",
+   "nom": "Marc POULET",
+   "bde": "par"
+  },
+  {
+   "id": "p08",
+   "nom": "Jeanne DREVON",
+   "bde": "par"
+  },
+  {
+   "id": "p09",
+   "nom": "Lucas DUPLANT",
+   "bde": "par"
+  },
+  {
+   "id": "p10",
+   "nom": "Cyriaque DU BOISHAMON",
+   "bde": "par"
+  },
+  {
+   "id": "p11",
+   "nom": "Gabriel SUSSET",
+   "bde": "par"
+  },
+  {
+   "id": "p12",
+   "nom": "Nolan BLATEAU",
+   "bde": "par"
+  },
+  {
+   "id": "p13",
+   "nom": "Nathan KRUCH",
+   "bde": "par"
+  },
+  {
+   "id": "p14",
+   "nom": "Emma RENAULT",
+   "bde": "par"
+  },
+  {
+   "id": "p15",
+   "nom": "Ambre DONNER",
+   "bde": "par"
+  },
+  {
+   "id": "p16",
+   "nom": "Hadrien KIAS",
+   "bde": "par"
+  },
+  {
+   "id": "p17",
+   "nom": "Hugo LANNOU",
+   "bde": "par"
+  },
+  {
+   "id": "p18",
+   "nom": "Enora GUERINEAU",
+   "bde": "par"
+  },
+  {
+   "id": "p19",
+   "nom": "Faustine MATHIEU",
+   "bde": "par"
+  },
+  {
+   "id": "p20",
+   "nom": "Noemi BILLY-VALENCIA",
+   "bde": "par"
+  },
+  {
+   "id": "p21",
+   "nom": "Anjali VIAL",
+   "bde": "par"
+  },
+  {
+   "id": "p22",
+   "nom": "Tristan POTIER",
+   "bde": "par"
+  },
+  {
+   "id": "p23",
+   "nom": "Arthur VALERY--BATAN",
+   "bde": "par"
+  },
+  {
+   "id": "p24",
+   "nom": "Quentin LASSAGNE",
+   "bde": "par"
+  },
+  {
+   "id": "p25",
+   "nom": "Chayma BELKOUANE",
+   "bde": "par"
+  },
+  {
+   "id": "p26",
+   "nom": "Mehdi CHABBA",
+   "bde": "par"
+  },
+  {
+   "id": "p27",
+   "nom": "Oscar MAUDET",
+   "bde": "par"
+  },
+  {
+   "id": "p28",
+   "nom": "Hugo DELEMOTTE",
+   "bde": "par"
+  },
+  {
+   "id": "p29",
+   "nom": "Pierre CHARTON--LENNE",
+   "bde": "par"
+  }
+ ],
+ "shifts": [
+  {
+   "id": "s001",
+   "code": "S1",
+   "jour": "j1",
+   "nom": "Distribution goodies",
+   "debut": "08:00",
+   "fin": "09:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [],
+   "total": 4,
+   "note": "Assuré par les membres BDE présents dès le jeudi soir, pour que ceux qui arrivent en bus puissent poser leurs affaires."
+  },
+  {
+   "id": "s002",
+   "code": "S1",
+   "jour": "j1",
+   "nom": "Remise de clés",
+   "debut": "08:00",
+   "fin": "09:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [],
+   "total": 2,
+   "note": "Assuré par les membres BDE présents dès le jeudi soir, pour que ceux qui arrivent en bus puissent poser leurs affaires."
+  },
+  {
+   "id": "s003",
+   "code": "S2",
+   "jour": "j1",
+   "nom": "Distribution goodies",
+   "debut": "09:00",
+   "fin": "10:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p04",
+    "p29",
+    "p08",
+    "p26"
+   ]
+  },
+  {
+   "id": "s004",
+   "code": "S2",
+   "jour": "j1",
+   "nom": "Remise de clés",
+   "debut": "09:00",
+   "fin": "10:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p20"
+   ]
+  },
+  {
+   "id": "s005",
+   "code": "S3",
+   "jour": "j1",
+   "nom": "Distribution goodies",
+   "debut": "10:00",
+   "fin": "11:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p15",
+    "p23",
+    "p22",
+    "p18"
+   ]
+  },
+  {
+   "id": "s006",
+   "code": "S3",
+   "jour": "j1",
+   "nom": "Remise de clés",
+   "debut": "10:00",
+   "fin": "11:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p19"
+   ]
+  },
+  {
+   "id": "s007",
+   "code": "S4",
+   "jour": "j1",
+   "nom": "Installation Brunch",
+   "debut": "11:00",
+   "fin": "11:30",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p27",
+    "p03",
+    "p11"
+   ]
+  },
+  {
+   "id": "s008",
+   "code": "S4",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "11:00",
+   "fin": "12:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p24",
+    "p06"
+   ]
+  },
+  {
+   "id": "s009",
+   "code": "S5",
+   "jour": "j1",
+   "nom": "Service Brunch",
+   "debut": "11:30",
+   "fin": "12:30",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p12",
+    "p14",
+    "p22"
+   ]
+  },
+  {
+   "id": "s010",
+   "code": "S5",
+   "jour": "j1",
+   "nom": "Gestion flux / file d'attente",
+   "debut": "11:30",
+   "fin": "12:30",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p09"
+   ]
+  },
+  {
+   "id": "s011",
+   "code": "S5",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "12:00",
+   "fin": "13:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s012",
+   "code": "S6",
+   "jour": "j1",
+   "nom": "Service Brunch",
+   "debut": "12:30",
+   "fin": "13:30",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p25",
+    "p10",
+    "p04"
+   ]
+  },
+  {
+   "id": "s013",
+   "code": "S6",
+   "jour": "j1",
+   "nom": "Gestion flux / file d'attente",
+   "debut": "12:30",
+   "fin": "13:30",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p27"
+   ]
+  },
+  {
+   "id": "s014",
+   "code": "S6",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "13:00",
+   "fin": "14:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p06",
+    "p14"
+   ]
+  },
+  {
+   "id": "s015",
+   "code": "S7",
+   "jour": "j1",
+   "nom": "Rangement Brunch",
+   "debut": "13:30",
+   "fin": "14:00",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p09",
+    "p13",
+    "p08"
+   ]
+  },
+  {
+   "id": "s016",
+   "code": "S7",
+   "jour": "j1",
+   "nom": "Installation Pool Party",
+   "debut": "13:30",
+   "fin": "14:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p07"
+   ]
+  },
+  {
+   "id": "s017",
+   "code": "S8",
+   "jour": "j1",
+   "nom": "Animation piscine et surveillance bassin",
+   "debut": "13:30",
+   "fin": "14:30",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 2,
+    "lyo": 1
+   },
+   "equipe": [
+    "p28",
+    "p16",
+    "p22"
+   ]
+  },
+  {
+   "id": "s018",
+   "code": "S8",
+   "jour": "j1",
+   "nom": "Toboggan",
+   "debut": "13:30",
+   "fin": "14:30",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s019",
+   "code": "S8",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "14:00",
+   "fin": "15:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s020",
+   "code": "S9",
+   "jour": "j1",
+   "nom": "Animation piscine et surveillance bassin",
+   "debut": "14:30",
+   "fin": "16:30",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 2,
+    "lyo": 1
+   },
+   "equipe": [
+    "p19",
+    "p01",
+    "p07"
+   ]
+  },
+  {
+   "id": "s021",
+   "code": "S9",
+   "jour": "j1",
+   "nom": "Toboggan",
+   "debut": "14:30",
+   "fin": "16:30",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p05"
+   ]
+  },
+  {
+   "id": "s022",
+   "code": "S9",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "15:00",
+   "fin": "16:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 2
+   },
+   "equipe": []
+  },
+  {
+   "id": "s023",
+   "code": "S10",
+   "jour": "j1",
+   "nom": "Arrivée de la Color Run",
+   "debut": "16:30",
+   "fin": "18:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [],
+   "tous": true,
+   "note": "Tous les membres des trois BDE sont attendus sur l'arrivée de la course."
+  },
+  {
+   "id": "s024",
+   "code": "S10",
+   "jour": "j1",
+   "nom": "Périmètre de la course et animation de la mousse",
+   "debut": "16:30",
+   "fin": "18:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p22",
+    "p13",
+    "p10",
+    "p26"
+   ]
+  },
+  {
+   "id": "s025",
+   "code": "S10",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "16:00",
+   "fin": "17:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p04",
+    "p03"
+   ]
+  },
+  {
+   "id": "s026",
+   "code": "S11",
+   "jour": "j1",
+   "nom": "Rangement zone Color Run",
+   "debut": "18:00",
+   "fin": "19:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 0,
+    "lyo": 1
+   },
+   "equipe": [
+    "p29"
+   ]
+  },
+  {
+   "id": "s027",
+   "code": "S11",
+   "jour": "j1",
+   "nom": "Installation Repas + Bar Before",
+   "debut": "18:00",
+   "fin": "19:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p02",
+    "p16"
+   ]
+  },
+  {
+   "id": "s028",
+   "code": "S11",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "18:00",
+   "fin": "19:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s029",
+   "code": "S12",
+   "jour": "j1",
+   "nom": "Service Repas",
+   "debut": "19:00",
+   "fin": "20:00",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 2
+   },
+   "equipe": [
+    "p19",
+    "p08",
+    "p04"
+   ]
+  },
+  {
+   "id": "s030",
+   "code": "S12",
+   "jour": "j1",
+   "nom": "Gestion flux / file d'attente",
+   "debut": "19:00",
+   "fin": "20:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p11"
+   ]
+  },
+  {
+   "id": "s031",
+   "code": "S12",
+   "jour": "j1",
+   "nom": "Bar Before",
+   "debut": "19:00",
+   "fin": "20:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p13",
+    "p25"
+   ]
+  },
+  {
+   "id": "s032",
+   "code": "S12",
+   "jour": "j1",
+   "nom": "Auto-tamponneuse",
+   "debut": "19:00",
+   "fin": "20:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p03"
+   ]
+  },
+  {
+   "id": "s033",
+   "code": "S12",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "19:00",
+   "fin": "20:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p18",
+    "p14"
+   ]
+  },
+  {
+   "id": "s034",
+   "code": "S13",
+   "jour": "j1",
+   "nom": "Service Repas",
+   "debut": "20:00",
+   "fin": "21:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p09",
+    "p05",
+    "p29",
+    "p15"
+   ]
+  },
+  {
+   "id": "s035",
+   "code": "S13",
+   "jour": "j1",
+   "nom": "Gestion flux / file d'attente",
+   "debut": "20:00",
+   "fin": "21:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p17"
+   ]
+  },
+  {
+   "id": "s036",
+   "code": "S13",
+   "jour": "j1",
+   "nom": "Bar Before",
+   "debut": "20:00",
+   "fin": "21:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p26",
+    "p16"
+   ]
+  },
+  {
+   "id": "s037",
+   "code": "S13",
+   "jour": "j1",
+   "nom": "Auto-tamponneuse",
+   "debut": "20:00",
+   "fin": "21:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p28"
+   ]
+  },
+  {
+   "id": "s038",
+   "code": "S13",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "20:00",
+   "fin": "21:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s039",
+   "code": "S15",
+   "jour": "j1",
+   "nom": "Rangement Repas",
+   "debut": "21:00",
+   "fin": "22:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p22",
+    "p19"
+   ]
+  },
+  {
+   "id": "s040",
+   "code": "S15",
+   "jour": "j1",
+   "nom": "Gestion flux discours",
+   "debut": "21:00",
+   "fin": "22:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p20",
+    "p07"
+   ]
+  },
+  {
+   "id": "s041",
+   "code": "S15",
+   "jour": "j1",
+   "nom": "Installation Soirée",
+   "debut": "20:30",
+   "fin": "22:00",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p11",
+    "p10",
+    "p21"
+   ]
+  },
+  {
+   "id": "s042",
+   "code": "S15",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "21:00",
+   "fin": "22:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 2
+   },
+   "equipe": []
+  },
+  {
+   "id": "s043",
+   "code": "S16",
+   "jour": "j1",
+   "nom": "Bar Soirée",
+   "debut": "22:00",
+   "fin": "23:30",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p14",
+    "p12",
+    "p06"
+   ],
+   "resps": [
+    "p28"
+   ]
+  },
+  {
+   "id": "s044",
+   "code": "S16",
+   "jour": "j1",
+   "nom": "Ronde Salle",
+   "debut": "22:00",
+   "fin": "23:30",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p05",
+    "p25"
+   ]
+  },
+  {
+   "id": "s045",
+   "code": "S16",
+   "jour": "j1",
+   "nom": "Ronde Camping",
+   "debut": "22:00",
+   "fin": "23:30",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p17",
+    "p15",
+    "p16",
+    "p29"
+   ]
+  },
+  {
+   "id": "s046",
+   "code": "S16",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "22:00",
+   "fin": "23:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s047",
+   "code": "S17",
+   "jour": "j1",
+   "nom": "Bar Soirée",
+   "debut": "23:30",
+   "fin": "01:00",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p23",
+    "p18",
+    "p20"
+   ],
+   "resps": [
+    "p01"
+   ]
+  },
+  {
+   "id": "s048",
+   "code": "S17",
+   "jour": "j1",
+   "nom": "Ronde Salle",
+   "debut": "23:30",
+   "fin": "01:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p03",
+    "p19"
+   ]
+  },
+  {
+   "id": "s049",
+   "code": "S17",
+   "jour": "j1",
+   "nom": "Ronde Camping",
+   "debut": "23:30",
+   "fin": "01:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p08",
+    "p07",
+    "p09",
+    "p24"
+   ]
+  },
+  {
+   "id": "s050",
+   "code": "S17",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "23:00",
+   "fin": "00:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p02",
+    "p26"
+   ]
+  },
+  {
+   "id": "s051",
+   "code": "S18",
+   "jour": "j1",
+   "nom": "Bar Soirée",
+   "debut": "00:00",
+   "fin": "01:00",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p25",
+    "p14",
+    "p27"
+   ],
+   "resps": [
+    "p28"
+   ]
+  },
+  {
+   "id": "s052",
+   "code": "S18",
+   "jour": "j1",
+   "nom": "Ronde Salle",
+   "debut": "00:00",
+   "fin": "01:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p06",
+    "p04"
+   ]
+  },
+  {
+   "id": "s053",
+   "code": "S18",
+   "jour": "j1",
+   "nom": "Ronde Camping",
+   "debut": "00:00",
+   "fin": "01:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p15",
+    "p13",
+    "p21",
+    "p16"
+   ]
+  },
+  {
+   "id": "s054",
+   "code": "S18",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "00:00",
+   "fin": "01:30",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s055",
+   "code": "S19",
+   "jour": "j1",
+   "nom": "Bar Soirée",
+   "debut": "01:00",
+   "fin": "02:00",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p17",
+    "p10",
+    "p12"
+   ],
+   "resps": [
+    "p01"
+   ]
+  },
+  {
+   "id": "s056",
+   "code": "S19",
+   "jour": "j1",
+   "nom": "Ronde Salle",
+   "debut": "01:00",
+   "fin": "02:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p05",
+    "p26"
+   ]
+  },
+  {
+   "id": "s057",
+   "code": "S19",
+   "jour": "j1",
+   "nom": "Ronde Camping",
+   "debut": "01:00",
+   "fin": "02:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p06",
+    "p02",
+    "p11",
+    "p22"
+   ]
+  },
+  {
+   "id": "s058",
+   "code": "S19",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "01:00",
+   "fin": "02:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p23",
+    "p29"
+   ]
+  },
+  {
+   "id": "s059",
+   "code": "S20",
+   "jour": "j1",
+   "nom": "Bar Soirée",
+   "debut": "02:00",
+   "fin": "03:00",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p08",
+    "p14",
+    "p24"
+   ],
+   "resps": [
+    "p28"
+   ]
+  },
+  {
+   "id": "s060",
+   "code": "S20",
+   "jour": "j1",
+   "nom": "Ronde Salle",
+   "debut": "02:00",
+   "fin": "03:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p15",
+    "p21"
+   ]
+  },
+  {
+   "id": "s061",
+   "code": "S20",
+   "jour": "j1",
+   "nom": "Ronde Camping",
+   "debut": "02:00",
+   "fin": "03:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p20",
+    "p16",
+    "p27",
+    "p19"
+   ]
+  },
+  {
+   "id": "s062",
+   "code": "S20",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "02:00",
+   "fin": "03:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s063",
+   "code": "S21",
+   "jour": "j1",
+   "nom": "Bar Soirée",
+   "debut": "03:00",
+   "fin": "04:00",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p03",
+    "p17",
+    "p07"
+   ],
+   "resps": [
+    "p01"
+   ]
+  },
+  {
+   "id": "s064",
+   "code": "S21",
+   "jour": "j1",
+   "nom": "Ronde Salle",
+   "debut": "03:00",
+   "fin": "04:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p04",
+    "p10"
+   ]
+  },
+  {
+   "id": "s065",
+   "code": "S21",
+   "jour": "j1",
+   "nom": "Ronde Camping",
+   "debut": "03:00",
+   "fin": "04:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 2,
+    "lyo": 2
+   },
+   "equipe": [
+    "p26",
+    "p25",
+    "p22",
+    "p18"
+   ]
+  },
+  {
+   "id": "s066",
+   "code": "S21",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "03:00",
+   "fin": "04:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p12",
+    "p11"
+   ]
+  },
+  {
+   "id": "s067",
+   "code": "S22",
+   "jour": "j1",
+   "nom": "Rangement Salle et extérieur",
+   "debut": "04:00",
+   "fin": "05:00",
+   "lieu": "",
+   "quotas": {
+    "par": 6,
+    "tls": 3,
+    "lyo": 1
+   },
+   "equipe": [
+    "p19",
+    "p08",
+    "p16",
+    "p24",
+    "p27",
+    "p21"
+   ]
+  },
+  {
+   "id": "s068",
+   "code": "S22",
+   "jour": "j1",
+   "nom": "Ronde Camping",
+   "debut": "04:00",
+   "fin": "05:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p14",
+    "p28",
+    "p20",
+    "p15"
+   ]
+  },
+  {
+   "id": "s069",
+   "code": "S22",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "04:00",
+   "fin": "05:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 2
+   },
+   "equipe": []
+  },
+  {
+   "id": "s070",
+   "code": "S2",
+   "jour": "j2",
+   "nom": "Réveil étudiant (tour camping)",
+   "debut": "09:00",
+   "fin": "09:30",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p06",
+    "p05"
+   ]
+  },
+  {
+   "id": "s071",
+   "code": "S2",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "09:00",
+   "fin": "10:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 2
+   },
+   "equipe": []
+  },
+  {
+   "id": "s072",
+   "code": "S3",
+   "jour": "j2",
+   "nom": "Zumba",
+   "debut": "09:30",
+   "fin": "10:30",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p02"
+   ],
+   "note": "Assurée par les présidents de BDE."
+  },
+  {
+   "id": "s073",
+   "code": "S4",
+   "jour": "j2",
+   "nom": "Installation Brunch",
+   "debut": "10:00",
+   "fin": "10:30",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p06",
+    "p05"
+   ]
+  },
+  {
+   "id": "s074",
+   "code": "S4",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "10:00",
+   "fin": "11:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s075",
+   "code": "S5",
+   "jour": "j2",
+   "nom": "Service Brunch",
+   "debut": "10:30",
+   "fin": "11:30",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p23",
+    "p13",
+    "p29",
+    "p25"
+   ]
+  },
+  {
+   "id": "s076",
+   "code": "S5",
+   "jour": "j2",
+   "nom": "Gestion flux / file d'attente",
+   "debut": "10:30",
+   "fin": "11:30",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p09"
+   ]
+  },
+  {
+   "id": "s077",
+   "code": "S5",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "11:00",
+   "fin": "12:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p18",
+    "p26"
+   ]
+  },
+  {
+   "id": "s078",
+   "code": "S6",
+   "jour": "j2",
+   "nom": "Service Brunch",
+   "debut": "11:30",
+   "fin": "12:30",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p21",
+    "p16",
+    "p08",
+    "p11"
+   ]
+  },
+  {
+   "id": "s079",
+   "code": "S6",
+   "jour": "j2",
+   "nom": "Gestion flux / file d'attente",
+   "debut": "11:30",
+   "fin": "12:30",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p20"
+   ]
+  },
+  {
+   "id": "s080",
+   "code": "S7",
+   "jour": "j2",
+   "nom": "Rangement Brunch",
+   "debut": "12:30",
+   "fin": "13:30",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p13",
+    "p24"
+   ]
+  },
+  {
+   "id": "s081",
+   "code": "S7",
+   "jour": "j2",
+   "nom": "Installation Village Assos/Olympiade",
+   "debut": "12:00",
+   "fin": "13:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p27",
+    "p09",
+    "p15",
+    "p02"
+   ]
+  },
+  {
+   "id": "s082",
+   "code": "S7",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "12:00",
+   "fin": "13:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 2
+   },
+   "equipe": []
+  },
+  {
+   "id": "s083",
+   "code": "S8",
+   "jour": "j2",
+   "nom": "Activité 1",
+   "debut": "13:00",
+   "fin": "14:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p08",
+    "p03"
+   ]
+  },
+  {
+   "id": "s084",
+   "code": "S8",
+   "jour": "j2",
+   "nom": "Activité 2",
+   "debut": "13:00",
+   "fin": "14:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s085",
+   "code": "S8",
+   "jour": "j2",
+   "nom": "Activité 3",
+   "debut": "13:00",
+   "fin": "14:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p12",
+    "p14"
+   ]
+  },
+  {
+   "id": "s086",
+   "code": "S8",
+   "jour": "j2",
+   "nom": "Activité 4",
+   "debut": "13:00",
+   "fin": "14:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 2
+   },
+   "equipe": []
+  },
+  {
+   "id": "s087",
+   "code": "S8",
+   "jour": "j2",
+   "nom": "Activité 5",
+   "debut": "13:00",
+   "fin": "14:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s088",
+   "code": "S8",
+   "jour": "j2",
+   "nom": "Activité 6",
+   "debut": "13:00",
+   "fin": "14:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p21",
+    "p17"
+   ]
+  },
+  {
+   "id": "s089",
+   "code": "S8",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "13:00",
+   "fin": "14:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p18",
+    "p23"
+   ]
+  },
+  {
+   "id": "s090",
+   "code": "S9",
+   "jour": "j2",
+   "nom": "Activité 1",
+   "debut": "14:00",
+   "fin": "15:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 2
+   },
+   "equipe": []
+  },
+  {
+   "id": "s091",
+   "code": "S9",
+   "jour": "j2",
+   "nom": "Activité 2",
+   "debut": "14:00",
+   "fin": "15:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s092",
+   "code": "S9",
+   "jour": "j2",
+   "nom": "Activité 3",
+   "debut": "14:00",
+   "fin": "15:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p25",
+    "p01"
+   ]
+  },
+  {
+   "id": "s093",
+   "code": "S9",
+   "jour": "j2",
+   "nom": "Activité 4",
+   "debut": "14:00",
+   "fin": "15:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s094",
+   "code": "S9",
+   "jour": "j2",
+   "nom": "Activité 5",
+   "debut": "14:00",
+   "fin": "15:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p02",
+    "p06"
+   ]
+  },
+  {
+   "id": "s095",
+   "code": "S9",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "14:00",
+   "fin": "15:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s096",
+   "code": "S10",
+   "jour": "j2",
+   "nom": "Activité 1",
+   "debut": "15:00",
+   "fin": "16:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 2
+   },
+   "equipe": []
+  },
+  {
+   "id": "s097",
+   "code": "S10",
+   "jour": "j2",
+   "nom": "Activité 2",
+   "debut": "15:00",
+   "fin": "16:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s098",
+   "code": "S10",
+   "jour": "j2",
+   "nom": "Activité 3",
+   "debut": "15:00",
+   "fin": "16:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p10",
+    "p27"
+   ]
+  },
+  {
+   "id": "s099",
+   "code": "S10",
+   "jour": "j2",
+   "nom": "Activité 4",
+   "debut": "15:00",
+   "fin": "16:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s100",
+   "code": "S10",
+   "jour": "j2",
+   "nom": "Activité 5",
+   "debut": "15:00",
+   "fin": "16:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p03",
+    "p09"
+   ]
+  },
+  {
+   "id": "s101",
+   "code": "S10",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "15:00",
+   "fin": "16:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p29",
+    "p13"
+   ]
+  },
+  {
+   "id": "s102",
+   "code": "S11",
+   "jour": "j2",
+   "nom": "Postes Village Assos (4 stands)",
+   "debut": "16:00",
+   "fin": "17:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 2,
+    "lyo": 2
+   },
+   "equipe": [
+    "p07",
+    "p14",
+    "p05",
+    "p17"
+   ]
+  },
+  {
+   "id": "s103",
+   "code": "S11",
+   "jour": "j2",
+   "nom": "Animation piscine et surveillance bassin",
+   "debut": "16:00",
+   "fin": "17:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p22",
+    "p11",
+    "p20",
+    "p01"
+   ]
+  },
+  {
+   "id": "s104",
+   "code": "S11",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "16:00",
+   "fin": "17:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s105",
+   "code": "S12",
+   "jour": "j2",
+   "nom": "Rangement Village Assos",
+   "debut": "17:00",
+   "fin": "17:30",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p03",
+    "p10",
+    "p27",
+    "p21"
+   ]
+  },
+  {
+   "id": "s106",
+   "code": "S12",
+   "jour": "j2",
+   "nom": "Animation piscine et surveillance bassin",
+   "debut": "17:00",
+   "fin": "18:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p24",
+    "p15",
+    "p16",
+    "p18"
+   ]
+  },
+  {
+   "id": "s107",
+   "code": "S12",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "17:00",
+   "fin": "18:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 2
+   },
+   "equipe": []
+  },
+  {
+   "id": "s108",
+   "code": "S13",
+   "jour": "j2",
+   "nom": "Installation Repas + Bar Before",
+   "debut": "18:00",
+   "fin": "18:30",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p02",
+    "p17",
+    "p09"
+   ]
+  },
+  {
+   "id": "s109",
+   "code": "S13",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "18:00",
+   "fin": "18:30",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p08",
+    "p07"
+   ]
+  },
+  {
+   "id": "s110",
+   "code": "S14",
+   "jour": "j2",
+   "nom": "Service Repas (A5)",
+   "debut": "18:00",
+   "fin": "19:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p23",
+    "p03"
+   ]
+  },
+  {
+   "id": "s111",
+   "code": "S14",
+   "jour": "j2",
+   "nom": "Bar Before",
+   "debut": "18:00",
+   "fin": "19:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p22",
+    "p21"
+   ]
+  },
+  {
+   "id": "s112",
+   "code": "S14",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "18:00",
+   "fin": "19:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p04",
+    "p12"
+   ]
+  },
+  {
+   "id": "s113",
+   "code": "S15",
+   "jour": "j2",
+   "nom": "Service Repas (A2/B2)",
+   "debut": "19:00",
+   "fin": "20:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p25",
+    "p07"
+   ]
+  },
+  {
+   "id": "s114",
+   "code": "S15",
+   "jour": "j2",
+   "nom": "Bar Before",
+   "debut": "19:00",
+   "fin": "20:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p13",
+    "p24"
+   ]
+  },
+  {
+   "id": "s115",
+   "code": "S15",
+   "jour": "j2",
+   "nom": "Auto-tamponneuse",
+   "debut": "19:00",
+   "fin": "20:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p10"
+   ]
+  },
+  {
+   "id": "s116",
+   "code": "S15",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "19:00",
+   "fin": "20:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s117",
+   "code": "S16",
+   "jour": "j2",
+   "nom": "Service Repas (A1)",
+   "debut": "20:00",
+   "fin": "21:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p03",
+    "p09"
+   ]
+  },
+  {
+   "id": "s118",
+   "code": "S16",
+   "jour": "j2",
+   "nom": "Auto-tamponneuse",
+   "debut": "20:00",
+   "fin": "21:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p04"
+   ]
+  },
+  {
+   "id": "s119",
+   "code": "S16",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "20:00",
+   "fin": "21:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p02",
+    "p15"
+   ]
+  },
+  {
+   "id": "s120",
+   "code": "S17",
+   "jour": "j2",
+   "nom": "Rangement Repas",
+   "debut": "21:00",
+   "fin": "21:30",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p21",
+    "p13"
+   ]
+  },
+  {
+   "id": "s121",
+   "code": "S17",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "21:00",
+   "fin": "22:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s122",
+   "code": "S19",
+   "jour": "j2",
+   "nom": "Installation Soirée",
+   "debut": "21:30",
+   "fin": "22:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 2,
+    "lyo": 1
+   },
+   "equipe": [
+    "p17",
+    "p27"
+   ]
+  },
+  {
+   "id": "s123",
+   "code": "S20",
+   "jour": "j2",
+   "nom": "Bar Soirée",
+   "debut": "22:00",
+   "fin": "23:00",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p06",
+    "p24",
+    "p26"
+   ],
+   "resps": [
+    "p28"
+   ]
+  },
+  {
+   "id": "s124",
+   "code": "S20",
+   "jour": "j2",
+   "nom": "Ronde Salle",
+   "debut": "22:00",
+   "fin": "23:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p04",
+    "p23"
+   ]
+  },
+  {
+   "id": "s125",
+   "code": "S20",
+   "jour": "j2",
+   "nom": "Ronde Camping",
+   "debut": "22:00",
+   "fin": "23:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p14",
+    "p29",
+    "p22",
+    "p12"
+   ]
+  },
+  {
+   "id": "s126",
+   "code": "S20",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "22:00",
+   "fin": "23:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 2
+   },
+   "equipe": []
+  },
+  {
+   "id": "s127",
+   "code": "S21",
+   "jour": "j2",
+   "nom": "Bar Soirée",
+   "debut": "23:00",
+   "fin": "00:00",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p17",
+    "p25",
+    "p02"
+   ],
+   "resps": [
+    "p01"
+   ]
+  },
+  {
+   "id": "s128",
+   "code": "S21",
+   "jour": "j2",
+   "nom": "Ronde Camping",
+   "debut": "23:00",
+   "fin": "00:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p27",
+    "p09",
+    "p10",
+    "p05"
+   ]
+  },
+  {
+   "id": "s129",
+   "code": "S21",
+   "jour": "j2",
+   "nom": "Ronde Salle",
+   "debut": "23:00",
+   "fin": "00:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p11",
+    "p18"
+   ]
+  },
+  {
+   "id": "s130",
+   "code": "S21",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "23:00",
+   "fin": "00:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p15",
+    "p16"
+   ]
+  },
+  {
+   "id": "s131",
+   "code": "S22",
+   "jour": "j2",
+   "nom": "Bar Soirée",
+   "debut": "00:00",
+   "fin": "01:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p07",
+    "p24"
+   ],
+   "resps": [
+    "p28"
+   ]
+  },
+  {
+   "id": "s132",
+   "code": "S22",
+   "jour": "j2",
+   "nom": "Ronde Camping",
+   "debut": "00:00",
+   "fin": "01:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p20"
+   ]
+  },
+  {
+   "id": "s133",
+   "code": "S22",
+   "jour": "j2",
+   "nom": "Ronde Salle",
+   "debut": "00:00",
+   "fin": "01:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p23",
+    "p12"
+   ]
+  },
+  {
+   "id": "s134",
+   "code": "S22",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "00:00",
+   "fin": "01:30",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": []
+  },
+  {
+   "id": "s135",
+   "code": "S23",
+   "jour": "j2",
+   "nom": "Bar Soirée",
+   "debut": "01:00",
+   "fin": "02:00",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p04",
+    "p05",
+    "p19"
+   ],
+   "resps": [
+    "p01"
+   ]
+  },
+  {
+   "id": "s136",
+   "code": "S23",
+   "jour": "j2",
+   "nom": "Ronde Camping",
+   "debut": "01:00",
+   "fin": "02:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p06",
+    "p03",
+    "p10",
+    "p13"
+   ]
+  },
+  {
+   "id": "s137",
+   "code": "S23",
+   "jour": "j2",
+   "nom": "Ronde Salle",
+   "debut": "01:00",
+   "fin": "02:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p25",
+    "p27"
+   ]
+  },
+  {
+   "id": "s138",
+   "code": "S23",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "01:30",
+   "fin": "03:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 0,
+    "lyo": 0
+   },
+   "equipe": [
+    "p02",
+    "p11"
+   ]
+  },
+  {
+   "id": "s139",
+   "code": "S24",
+   "jour": "j2",
+   "nom": "Bar Soirée",
+   "debut": "02:00",
+   "fin": "03:00",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p12",
+    "p20",
+    "p08"
+   ],
+   "resps": [
+    "p28"
+   ]
+  },
+  {
+   "id": "s140",
+   "code": "S24",
+   "jour": "j2",
+   "nom": "Ronde Camping",
+   "debut": "02:00",
+   "fin": "03:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p21",
+    "p17",
+    "p29",
+    "p18"
+   ]
+  },
+  {
+   "id": "s141",
+   "code": "S24",
+   "jour": "j2",
+   "nom": "Ronde Salle",
+   "debut": "02:00",
+   "fin": "03:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p26",
+    "p23"
+   ]
+  },
+  {
+   "id": "s142",
+   "code": "S25",
+   "jour": "j2",
+   "nom": "Bar Soirée",
+   "debut": "03:00",
+   "fin": "04:00",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p05",
+    "p09",
+    "p24"
+   ],
+   "resps": [
+    "p01"
+   ]
+  },
+  {
+   "id": "s143",
+   "code": "S25",
+   "jour": "j2",
+   "nom": "Ronde Camping",
+   "debut": "03:00",
+   "fin": "04:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "p27",
+    "p07",
+    "p13",
+    "p19"
+   ]
+  },
+  {
+   "id": "s144",
+   "code": "S25",
+   "jour": "j2",
+   "nom": "Ronde Salle",
+   "debut": "03:00",
+   "fin": "04:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p04",
+    "p06"
+   ]
+  },
+  {
+   "id": "s145",
+   "code": "S29",
+   "jour": "j2",
+   "nom": "Rangement Salle",
+   "debut": "04:00",
+   "fin": "05:00",
+   "lieu": "",
+   "quotas": {
+    "par": 6,
+    "tls": 3,
+    "lyo": 1
+   },
+   "equipe": [
+    "p28",
+    "p21",
+    "p17",
+    "p26",
+    "p12",
+    "p20"
+   ]
+  },
+  {
+   "id": "s146",
+   "code": "S29",
+   "jour": "j2",
+   "nom": "Rangement Extérieur",
+   "debut": "04:00",
+   "fin": "05:00",
+   "lieu": "",
+   "quotas": {
+    "par": 6,
+    "tls": 2,
+    "lyo": 0
+   },
+   "equipe": [
+    "p18",
+    "p08",
+    "p29",
+    "p23",
+    "p02",
+    "p11"
+   ]
+  },
+  {
+   "id": "s147",
+   "code": "S29",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "03:00",
+   "fin": "05:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 2
+   },
+   "equipe": []
+  }
+ ],
+ "coupure": 6,
+ "fiches": {},
+ "respPool": [
+  "p28",
+  "p01"
+ ]
+}
+</script>
+
+<script>
+(function(){
+  "use strict";
+
+  var KEY = "wei-planning-v2";
+  var CFG = window.WEI_CONFIG || {};
+  var CONNECTE = !!(CFG.firebase && CFG.firebase.apiKey);
+  var remote = null, tmr = null, attente = null, attenteT = null;
+  var JOURS_FR = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
+  var MOIS_FR = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+
+  /* ---------- état ---------- */
+  var state = null, vue = {n:"pick"}, moi = null, admin = false;
+
+  function seedData(){
+    var s = JSON.parse(document.getElementById("seed").textContent);
+    if(s.jours && s.jours.length) return s;
+    var base = new Date(); base.setHours(0,0,0,0);
+    s.jours = [0,1,2].map(function(i){
+      var d = new Date(base.getTime()); d.setDate(d.getDate() + i);
+      return {id:"j" + (i+1), nom:cap(JOURS_FR[d.getDay()]), date:iso(d)};
+    });
+    return s;
+  }
+  function charger(){
+    if(CONNECTE) return seedData();          // l'état fait autorité côté serveur
+    var neuf = seedData();
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(raw){
+        var s = JSON.parse(raw);
+        // une sauvegarde locale ne vaut que pour la version des données qui l'a produite :
+        // quand la page embarque une nouvelle révision, elle l'emporte
+        if(s && s.shifts && s.revision === neuf.revision) return s;
+      }
+    }catch(e){}
+    return neuf;
+  }
+  function sauver(){
+    if(CONNECTE){
+      if(!remote) return;
+      clearTimeout(tmr);
+      tmr = setTimeout(function(){ remote.push(state); }, 500);   // une écriture par pause de frappe
+      return;
+    }
+    try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  /* pont avec la couche de synchronisation (voir le module en bas de page) */
+  function badge(cls, txt){
+    var b = document.getElementById("sync");
+    if(!b) return;
+    b.hidden = false;
+    b.className = "sync" + (cls ? " " + cls : "");
+    document.getElementById("syncT").textContent = txt;
+  }
+  function saisieEnCours(){
+    var a = document.activeElement;
+    return !!(a && (a.tagName === "INPUT" || a.tagName === "TEXTAREA"));
+  }
+  window.WEI = {
+    connect: function(api){ remote = api; },
+    seedRemote: function(){ if(remote) remote.push(state); },
+    receive: function(json){
+      var s;
+      try{ s = JSON.parse(json); }catch(e){ return; }
+      if(!s || !s.shifts || !s.people) return;
+      if(saisieEnCours()){                    // ne pas effacer une saisie en cours
+        attente = json;
+        clearTimeout(attenteT);
+        attenteT = setTimeout(function(){
+          var j = attente; attente = null;
+          if(j) window.WEI.receive(j);
+        }, 2500);
+        return;
+      }
+      attente = null;
+      state = s;
+      defauts();
+      render();
+    },
+    statut: function(code, info){
+      if(code === "ok") badge("ok", "EN DIRECT");
+      else if(code === "ko") badge("ko", "HORS LIGNE" + (info ? " · " + info : ""));
+      else badge("", "LOCAL");
+    }
+  };
+  function memo(k, v){
+    try{ if(v === undefined) return localStorage.getItem(KEY + ":" + k);
+         localStorage.setItem(KEY + ":" + k, v); }catch(e){ return null; }
+  }
+
+  /* ---------- utilitaires ---------- */
+  function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+  function iso(d){
+    return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate());
+  }
+  function pad(n){ return (n < 10 ? "0" : "") + n; }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function el(html){ var d = document.createElement("div"); d.innerHTML = html; return d.firstElementChild; }
+  function uid(p){ return p + Math.random().toString(36).slice(2,8); }
+  function empreinte(s){
+    var v = 5381;
+    for(var i=0;i<s.length;i++){ v = ((v<<5) + v + s.charCodeAt(i)) >>> 0; }
+    return v;
+  }
+  function defauts(){
+    if(!state.urgences) state.urgences = {numeros:[], canaux:[], consigne:""};
+    if(!state.urgences.numeros) state.urgences.numeros = [];
+    if(!state.urgences.canaux) state.urgences.canaux = [];
+    if(!state.plan) state.plan = {src:"", legende:""};
+  }
+  function telLien(t){ return "tel:" + String(t).replace(/[^+0-9]/g,""); }
+  function telAff(t){
+    var v = String(t).replace(/\s/g,"");
+    return /^0[0-9]{9}$/.test(v) ? v.replace(/(..)(?=.)/g,"$1 ").trim() : t;
+  }
+
+  /* --- bloc urgences, grand format --- */
+  function sosGrand(){
+    var u = state.urgences;
+    if(!u.numeros.length && !u.canaux.length) return null;
+    var d = el('<div class="sos-big"><h3>EN CAS D\'URGENCE</h3></div>');
+    u.numeros.forEach(function(n, i){
+      d.appendChild(el('<a class="tel' + (i === 0 ? ' first' : '') + '" href="' + telLien(n.tel) + '">' +
+        '<span>' + esc(n.quoi) + '</span><b>' + esc(telAff(n.tel)) + '</b></a>'));
+    });
+    if(u.canaux.length){
+      var c = el('<div class="canaux"></div>');
+      u.canaux.forEach(function(k){
+        c.appendChild(el('<div class="can"><b>' + esc(k.quoi) + '</b><span>' + esc(k.role) + '</span></div>'));
+      });
+      d.appendChild(c);
+    }
+    if(u.consigne) d.appendChild(el('<p class="csg">' + esc(u.consigne) + '</p>'));
+    return d;
+  }
+
+  /* --- rappel discret en bas des autres pages --- */
+  function sosPetit(){
+    var u = state.urgences;
+    if(!u.numeros.length) return null;
+    var d = el('<div class="sos-mini"></div>');
+    u.numeros.slice(0,2).forEach(function(n){
+      d.appendChild(el('<a href="' + telLien(n.tel) + '">' + esc(n.quoi.split(" —")[0]) +
+        ' <b>' + esc(telAff(n.tel)) + '</b></a>'));
+    });
+    var p = el('<a href="#">Tous les numéros</a>');
+    p.addEventListener("click", function(e){ e.preventDefault(); go("sos"); });
+    d.appendChild(p);
+    return d;
+  }
+
+  function jourDe(id){
+    for(var i=0;i<state.jours.length;i++) if(state.jours[i].id === id) return state.jours[i];
+    return null;
+  }
+  function bdeDe(id){
+    for(var i=0;i<state.bdes.length;i++) if(state.bdes[i].id === id) return state.bdes[i];
+    return {id:id, nom:id, court:"?", couleur:"#8098A8"};
+  }
+  function pers(id){
+    for(var i=0;i<state.people.length;i++) if(state.people[i].id === id) return state.people[i];
+    return null;
+  }
+  function shift(id){
+    for(var i=0;i<state.shifts.length;i++) if(state.shifts[i].id === id) return state.shifts[i];
+    return null;
+  }
+  function dateLabel(j){
+    var p = j.date.split("-");
+    return +p[2] + " " + MOIS_FR[+p[1]-1];
+  }
+  function coupure(){ return state.coupure == null ? 6 : state.coupure; }
+  function debutDe(s){
+    var j = jourDe(s.jour); if(!j) return null;
+    var p = j.date.split("-"), h = s.debut.split(":");
+    var d = new Date(+p[0], +p[1]-1, +p[2], +h[0], +h[1], 0, 0);
+    if(+h[0] < coupure()) d.setDate(d.getDate() + 1);   // 02h00 le vendredi = la nuit de vendredi à samedi
+    return d;
+  }
+  /* date « festival » : jusqu'à 6 h du matin, on est encore la veille */
+  function dateFestival(){
+    var d = new Date(Date.now() - coupure()*3600000);
+    return iso(d);
+  }
+  function finDe(s){
+    var d = debutDe(s); if(!d) return null;
+    var h = s.fin.split(":"), f = new Date(d.getTime());
+    f.setHours(+h[0], +h[1], 0, 0);
+    if(f <= d) f.setDate(f.getDate() + 1);   // shift qui passe minuit
+    return f;
+  }
+  function statut(s){
+    var d = debutDe(s), f = finDe(s), now = new Date();
+    if(!d) return {c:"", l:""};
+    if(now >= d && now < f) return {c:"live", l:"EN COURS"};
+    if(now >= f) return {c:"done", l:"TERMINÉ"};
+    var min = Math.round((d - now)/60000);
+    if(min <= 90) return {c:"soon", l:"DANS " + (min < 60 ? min + " MIN" : Math.round(min/60) + " H")};
+    return {c:"", l:"À VENIR"};
+  }
+  function triShifts(a,b){
+    var da = debutDe(a), db2 = debutDe(b);
+    return (da && db2) ? da - db2 : 0;
+  }
+  function shiftsDuJour(jid){
+    return state.shifts.filter(function(s){ return s.jour === jid; }).sort(triShifts);
+  }
+  function respsDe(s){ return s.resps || []; }
+  function estResp(s, pid){ return respsDe(s).indexOf(pid) > -1; }
+  function estSur(s, pid){ return s.equipe.indexOf(pid) > -1 || estResp(s, pid); }
+  function mesShifts(pid){
+    return state.shifts.filter(function(s){ return s.tous || estSur(s, pid); }).sort(triShifts);
+  }
+  function mesAffectations(pid){   // hors moments collectifs, pour les compteurs
+    return state.shifts.filter(function(s){ return !s.tous && estSur(s, pid); });
+  }
+  function court(nom){             // « Hugo DELEMOTTE » -> « Hugo D. »
+    var t = String(nom).split(" ");
+    return t.length > 1 ? t[0] + " " + t[1].charAt(0) + "." : nom;
+  }
+  function jourAujourdhui(){
+    var t = dateFestival();
+    for(var i=0;i<state.jours.length;i++) if(state.jours[i].date === t) return state.jours[i].id;
+    return null;
+  }
+  function compte(s, bid){
+    return s.equipe.filter(function(pid){ var p = pers(pid); return p && p.bde === bid; }).length;
+  }
+  function manque(s){
+    if(s.tous) return 0;
+    if(s.total) return Math.max(0, s.total - s.equipe.length);
+    var m = 0;
+    state.bdes.forEach(function(b){ m += Math.max(0, (s.quotas[b.id]||0) - compte(s, b.id)); });
+    return m;
+  }
+  function pastillesQuota(s){
+    if(s.tous) return '<span class="qz">Tous les BDE</span>';
+    if(s.total) return '<span class="qz' + (s.equipe.length < s.total ? ' ko' : '') + '">Sans répartition ' +
+                       s.equipe.length + '/' + s.total + '</span>';
+    return state.bdes.map(function(b){
+      var c = compte(s, b.id), n = s.quotas[b.id] || 0;
+      return '<span class="qz' + (c < n ? ' ko' : '') + '" style="border-left:4px solid ' + b.couleur +
+             '">' + b.court + ' ' + c + '/' + n + '</span>';
+    }).join("");
+  }
+
+  /* fiches communes à tous les shifts d'un même poste */
+  function cle(nom){
+    return String(nom).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim();
+  }
+  function ficheDe(s){
+    state.fiches = state.fiches || {};
+    return state.fiches[cle(s.nom)] || s.fiche || {};
+  }
+  function ficheVide(f){
+    return !(f.mission || (f.taches && f.taches.length) || (f.materiel && f.materiel.length) || f.referent);
+  }
+
+  /* ---------- rendu ---------- */
+  var app = document.getElementById("app");
+  var dock = document.getElementById("dock"), dockin = document.getElementById("dockin");
+  var topT = document.getElementById("topT"), topS = document.getElementById("topS");
+  var topA = document.getElementById("topA");
+
+  function go(n, p){ vue = {n:n, p:p}; render(); window.scrollTo(0,0); }
+
+  function render(){
+    var estAdmin = (vue.n === "admin" || vue.n === "edit" || vue.n === "reglages");
+    document.body.setAttribute("data-mode", estAdmin ? "admin" : "user");
+    topT.textContent = state.event.nom;
+    topS.textContent = state.event.lieu;
+    topA.textContent = estAdmin ? "Quitter l'admin" : "Admin";
+    dock.hidden = true; dockin.innerHTML = "";
+    app.innerHTML = "";
+    ({pick:vPick, me:vMoi, fiche:vFiche, planning:vPlanning, plan:vPlan, sos:vSos,
+      gate:vGate, admin:vAdmin, edit:vEdit, reglages:vReglages}[vue.n] || vPick)();
+    if(!estAdmin && vue.n !== "sos" && vue.n !== "pick" && vue.n !== "me"){
+      var mini = sosPetit(); if(mini) app.appendChild(mini);
+    }
+  }
+
+  /* --- choix de l'identité --- */
+  function vPick(){
+    var bid = vue.p && vue.p.bde;
+    if(!bid){
+      app.appendChild(el('<h2 class="lead">Ton nom est dans quel BDE ?</h2>'));
+      app.appendChild(el('<p>Tu ne le choisis qu\'une fois, la page s\'en souvient ensuite.</p>'));
+      var g = el('<div class="bdegrid"></div>');
+      state.bdes.forEach(function(b){
+        var n = state.people.filter(function(p){ return p.bde === b.id; }).length;
+        var c = el('<button class="bdecard" style="border-left-color:' + b.couleur + '">' +
+                   esc(b.nom) + '<span>' + n + ' personnes</span></button>');
+        c.addEventListener("click", function(){ go("pick", {bde:b.id}); });
+        g.appendChild(c);
+      });
+      app.appendChild(g);
+      var pl = el('<button class="btn ghost">Voir le planning général</button>');
+      pl.addEventListener("click", function(){ go("planning"); });
+      app.appendChild(pl);
+      var sg = sosGrand(); if(sg){ app.appendChild(el('<div style="height:20px"></div>')); app.appendChild(sg); }
+      return;
+    }
+    var b = bdeDe(bid);
+    app.appendChild(el('<h2 class="lead">' + esc(b.nom) + '</h2>'));
+    app.appendChild(el('<p>Touche ton nom.</p>'));
+    var f = el('<input type="search" placeholder="Chercher un nom" aria-label="Chercher un nom">');
+    app.appendChild(f);
+    var list = el('<div class="people"></div>');
+    app.appendChild(list);
+    function fill(){
+      var q = f.value.trim().toUpperCase();
+      list.innerHTML = "";
+      state.people.filter(function(p){ return p.bde === bid; })
+        .sort(function(x,y){ return x.nom.localeCompare(y.nom, "fr"); })
+        .forEach(function(p){
+          if(q && p.nom.toUpperCase().indexOf(q) === -1) return;
+          var btn = el('<button class="pbtn"><span class="pip" style="background:' + b.couleur +
+                       '"></span>' + esc(p.nom) + '</button>');
+          btn.addEventListener("click", function(){ moi = p.id; memo("moi", p.id); go("me"); });
+          list.appendChild(btn);
+        });
+    }
+    f.addEventListener("input", fill); fill();
+    var back = el('<button class="btn ghost">Changer de BDE</button>');
+    back.addEventListener("click", function(){ go("pick"); });
+    app.appendChild(back);
+  }
+
+  /* --- ma page --- */
+  function vMoi(){
+    var p = pers(moi);
+    if(!p){ go("pick"); return; }
+    var b = bdeDe(p.bde);
+    app.appendChild(el('<h2 class="lead">' + esc(p.nom) + '</h2>'));
+    app.appendChild(el('<p style="color:' + b.couleur + ';font-weight:700">' + esc(b.nom) + '</p>'));
+
+    var tous = mesShifts(moi);
+    var jid = (vue.p && vue.p.jour) || jourAujourdhui() || (state.jours[0] && state.jours[0].id);
+
+    var h = resume(moi);
+    if(h) app.appendChild(h);
+    var av = avant(); if(av) app.appendChild(av);
+    app.appendChild(onglets(jid, function(id){ go("me", {jour:id}); }));
+
+    var duJour = tous.filter(function(s){ return s.jour === jid; });
+    if(!duJour.length){
+      app.appendChild(el('<div class="none"><b>Aucun shift ce jour-là</b>' +
+        (tous.length ? 'Tu as ' + tous.length + ' shift' + (tous.length>1?'s':'') + ' sur le week-end, regarde les autres jours.'
+                     : 'Tu n\'es sur aucun shift pour le moment.') + '</div>'));
+    } else {
+      duJour.forEach(function(s){ app.appendChild(carte(s, true)); });
+    }
+
+    var sg = sosGrand();
+    if(sg){ app.appendChild(el('<div style="height:8px"></div>')); app.appendChild(sg); }
+
+    dock.hidden = false;
+    var pl = el('<button class="dbtn">Planning du jour</button>');
+    pl.addEventListener("click", function(){ go("planning", {jour:jid}); });
+    var ch = el('<button class="dbtn alt">Pas moi</button>');
+    ch.addEventListener("click", function(){ moi = null; memo("moi",""); go("pick"); });
+    dockin.appendChild(pl); dockin.appendChild(ch);
+  }
+
+  /* bandeau du haut : ce qui se passe maintenant, ou le prochain shift */
+  function resume(pid){
+    var now = new Date(), enc = null, nxt = null;
+    mesShifts(pid).forEach(function(s){
+      var d = debutDe(s), f = finDe(s);
+      if(!d) return;
+      if(now >= d && now < f){ if(!enc) enc = s; }
+      else if(d > now && (!nxt || d < debutDe(nxt))) nxt = s;
+    });
+    if(enc){
+      var b = el('<button class="hero on"><span class="k">EN CE MOMENT</span>' +
+        '<div class="v">' + esc(enc.nom) + '</div>' +
+        '<div class="w">jusqu\'à ' + enc.fin + (enc.lieu ? ' · ' + esc(enc.lieu) : '') + '</div></button>');
+      b.addEventListener("click", function(){ go("fiche", {id:enc.id}); });
+      return b;
+    }
+    if(nxt){
+      var d = debutDe(nxt), min = Math.round((d - now)/60000), q;
+      if(min < 60) q = "dans " + min + " min";
+      else if(min < 600) q = "dans " + Math.floor(min/60) + " h " + (min%60 ? (min%60) + " min" : "");
+      else { var j = jourDe(nxt.jour); q = (j ? j.nom.toLowerCase() + " " : "") + "à " + nxt.debut; }
+      var c = el('<button class="hero"><span class="k">PROCHAIN SHIFT</span>' +
+        '<div class="v">' + esc(nxt.nom) + '</div>' +
+        '<div class="w">' + q + ' · ' + nxt.debut + ' → ' + nxt.fin +
+        (nxt.lieu ? ' · ' + esc(nxt.lieu) : '') + '</div></button>');
+      c.addEventListener("click", function(){ go("fiche", {id:nxt.id}); });
+      return c;
+    }
+    return null;
+  }
+
+  function onglets(jid, cb){
+    var d = el('<div class="days"></div>');
+    var today = dateFestival();
+    state.jours.forEach(function(j){
+      var t = el('<button class="day' + (j.id === jid ? ' on' : '') + '">' +
+                 '<span class="tag">' + (j.date === today ? "AUJOURD'HUI" : dateLabel(j)) + '</span>' +
+                 esc(j.nom) + '</button>');
+      t.addEventListener("click", function(){ cb(j.id); });
+      d.appendChild(t);
+    });
+    return d;
+  }
+
+  function avant(){
+    if(jourAujourdhui() || !state.jours.length) return null;
+    var j = state.jours[0], p = j.date.split("-");
+    var d0 = new Date(+p[0], +p[1]-1, +p[2]), now = new Date();
+    now.setHours(0,0,0,0);
+    var n = Math.round((d0 - now)/86400000);
+    if(n < 0) return el('<p class="meta">Le week-end est terminé.</p>');
+    return el('<p class="meta">Ça commence ' + (n === 0 ? "aujourd'hui" : n === 1 ? "demain" :
+      'dans ' + n + ' jours') + ', le ' + esc(j.nom.toLowerCase()) + ' ' + dateLabel(j) + '.</p>');
+  }
+
+  function carte(s, cliquable){
+    var st = statut(s), b = null;
+    var c = el('<button class="card"></button>');
+    if(moi){ var p = pers(moi); if(p) b = bdeDe(p.bde); }
+    c.style.borderLeftColor = st.c === "live" ? "var(--live)" : (b ? b.couleur : "var(--line)");
+    var jeResp = moi && estResp(s, moi);
+    var autres = s.equipe.length + respsDe(s).length - (moi && estSur(s, moi) ? 1 : 0);
+    var qui = s.tous ? 'Tous les BDE' :
+              (autres > 0 ? 'Avec ' + autres + ' autre' + (autres>1?'s':'') : 'Seul sur ce poste');
+    c.innerHTML =
+      '<div class="hd"><span class="pill ' + st.c + '">' + st.l + '</span>' +
+      (jeResp ? '<span class="pill resp">RESPONSABLE</span>' : '') +
+      (s.lieu ? '<span class="meta">' + esc(s.lieu) + '</span>' : '') + '</div>' +
+      '<h3>' + esc(s.nom) + '</h3>' +
+      '<div class="hours">' + s.debut + ' <span class="ar">→</span> ' + s.fin + '</div>' +
+      '<div class="meta">' + qui + '</div>' +
+      (s.note ? '<div class="snote">' + esc(s.note) + '</div>' : '') +
+      (cliquable ? '<div class="more">Voir la fiche de poste →</div>' : '');
+    if(cliquable) c.addEventListener("click", function(){ go("fiche", {id:s.id}); });
+    return c;
+  }
+
+  /* --- fiche de poste --- */
+  function vFiche(){
+    var s = shift(vue.p && vue.p.id);
+    if(!s){ go("me"); return; }
+    var j = jourDe(s.jour), st = statut(s), f = ficheDe(s);
+    var back = el('<button class="lnk sticky-back">← Retour</button>');
+    back.addEventListener("click", function(){ moi ? go("me", {jour:s.jour}) : go("planning", {jour:s.jour}); });
+    app.appendChild(back);
+    app.appendChild(el('<h2 class="fh">' + esc(s.nom) + '</h2>'));
+    app.appendChild(el('<p class="meta">' + (j ? esc(j.nom) + ' ' + dateLabel(j) : '') +
+      ' · ' + s.debut + ' → ' + s.fin + (s.lieu ? ' · ' + esc(s.lieu) : '') + '</p>'));
+    app.appendChild(el('<div style="margin-top:10px"><span class="pill ' + st.c + '">' + st.l + '</span></div>'));
+
+    if(s.note) app.appendChild(el('<div class="snote big">' + esc(s.note) + '</div>'));
+    if(ficheVide(f)) app.appendChild(el('<div class="fsec"><h4>Fiche de poste</h4>' +
+      '<p class="meta">Pas encore rédigée. Demande à ton responsable de shift ce qui est attendu.</p></div>'));
+    if(f.mission) app.appendChild(el('<div class="fsec"><h4>Ta mission</h4><p>' + esc(f.mission) + '</p></div>'));
+    if(f.taches && f.taches.length)
+      app.appendChild(el('<div class="fsec"><h4>Ce que tu fais</h4><ul>' +
+        f.taches.map(function(t){ return '<li>' + esc(t) + '</li>'; }).join("") + '</ul></div>'));
+    if(f.materiel && f.materiel.length)
+      app.appendChild(el('<div class="fsec"><h4>Matériel</h4><ul>' +
+        f.materiel.map(function(t){ return '<li>' + esc(t) + '</li>'; }).join("") + '</ul></div>'));
+    if(f.referent) app.appendChild(el('<div class="fsec"><h4>En cas de problème</h4><p>' + esc(f.referent) + '</p></div>'));
+
+    if(s.tous){
+      app.appendChild(el('<div class="fsec"><h4>Qui</h4><p>Tous les membres des BDE.</p></div>'));
+      return;
+    }
+    if(moi && estResp(s, moi)) app.appendChild(el('<div class="snote big" style="border-left-color:var(--alert)">' +
+      'Tu es responsable de ce shift : tu encadres l\'équipe et tu es le relais du PC orga.</div>'));
+    var eq = el('<div class="fsec"><h4>L\'équipe du shift</h4><div class="team"></div></div>');
+    var box = eq.querySelector(".team");
+    respsDe(s).concat(s.equipe).forEach(function(pid, i){
+      var p = pers(pid); if(!p) return;
+      var b = bdeDe(p.bde), r = i < respsDe(s).length;
+      box.appendChild(el('<span class="tm' + (r ? ' rsp' : '') + '"><span class="pip" style="background:' + b.couleur + '"></span>' +
+        esc(p.nom) + (pid === moi ? ' (toi)' : '') + (r ? ' <em>resp.</em>' : '') + '</span>'));
+    });
+    if(!s.equipe.length && !respsDe(s).length) box.appendChild(el('<span class="meta">Personne pour l\'instant.</span>'));
+    app.appendChild(eq);
+  }
+
+  /* --- planning général --- */
+  function vPlanning(){
+    var jid = (vue.p && vue.p.jour) || jourAujourdhui() || (state.jours[0] && state.jours[0].id);
+    var back = el('<button class="lnk">← Retour</button>');
+    back.addEventListener("click", function(){ moi ? go("me", {jour:jid}) : go("pick"); });
+    app.appendChild(back);
+    app.appendChild(el('<h2 class="lead">Planning du jour</h2>'));
+    app.appendChild(onglets(jid, function(id){ go("planning", {jour:id}); }));
+    var l = shiftsDuJour(jid);
+    if(!l.length){ app.appendChild(el('<div class="none"><b>Rien de prévu</b>Aucun shift ce jour-là.</div>')); return; }
+    var dernierCodeP = null;
+    l.forEach(function(s){
+      if(s.code && s.code !== dernierCodeP){
+        dernierCodeP = s.code;
+        app.appendChild(el('<div class="grh" style="margin-top:18px"><b>' + s.debut + '</b>' + esc(s.code) + '</div>'));
+      }
+      var st = statut(s);
+      var c = el('<button class="card"></button>');
+      c.style.borderLeftColor = st.c === "live" ? "var(--live)" : "var(--line)";
+      var nr = respsDe(s).length;
+      var noms = respsDe(s).concat(s.equipe).map(function(pid, i){
+        var p = pers(pid); if(!p) return "";
+        return '<span class="tm' + (i < nr ? ' rsp' : '') + '"><span class="pip" style="background:' + bdeDe(p.bde).couleur + '"></span>' +
+               esc(p.nom) + (i < nr ? ' <em>resp.</em>' : '') + '</span>';
+      }).join("");
+      c.innerHTML = '<div class="hd"><span class="pill ' + st.c + '">' + st.l + '</span>' +
+        (s.lieu ? '<span class="meta">' + esc(s.lieu) + '</span>' : '') + '</div>' +
+        '<h3>' + esc(s.nom) + '</h3>' +
+        '<div class="hours">' + s.debut + ' <span class="ar">→</span> ' + s.fin + '</div>' +
+        '<div class="team" style="margin-top:8px">' + (s.tous ? '<span class="meta">Tous les BDE</span>' :
+          (noms || '<span class="meta">Personne</span>')) + '</div>' +
+        '<div class="more">Voir la fiche de poste →</div>';
+      c.addEventListener("click", function(){ go("fiche", {id:s.id}); });
+      app.appendChild(c);
+    });
+  }
+
+  /* --- plan du camping --- */
+  var zoom = 1;
+  function vPlan(){
+    var back = el('<button class="lnk sticky-back">← Retour</button>');
+    back.addEventListener("click", retour);
+    app.appendChild(back);
+    app.appendChild(el('<h2 class="lead">Plan du camping</h2>'));
+    if(state.plan.legende) app.appendChild(el('<p class="meta">' + esc(state.plan.legende) + '</p>'));
+
+    var box = el('<div class="planbox"></div>');
+    var inner;
+    if(state.plan.src){
+      inner = el('<img alt="Plan du camping" width="' + (state.plan.w || 700) +
+                 '" src="' + esc(state.plan.src) + '">');
+      inner.addEventListener("error", function(){
+        box.innerHTML = "";
+        box.appendChild(el('<p class="meta" style="padding:16px">Le plan n\'a pas pu être chargé. ' +
+          'Vérifie le nom du fichier dans l\'admin.</p>'));
+      });
+    } else {
+      inner = el(document.getElementById("planSvg").textContent.trim());
+    }
+    box.appendChild(inner);
+    app.appendChild(box);
+
+    var base = parseFloat(inner.getAttribute("width")) || 700;
+    function applique(){
+      inner.style.width = Math.round(base * zoom) + "px";
+      inner.removeAttribute("height");
+      lvl.textContent = Math.round(zoom * 100) + " %";
+    }
+    var z = el('<div class="zoom"></div>');
+    var moins = el('<button aria-label="Dézoomer">−</button>');
+    var plus = el('<button aria-label="Zoomer">+</button>');
+    var fit = el('<button style="min-width:auto;padding:0 14px;font-size:.85rem">Ajuster</button>');
+    var lvl = el('<span class="lvl"></span>');
+    moins.addEventListener("click", function(){ zoom = Math.max(0.5, zoom - 0.25); applique(); });
+    plus.addEventListener("click", function(){ zoom = Math.min(4, zoom + 0.25); applique(); });
+    fit.addEventListener("click", function(){
+      zoom = Math.max(0.4, (box.clientWidth - 24) / base); applique();
+    });
+    z.appendChild(moins); z.appendChild(plus); z.appendChild(fit); z.appendChild(lvl);
+    app.appendChild(z);
+    app.appendChild(el('<p class="meta" style="margin-top:8px">Tu peux aussi zoomer à deux doigts et ' +
+      'faire glisser le plan.</p>'));
+    zoom = Math.max(0.4, Math.min(1, (Math.min(window.innerWidth, 620) - 60) / base));
+    applique();
+  }
+
+  /* --- tous les numéros --- */
+  function vSos(){
+    var back = el('<button class="lnk sticky-back">← Retour</button>');
+    back.addEventListener("click", retour);
+    app.appendChild(back);
+    app.appendChild(el('<h2 class="lead">Urgences</h2>'));
+    var g = sosGrand();
+    if(g) app.appendChild(g);
+    else app.appendChild(el('<div class="none"><b>Aucun numéro enregistré</b>À remplir dans l\'admin.</div>'));
+  }
+
+  function retour(){ go(moi ? "me" : "pick"); }
+
+  /* --- porte admin --- */
+  function vGate(){
+    app.appendChild(el('<h2 class="lead">Accès orga</h2>'));
+    app.appendChild(el('<p>Réservé à l\'équipe d\'organisation.</p>'));
+    var i = el('<input type="password" placeholder="Mot de passe" aria-label="Mot de passe">');
+    var e = el('<p style="color:var(--alert);font-weight:700" hidden>Mot de passe incorrect.</p>');
+    var b = el('<button class="btn go">Ouvrir</button>');
+    function tenter(){
+      if(empreinte(i.value.trim().toLowerCase()) === state.mdp){ admin = true; go("admin"); }
+      else { e.hidden = false; i.select(); }
+    }
+    b.addEventListener("click", tenter);
+    i.addEventListener("keydown", function(ev){ if(ev.key === "Enter") tenter(); });
+    app.appendChild(i); app.appendChild(e); app.appendChild(b);
+    var r = el('<button class="btn ghost">Retour</button>');
+    r.addEventListener("click", function(){ go(moi ? "me" : "pick"); });
+    app.appendChild(r);
+  }
+
+  /* --- admin : liste des shifts --- */
+  function vAdmin(){
+    var jid = (vue.p && vue.p.jour) || jourAujourdhui() || (state.jours[0] && state.jours[0].id);
+    app.appendChild(el(CONNECTE
+      ? '<div class="demo" style="border-color:var(--live);color:var(--live)">Synchronisé : ' +
+        'chaque modification part chez tout le monde en quelques secondes.</div>'
+      : '<div class="demo">Mode local : données fictives, modifications enregistrées dans ce ' +
+        'navigateur uniquement. Renseigne config.js pour passer en temps réel.</div>'));
+
+    var trous = state.shifts.filter(function(s){ return manque(s) > 0; });
+    if(trous.length){
+      app.appendChild(el('<div class="warnbox"><b>' + trous.length + ' shift' + (trous.length>1?'s':'') +
+        ' incomplet' + (trous.length>1?'s':'') + '</b> — ' +
+        esc(trous.slice(0,4).map(function(s){ return s.nom; }).join(", ")) +
+        (trous.length > 4 ? "…" : "") + '</div>'));
+    } else {
+      app.appendChild(el('<div class="okbox">Tous les shifts sont au complet.</div>'));
+    }
+
+    app.appendChild(el('<div class="pcnote">L\'admin est prévue pour un écran d\'ordinateur. ' +
+      'Sur téléphone tout fonctionne, mais tu vas beaucoup faire défiler.</div>'));
+
+    var bar = el('<div class="abar"></div>');
+    bar.appendChild(onglets(jid, function(id){ go("admin", {jour:id}); }));
+    var add = el('<button class="btn go">+ Nouveau shift</button>');
+    add.addEventListener("click", function(){
+      var ns = {id:uid("s"), jour:jid, nom:"Nouveau shift", debut:"12:00", fin:"14:00", lieu:"",
+               quotas:{}, equipe:[], fiche:{mission:"", taches:[], materiel:[], referent:""}};
+      state.bdes.forEach(function(b){ ns.quotas[b.id] = 1; });
+      state.shifts.push(ns); sauver(); go("edit", {id:ns.id});
+    });
+    bar.appendChild(add);
+    app.appendChild(bar);
+
+    var grille = el('<div class="agrid"></div>');
+    app.appendChild(grille);
+
+    var dernierCode = null;
+    var listeJour = shiftsDuJour(jid);
+    if(!listeJour.length) grille.appendChild(el('<div class="none" style="grid-column:1/-1">' +
+      '<b>Aucun shift ce jour-là</b>Crée le premier avec « + Nouveau shift ».</div>'));
+    listeJour.forEach(function(s){
+      if(s.code && s.code !== dernierCode){
+        dernierCode = s.code;
+        grille.appendChild(el('<div class="grh"><b>' + esc(s.code) + '</b>' + s.debut + '</div>'));
+      }
+      var d = el('<div class="adm"></div>');
+      d.appendChild(el('<div class="t"><h3>' + (s.code ? '<span class="code">' + esc(s.code) + '</span>' : '') +
+        esc(s.nom) + '</h3><span class="h">' + s.debut + ' → ' + s.fin + '</span></div>'));
+      d.appendChild(el('<div class="quota">' + pastillesQuota(s) + '</div>'));
+      if(respsDe(s).length) d.appendChild(el('<div class="meta" style="margin-top:6px"><b style="color:var(--alert)">Resp.</b> ' +
+        esc(respsDe(s).map(function(id){ var p = pers(id); return p ? court(p.nom) : "?"; }).join(", ")) + '</div>'));
+      var mod = el('<button class="mini">Modifier / affecter</button>');
+      mod.addEventListener("click", function(){ go("edit", {id:s.id}); });
+      var sup = el('<button class="mini warn">Supprimer</button>');
+      sup.addEventListener("click", function(){
+        if(!confirm("Supprimer le shift « " + s.nom + " » ?")) return;
+        state.shifts = state.shifts.filter(function(x){ return x.id !== s.id; });
+        sauver(); render();
+      });
+      d.appendChild(mod); d.appendChild(sup);
+      grille.appendChild(d);
+    });
+
+    var reg = el('<button class="btn ghost">Personnes, BDE et données</button>');
+    reg.addEventListener("click", function(){ go("reglages"); });
+    app.appendChild(reg);
+  }
+
+  /* --- admin : édition d'un shift --- */
+  function vEdit(){
+    var s = shift(vue.p && vue.p.id);
+    if(!s){ go("admin"); return; }
+    var back = el('<button class="lnk">← Retour aux shifts</button>');
+    back.addEventListener("click", function(){ go("admin", {jour:s.jour}); });
+    app.appendChild(back);
+    var cols = el('<div class="ecols"></div>');
+    app.appendChild(cols);
+
+    var f = el('<div class="adm ecol"></div>');
+    f.appendChild(el('<label>Nom du shift</label>'));
+    var nom = el('<input value="' + esc(s.nom) + '">');
+    nom.addEventListener("input", function(){ s.nom = nom.value; sauver(); });
+    f.appendChild(nom);
+
+    f.appendChild(el('<label>Jour</label>'));
+    var jsel = el('<select>' + state.jours.map(function(j){
+      return '<option value="' + j.id + '"' + (j.id === s.jour ? ' selected' : '') + '>' +
+             esc(j.nom) + ' ' + dateLabel(j) + '</option>'; }).join("") + '</select>');
+    jsel.addEventListener("change", function(){ s.jour = jsel.value; sauver(); });
+    f.appendChild(jsel);
+
+    var grid = el('<div class="fld"></div>');
+    var d1 = el('<div><label>Début</label><input type="time" value="' + s.debut + '"></div>');
+    var d2 = el('<div><label>Fin</label><input type="time" value="' + s.fin + '"></div>');
+    d1.querySelector("input").addEventListener("change", function(e){ s.debut = e.target.value; sauver(); });
+    d2.querySelector("input").addEventListener("change", function(e){ s.fin = e.target.value; sauver(); });
+    grid.appendChild(d1); grid.appendChild(d2);
+    f.appendChild(grid);
+    f.appendChild(el('<p class="meta" style="margin-top:8px">Un créneau qui commence avant ' + coupure() +
+      ' h appartient à la nuit du jour choisi : 02:00 le vendredi = nuit de vendredi à samedi.</p>'));
+
+    f.appendChild(el('<label>Lieu</label>'));
+    var lieu = el('<input value="' + esc(s.lieu || "") + '">');
+    lieu.addEventListener("input", function(){ s.lieu = lieu.value; sauver(); });
+    f.appendChild(lieu);
+
+    var mode = s.tous ? "tous" : (s.total ? "total" : "bde");
+    f.appendChild(el('<label>Effectif</label>'));
+    var ms = el('<select>' +
+      '<option value="bde"' + (mode === "bde" ? " selected" : "") + '>Réparti par BDE</option>' +
+      '<option value="total"' + (mode === "total" ? " selected" : "") + '>Nombre total, sans répartition</option>' +
+      '<option value="tous"' + (mode === "tous" ? " selected" : "") + '>Tous les BDE (moment collectif)</option>' +
+      '</select>');
+    ms.addEventListener("change", function(){
+      delete s.tous; delete s.total;
+      if(ms.value === "tous"){ s.tous = true; s.equipe = []; }
+      if(ms.value === "total") s.total = Math.max(1, s.equipe.length);
+      sauver(); render();
+    });
+    f.appendChild(ms);
+    if(mode === "bde"){
+      var qg = el('<div class="fld"></div>');
+      state.bdes.forEach(function(b){
+        var w = el('<div><label style="color:' + b.couleur + '">' + esc(b.nom) + '</label>' +
+                   '<input type="number" min="0" max="30" value="' + (s.quotas[b.id] || 0) + '"></div>');
+        w.querySelector("input").addEventListener("change", function(e){
+          s.quotas[b.id] = Math.max(0, parseInt(e.target.value, 10) || 0); sauver(); render();
+        });
+        qg.appendChild(w);
+      });
+      f.appendChild(qg);
+    } else if(mode === "total"){
+      f.appendChild(el('<label>Nombre de personnes</label>'));
+      var ti = el('<input type="number" min="1" max="60" value="' + s.total + '">');
+      ti.addEventListener("change", function(){
+        s.total = Math.max(1, parseInt(ti.value, 10) || 1); sauver(); render();
+      });
+      f.appendChild(ti);
+    } else {
+      f.appendChild(el('<p class="meta" style="margin-top:8px">Apparaît dans le planning de chaque ' +
+        'membre, sans affectation nominative.</p>'));
+    }
+
+    f.appendChild(el('<label>Note pour ce créneau</label>'));
+    var no = el('<textarea style="min-height:64px" placeholder="Visible sur la carte et la fiche, pour ce créneau uniquement"></textarea>');
+    no.value = s.note || "";
+    no.addEventListener("input", function(){ if(no.value.trim()) s.note = no.value; else delete s.note; sauver(); });
+    f.appendChild(no);
+    cols.appendChild(f);
+
+    /* affectation */
+    var aff = el('<div class="adm ecol scroll"><h3>Qui est sur ce shift</h3>' +
+      '<p class="meta">Touche un nom pour l\'ajouter ou l\'enlever. Les personnes déjà prises sur un ' +
+      'créneau qui se chevauche sont signalées.</p></div>');
+    var viv = (state.respPool || []).filter(function(id){ return pers(id); });
+    respsDe(s).forEach(function(id){ if(viv.indexOf(id) === -1 && pers(id)) viv.push(id); });
+    if(!s.tous && viv.length){
+      var gr = el('<div class="grp"><div class="gt" style="color:var(--alert)">Responsables — en plus de l\'effectif</div>' +
+        '<div class="chips"></div></div>');
+      var bx = gr.querySelector(".chips");
+      viv.forEach(function(id){
+        var pr = pers(id), on = estResp(s, id), occ = !on && occupe(id, s);
+        var ch = el('<button class="chip' + (on ? ' on' : '') + '">' + (on ? '<span class="mk">✓</span>' : '') +
+          esc(pr.nom) + ' <span style="color:var(--dim2)">' + bdeDe(pr.bde).court + '</span>' +
+          (occ ? ' <span style="color:var(--alert)">⚠</span>' : '') + '</button>');
+        ch.addEventListener("click", function(){
+          s.resps = respsDe(s).slice();
+          var i = s.resps.indexOf(id);
+          if(i > -1) s.resps.splice(i,1);
+          else { s.resps.push(id); var j = s.equipe.indexOf(id); if(j > -1) s.equipe.splice(j,1); }
+          sauver(); render();
+        });
+        bx.appendChild(ch);
+      });
+      aff.appendChild(gr);
+    }
+    if(s.tous){
+      aff.appendChild(el('<p class="meta" style="margin-top:10px"><b>Moment collectif :</b> ' +
+        'tout le monde le voit dans son planning, il n\'y a personne à affecter.</p>'));
+    } else if(s.total){
+      aff.appendChild(el('<p class="gt" style="margin-top:10px' + (s.equipe.length < s.total ? ';color:var(--alert)' : '') +
+        '">Sans répartition — ' + s.equipe.length + ' / ' + s.total + '</p>'));
+    }
+    if(!s.tous) state.bdes.forEach(function(b){
+      var c = compte(s, b.id), n = s.total ? null : (s.quotas[b.id] || 0);
+      var g = el('<div class="grp"><div class="gt" style="color:' + b.couleur + '">' + esc(b.nom) +
+        (n === null ? ' — ' + c : ' — <span' + (c < n ? ' style="color:var(--alert)"' : '') + '>' + c + ' / ' + n + '</span>') +
+        '</div><div class="chips"></div></div>');
+      var box = g.querySelector(".chips");
+      state.people.filter(function(p){ return p.bde === b.id; })
+        .sort(function(x,y){ return x.nom.localeCompare(y.nom,"fr"); })
+        .forEach(function(p){
+          var on = s.equipe.indexOf(p.id) > -1;
+          var occ = !on && occupe(p.id, s);
+          var ch = el('<button class="chip' + (on ? ' on' : '') + '">' +
+            (on ? '<span class="mk">✓</span>' : '') + esc(p.nom) +
+            (occ ? ' <span style="color:var(--alert)">⚠</span>' : '') + '</button>');
+          ch.addEventListener("click", function(){
+            var i = s.equipe.indexOf(p.id);
+            if(i > -1) s.equipe.splice(i,1);
+            else { s.equipe.push(p.id); if(estResp(s, p.id)) s.resps.splice(s.resps.indexOf(p.id),1); }
+            sauver(); render();
+          });
+          box.appendChild(ch);
+        });
+      aff.appendChild(g);
+    });
+
+    /* fiche de poste */
+    state.fiches = state.fiches || {};
+    var k = cle(s.nom);
+    var fi = state.fiches[k] = state.fiches[k] || {mission:"", taches:[], materiel:[], referent:""};
+    var memes = state.shifts.filter(function(x){ return cle(x.nom) === k; }).length;
+    var fb = el('<div class="adm ecol scroll"><h3>Fiche de poste</h3>' +
+      '<p class="meta">Commune ' + (memes > 1 ? 'aux <b>' + memes + ' shifts</b>' : 'au shift') +
+      ' « ' + esc(s.nom) + ' ». Tu l\'écris une fois, elle s\'affiche partout. ' +
+      'Elle suit le nom du poste : renommer le shift le détache de cette fiche.</p></div>');
+    fb.appendChild(el('<label>Mission</label>'));
+    var mi = el('<textarea placeholder="En une ou deux phrases, ce qu\'on attend de la personne."></textarea>');
+    mi.value = fi.mission || "";
+    mi.addEventListener("input", function(){ fi.mission = mi.value; sauver(); });
+    fb.appendChild(mi);
+    fb.appendChild(el('<label>Ce qu\'elle fait (une ligne par tâche)</label>'));
+    var ta = el('<textarea></textarea>');
+    ta.value = (fi.taches || []).join("\n");
+    ta.addEventListener("input", function(){ fi.taches = lignes(ta.value); sauver(); });
+    fb.appendChild(ta);
+    fb.appendChild(el('<label>Matériel (une ligne par élément)</label>'));
+    var ma = el('<textarea></textarea>');
+    ma.value = (fi.materiel || []).join("\n");
+    ma.addEventListener("input", function(){ fi.materiel = lignes(ma.value); sauver(); });
+    fb.appendChild(ma);
+    fb.appendChild(el('<label>En cas de problème</label>'));
+    var re = el('<input placeholder="Qui appeler, sur quel canal">');
+    re.value = fi.referent || "";
+    re.addEventListener("input", function(){ fi.referent = re.value; sauver(); });
+    fb.appendChild(re);
+    cols.appendChild(fb);
+    cols.appendChild(aff);
+
+    var vu = el('<button class="btn ghost">Voir la fiche comme un participant</button>');
+    vu.addEventListener("click", function(){ go("fiche", {id:s.id}); });
+    app.appendChild(vu);
+  }
+
+  function lignes(v){
+    return v.split("\n").map(function(x){ return x.trim(); }).filter(function(x){ return x; });
+  }
+  function occupe(pid, s){
+    var d = debutDe(s), f = finDe(s);
+    return state.shifts.some(function(o){
+      if(o.id === s.id || o.tous || !estSur(o, pid)) return false;
+      var od = debutDe(o), of2 = finDe(o);
+      return od < f && d < of2;
+    });
+  }
+
+  /* --- répartition automatique d'un BDE ---------------------------------
+     Tirage au sort sous contraintes, sur les seules places vides :
+     - jamais deux créneaux qui se chevauchent (postes de responsable compris) ;
+     - charge équilibrée en heures, pas en nombre de shifts ;
+     - on évite d'enchaîner deux créneaux sans au moins 30 min de pause ;
+     - on évite plus de 3 h d'affilée, et d'enchaîner une fin de nuit (après 2 h)
+       avec un créneau du matin (avant 11 h) le même jour ;
+     - un responsable n'est pas placé sur un autre poste dans l'heure qui précède
+       ou qui suit ses créneaux de responsable : il reste à son poste ;
+     - les fins de nuit sont réparties entre tous, mais regroupées sur une seule
+       nuit par personne : qui fait la fin de nuit du vendredi est épargné le samedi
+       matin et le samedi soir, et inversement ;
+     - 120 tirages, on garde le meilleur, puis on rééquilibre en transférant des
+       créneaux des plus chargés vers les moins chargés, sans jamais enfreindre
+       les règles ci-dessus. Les affectations existantes ne bougent pas, donc le
+       bouton complète un planning déjà commencé. */
+  var H = 3600000;
+  function melange(a){
+    for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random()*(i+1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function repartir(bid){
+    var pool = state.people.filter(function(p){ return p.bde === bid && !p.horsAuto; });
+    var slots = [];
+    state.shifts.forEach(function(sh){
+      if(sh.tous || sh.total) return;
+      var n = Math.max(0, (sh.quotas[bid] || 0) - compte(sh, bid));
+      var d = debutDe(sh), f = finDe(sh);
+      if(!d) return;
+      for(var k = 0; k < n; k++) slots.push({s:sh, d:d.getTime(), f:f.getTime()});
+    });
+    if(!pool.length || !slots.length) return {places:slots.length, remplies:0};
+
+    var base = {}, chefs = {};
+    pool.forEach(function(p){
+      chefs[p.id] = state.shifts.filter(function(o){ return estResp(o, p.id); })
+        .map(function(o){ return [debutDe(o).getTime() - H, finDe(o).getTime() + H]; });
+    });
+    pool.forEach(function(p){
+      base[p.id] = state.shifts.filter(function(o){ return !o.tous && estSur(o, p.id); })
+        .map(function(o){ return [debutDe(o).getTime(), finDe(o).getTime()]; });
+    });
+    function charge(L){ var m = 0; for(var i=0;i<L.length;i++) m += L[i][1] - L[i][0]; return m / 60000; }
+    function bloc(L, d, f){            // durée du bloc continu qui contiendrait [d,f]
+      var a = d, b = f, bouge = true;
+      while(bouge){
+        bouge = false;
+        for(var i=0;i<L.length;i++){
+          if(L[i][1] >= a && L[i][0] <= b && (L[i][0] < a || L[i][1] > b)){
+            a = Math.min(a, L[i][0]); b = Math.max(b, L[i][1]); bouge = true;
+          }
+        }
+      }
+      return (b - a) / 60000;
+    }
+    function heureDe(t){ var x = new Date(t); return x.getHours() + x.getMinutes()/60; }
+    function jourDeT(t){ var x = new Date(t); return x.getFullYear()*10000 + x.getMonth()*100 + x.getDate(); }
+    function nuitMatin(L, d, f){       // fin de nuit puis matin, ou l'inverse, le même jour
+      var hd = heureDe(d), jd = jourDeT(d), pen = 0;
+      for(var i=0;i<L.length;i++){
+        var ld = L[i][0], lf = L[i][1];
+        if(hd >= 6 && hd < 11 && jourDeT(lf) === jd && heureDe(lf) > 2 && heureDe(lf) <= 6 && lf <= d) pen++;
+        var hl = heureDe(ld);
+        if(hl >= 6 && hl < 11 && jourDeT(f) === jourDeT(ld) && heureDe(f) > 2 && heureDe(f) <= 6 && f <= ld) pen++;
+      }
+      return pen;
+    }
+    function chevauche(L, d, f){ for(var i=0;i<L.length;i++) if(L[i][0] < f && d < L[i][1]) return true; return false; }
+    var PAUSE = 30 * 60000, NUIT_CONTINUE = !!state.nuitContinue;
+    function jonctionOk(t){            // mode « nuit d'un bloc » : on peut enchaîner entre 1 h et 6 h
+      if(!NUIT_CONTINUE) return false;
+      var h = new Date(t).getHours(); return h >= 1 && h < 6;
+    }
+    function colles(L, d, f){          // créneaux de L sans vraie pause avant ou après [d,f]
+      var n = 0;
+      for(var i=0;i<L.length;i++){
+        if(L[i][1] <= d && d - L[i][1] < PAUSE){ if(!jonctionOk(d)) n++; }
+        else if(f <= L[i][0] && L[i][0] - f < PAUSE){ if(!jonctionOk(f)) n++; }
+      }
+      return n;
+    }
+    function nbChaines(L){
+      var t = L.slice().sort(function(x, y){ return x[0] - y[0]; }), n = 0;
+      for(var i=1;i<t.length;i++)
+        if(t[i][0] >= t[i-1][1] && t[i][0] - t[i-1][1] < PAUSE && !jonctionOk(t[i][0])) n++;
+      return n;
+    }
+    function tardif(f){ var h = heureDe(f); return h > 2 && h <= 6; }
+    function nbTardifs(L){ var n = 0; for(var i=0;i<L.length;i++) if(tardif(L[i][1])) n++; return n; }
+    function nuits(L, f){              // [fins de nuit la même nuit, fins de nuit une autre nuit]
+      var j = jourDeT(f), meme = 0, autre = 0;
+      for(var i=0;i<L.length;i++) if(tardif(L[i][1])){ if(jourDeT(L[i][1]) === j) meme++; else autre++; }
+      return [meme, autre];
+    }
+
+    var meilleur = null;
+    for(var essai = 0; essai < 40; essai++){
+      var iv = {}, pris = {};
+      pool.forEach(function(p){ iv[p.id] = base[p.id].slice(); });
+      var ordre = melange(slots.slice()).sort(function(x, y){ return x.d - y.d; });
+      var aff = [], rates = 0, pen = 0;
+      ordre.forEach(function(sl){
+        var choix = null, mini = Infinity, cle2 = sl.s.id;
+        pool.forEach(function(p){
+          if(sl.s.equipe.indexOf(p.id) > -1 || estResp(sl.s, p.id)) return;
+          if(pris[cle2 + "|" + p.id]) return;
+          var L = iv[p.id];
+          if(chevauche(L, sl.d, sl.f)) return;
+          if(chevauche(chefs[p.id], sl.d, sl.f)) return;   // reste à son poste de responsable
+          var sc = charge(L);
+          if(bloc(L, sl.d, sl.f) > 180) sc += 600;
+          sc += 700 * colles(L, sl.d, sl.f);
+          sc += 450 * nuitMatin(L, sl.d, sl.f);
+          if(tardif(sl.f)){
+            var nn = nuits(L, sl.f);
+            if(nn[1]) sc += 350;           // déjà une fin de nuit l'autre nuit : on épargne
+            else if(nn[0]) sc -= 120;      // déjà de nuit ce soir-là : on regroupe
+          }
+          sc += Math.random() * 50;
+          if(sc < mini){ mini = sc; choix = p.id; }
+        });
+        if(choix === null){ rates++; return; }
+        if(bloc(iv[choix], sl.d, sl.f) > 180) pen++;
+        pen += nuitMatin(iv[choix], sl.d, sl.f);
+        iv[choix].push([sl.d, sl.f]);
+        pris[cle2 + "|" + choix] = true;
+        aff.push([sl.s, choix, sl.d, sl.f]);
+      });
+      var ch = pool.map(function(p){ return charge(iv[p.id]); });
+      var ecart = Math.max.apply(null, ch) - Math.min.apply(null, ch);
+      var deuxNuits = pool.filter(function(p){
+        var js = {}; iv[p.id].forEach(function(x){ if(tardif(x[1])) js[jourDeT(x[1])] = 1; });
+        return Object.keys(js).length > 1;
+      }).length;
+      var chaines = 0;
+      pool.forEach(function(p){ chaines += nbChaines(iv[p.id]); });
+      var score = rates * 1e6 + chaines * 500 + pen * 400 + deuxNuits * 150 + ecart;
+      if(!meilleur || score < meilleur.score) meilleur = {score:score, aff:aff, iv:iv, rates:rates, pen:pen, ecart:ecart};
+    }
+
+    /* ---- optimisation globale (recuit simulé) ----------------------------
+       Point de départ : le meilleur tirage. On propose ensuite des centaines de
+       milliers de petites modifications — donner un créneau à quelqu'un d'autre,
+       ou échanger deux créneaux entre deux personnes — et on garde celles qui
+       améliorent le planning, par ordre de priorité :
+         1. pas d'enchaînement sans 30 min de pause,
+         2. pas de fin de nuit suivie d'un créneau le matin même,
+         3. pas de bloc de plus de 3 h,
+         4. le moins possible de monde de nuit les deux nuits,
+         5. des heures équilibrées entre tous. */
+    var IV = meilleur.iv, A = meilleur.aff, ids = pool.map(function(p){ return p.id; });
+    var total = 0; ids.forEach(function(id){ total += charge(IV[id]); });
+    var moy = total / ids.length;
+    var W_CH = 1000, W_NM = 800, W_BL = 600, W_2N = 350, W_LD = 60;
+    function coutP(pid){
+      var L = IV[pid], t = L.slice().sort(function(x, y){ return x[0] - y[0]; }), c = 0, i, j;
+      for(i = 1; i < t.length; i++){
+        var gap = t[i][0] - t[i-1][1];
+        if(gap >= 0 && gap < PAUSE && !jonctionOk(t[i][0])) c += W_CH;
+      }
+      var a = null, b = null;
+      for(i = 0; i < t.length; i++){
+        if(a !== null && t[i][0] <= b){ b = Math.max(b, t[i][1]); }
+        else { if(a !== null && (b - a) > 180*60000) c += W_BL; a = t[i][0]; b = t[i][1]; }
+      }
+      if(a !== null && (b - a) > 180*60000) c += W_BL;
+      var nuitsVues = {}, nb = 0;
+      for(i = 0; i < t.length; i++){
+        if(!tardif(t[i][1])) continue;
+        var jf = jourDeT(t[i][1]);
+        if(!nuitsVues[jf]){ nuitsVues[jf] = 1; nb++; }
+        for(j = 0; j < t.length; j++){
+          var hd = heureDe(t[j][0]);
+          if(hd >= 6 && hd < 11 && jourDeT(t[j][0]) === jf && t[j][0] >= t[i][1]) c += W_NM;
+        }
+      }
+      if(nb > 1) c += W_2N;
+      var dev = (charge(L) - moy) / 60;
+      return c + W_LD * dev * dev;
+    }
+    function retire(L, d, f){ for(var m = 0; m < L.length; m++) if(L[m][0] === d && L[m][1] === f){ L.splice(m, 1); return; } }
+    var occ = {};
+    A.forEach(function(a){ occ[a[0].id + "|" + a[1]] = 1; });
+    function dispo(pid, a){            // contraintes dures pour recevoir le créneau a
+      if(occ[a[0].id + "|" + pid] || a[0].equipe.indexOf(pid) > -1 || estResp(a[0], pid)) return false;
+      return !chevauche(IV[pid], a[2], a[3]) && !chevauche(chefs[pid], a[2], a[3]);
+    }
+    var C = {}, cout = 0;
+    ids.forEach(function(id){ C[id] = coutP(id); cout += C[id]; });
+    var meilleurCout = cout, meilleursProprios = A.map(function(a){ return a[1]; });
+    var N = 160000, T0 = 500, T1 = 1, T = T0, k = Math.pow(T1 / T0, 1 / N);
+    for(var it = 0; it < N && A.length && ids.length > 1; it++, T *= k){
+      var a1 = A[Math.floor(Math.random() * A.length)], P = a1[1], delta, cP, cQ, Q;
+      if(Math.random() < 0.5){                                   // transfert
+        Q = ids[Math.floor(Math.random() * ids.length)];
+        if(Q === P || !dispo(Q, a1)) continue;
+        retire(IV[P], a1[2], a1[3]); IV[Q].push([a1[2], a1[3]]);
+        cP = coutP(P); cQ = coutP(Q); delta = cP + cQ - C[P] - C[Q];
+        if(delta <= 0 || Math.random() < Math.exp(-delta / T)){
+          C[P] = cP; C[Q] = cQ; cout += delta;
+          delete occ[a1[0].id + "|" + P]; occ[a1[0].id + "|" + Q] = 1; a1[1] = Q;
+        } else { retire(IV[Q], a1[2], a1[3]); IV[P].push([a1[2], a1[3]]); }
+      } else {                                                   // échange
+        var a2 = A[Math.floor(Math.random() * A.length)]; Q = a2[1];
+        if(Q === P || a2[0] === a1[0]) continue;
+        if(occ[a2[0].id + "|" + P] || a2[0].equipe.indexOf(P) > -1 || estResp(a2[0], P)) continue;
+        if(occ[a1[0].id + "|" + Q] || a1[0].equipe.indexOf(Q) > -1 || estResp(a1[0], Q)) continue;
+        retire(IV[P], a1[2], a1[3]); retire(IV[Q], a2[2], a2[3]);
+        if(chevauche(IV[P], a2[2], a2[3]) || chevauche(chefs[P], a2[2], a2[3]) ||
+           chevauche(IV[Q], a1[2], a1[3]) || chevauche(chefs[Q], a1[2], a1[3])){
+          IV[P].push([a1[2], a1[3]]); IV[Q].push([a2[2], a2[3]]); continue;
+        }
+        IV[P].push([a2[2], a2[3]]); IV[Q].push([a1[2], a1[3]]);
+        cP = coutP(P); cQ = coutP(Q); delta = cP + cQ - C[P] - C[Q];
+        if(delta <= 0 || Math.random() < Math.exp(-delta / T)){
+          C[P] = cP; C[Q] = cQ; cout += delta;
+          delete occ[a1[0].id + "|" + P]; delete occ[a2[0].id + "|" + Q];
+          occ[a1[0].id + "|" + Q] = 1; occ[a2[0].id + "|" + P] = 1;
+          a1[1] = Q; a2[1] = P;
+        } else {
+          retire(IV[P], a2[2], a2[3]); retire(IV[Q], a1[2], a1[3]);
+          IV[P].push([a1[2], a1[3]]); IV[Q].push([a2[2], a2[3]]);
+        }
+      }
+      if(cout < meilleurCout - 1e-9){ meilleurCout = cout; meilleursProprios = A.map(function(a){ return a[1]; }); }
+    }
+    A.forEach(function(a, i){ a[1] = meilleursProprios[i]; });
+
+    // bilan sur la solution retenue
+    var fin = {}; ids.forEach(function(id){ fin[id] = base[id].slice(); });
+    A.forEach(function(a){ fin[a[1]].push([a[2], a[3]]); });
+    var nbCh = 0, chF = [];
+    ids.forEach(function(id){ nbCh += nbChaines(fin[id]); chF.push(charge(fin[id])); });
+    A.forEach(function(a){ a[0].equipe.push(a[1]); });
+    return {places:slots.length, remplies:A.length, enchainements:nbCh,
+            ecart:Math.max.apply(null, chF) - Math.min.apply(null, chF)};
+  }
+  window.WEI.repartir = function(bid){ var r = repartir(bid); sauver(); render(); return r; };
+
+  /* --- suppression d'un membre, annulable --- */
+  var toastEl = document.getElementById("toast"), toastT = document.getElementById("toastT");
+  var toastU = document.getElementById("toastU"), toastTimer = null, annuler = null;
+  toastU.addEventListener("click", function(){
+    var f = annuler; fermerToast();
+    if(f) f();
+  });
+  function fermerToast(){ clearTimeout(toastTimer); toastEl.hidden = true; annuler = null; }
+  function toast(txt, undo){
+    toastT.textContent = txt;
+    annuler = undo;
+    toastU.hidden = !undo;
+    toastEl.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(fermerToast, 8000);
+  }
+  function supprimerMembre(p){
+    var rang = state.people.indexOf(p);
+    if(rang === -1) return;
+    var places = [], chefs = [], vivier = (state.respPool || []).indexOf(p.id);
+    state.shifts.forEach(function(s){
+      var i = s.equipe.indexOf(p.id);
+      if(i > -1){ places.push({id:s.id, i:i}); s.equipe.splice(i,1); }
+      var r = respsDe(s).indexOf(p.id);
+      if(r > -1){ chefs.push({id:s.id, i:r}); s.resps.splice(r,1); }
+    });
+    if(vivier > -1) state.respPool.splice(vivier, 1);
+    state.people.splice(rang, 1);
+    sauver(); render();
+    var nl = places.length + chefs.length;
+    toast(p.nom + " n'est plus dans la liste" +
+          (nl ? " · " + nl + " shift" + (nl>1 ? "s libérés" : " libéré") : ""),
+      function(){
+        if(state.people.some(function(x){ return x.id === p.id; })) return;
+        state.people.splice(Math.min(rang, state.people.length), 0, p);
+        places.forEach(function(pl){
+          var s = shift(pl.id);
+          if(s && s.equipe.indexOf(p.id) === -1) s.equipe.splice(Math.min(pl.i, s.equipe.length), 0, p.id);
+        });
+        chefs.forEach(function(pl){
+          var s = shift(pl.id);
+          if(s){ s.resps = respsDe(s).slice(); if(s.resps.indexOf(p.id) === -1) s.resps.splice(Math.min(pl.i, s.resps.length), 0, p.id); }
+        });
+        if(vivier > -1){ state.respPool = state.respPool || []; if(state.respPool.indexOf(p.id) === -1) state.respPool.splice(vivier, 0, p.id); }
+        sauver(); render();
+      });
+  }
+
+  /* --- admin : personnes, BDE, données --- */
+  function vReglages(){
+    var back = el('<button class="lnk">← Retour aux shifts</button>');
+    back.addEventListener("click", function(){ go("admin"); });
+    app.appendChild(back);
+
+    var ev = el('<div class="adm"><h3>L\'événement</h3></div>');
+    ev.appendChild(el('<label>Nom</label>'));
+    var n1 = el('<input value="' + esc(state.event.nom) + '">');
+    n1.addEventListener("input", function(){ state.event.nom = n1.value; sauver(); topT.textContent = n1.value; });
+    ev.appendChild(n1);
+    ev.appendChild(el('<label>Lieu</label>'));
+    var n2 = el('<input value="' + esc(state.event.lieu) + '">');
+    n2.addEventListener("input", function(){ state.event.lieu = n2.value; sauver(); topS.textContent = n2.value; });
+    ev.appendChild(n2);
+    ev.appendChild(el('<label>Nouveau mot de passe orga</label>'));
+    var mp = el('<input placeholder="laisser vide pour ne pas changer">');
+    var mpb = el('<button class="mini">Changer le mot de passe</button>');
+    mpb.addEventListener("click", function(){
+      var v = mp.value.trim().toLowerCase();
+      if(!v) return;
+      state.mdp = empreinte(v); sauver(); mp.value = ""; alert("Mot de passe modifié.");
+    });
+    ev.appendChild(mp); ev.appendChild(mpb);
+    app.appendChild(ev);
+
+    var rr = el('<div class="adm"><h3>Répartition automatique</h3>' +
+      '<p class="meta">Le répartiteur évite toujours les chevauchements, les blocs de plus de 3 h et ' +
+      'les fins de nuit suivies d\'un créneau le matin même. Reste un arbitrage pour la nuit :</p></div>');
+    var o1 = el('<label class="opt"><input type="radio" name="nuit"' + (state.nuitContinue ? '' : ' checked') + '>' +
+      '<span><b>Jamais deux shifts d\'affilée</b>, même la nuit. Chacun a au moins 30 min de pause entre ' +
+      'deux créneaux, mais la demande de fin de nuit oblige alors une bonne partie des membres à veiller ' +
+      'les deux nuits.</span></label>');
+    var o2 = el('<label class="opt"><input type="radio" name="nuit"' + (state.nuitContinue ? ' checked' : '') + '>' +
+      '<span><b>Nuit d\'un bloc.</b> Pas d\'enchaînement en journée ni en soirée, mais entre 1 h et 6 h on ' +
+      'peut enchaîner jusqu\'à 3 h de suite. Chacun ne veille alors qu\'une seule nuit.</span></label>');
+    o1.querySelector("input").addEventListener("change", function(){ delete state.nuitContinue; sauver(); });
+    o2.querySelector("input").addEventListener("change", function(){ state.nuitContinue = true; sauver(); });
+    rr.appendChild(o1); rr.appendChild(o2);
+    rr.appendChild(el('<p class="meta" style="margin-top:8px">Le choix s\'applique à la prochaine répartition : ' +
+      'efface les affectations d\'un BDE puis relance « Répartir automatiquement ».</p>'));
+    app.appendChild(rr);
+
+    var rg = el('<div class="rgrid"></div>');
+    app.appendChild(rg);
+    state.bdes.forEach(function(b){
+      var g = el('<div class="adm"></div>');
+      var l = state.people.filter(function(p){ return p.bde === b.id; });
+      g.appendChild(el('<div class="t"><h3 style="color:' + b.couleur + '">' + esc(b.nom) +
+        '</h3><span class="h">' + l.length + ' personnes</span></div>'));
+      var box = el('<div class="mems"></div>');
+      l.sort(function(x,y){ return x.nom.localeCompare(y.nom,"fr"); }).forEach(function(p){
+        var n = mesAffectations(p.id).length;
+        var r = el('<div class="mem"><span class="mn">' + esc(p.nom) + '</span>' +
+          '<span class="mc' + (n ? ' on' : '') + '">' + (n ? n + ' shift' + (n>1?'s':'') : 'aucun shift') + '</span></div>');
+        state.respPool = state.respPool || [];
+        var enVivier = state.respPool.indexOf(p.id) > -1;
+        var tr = el('<button class="tg' + (enVivier ? ' on' : '') + '" title="Peut être responsable de shift">RESP.</button>');
+        tr.addEventListener("click", function(){
+          var i = state.respPool.indexOf(p.id);
+          if(i > -1) state.respPool.splice(i,1); else state.respPool.push(p.id);
+          sauver(); render();
+        });
+        var ta2 = el('<button class="tg' + (p.horsAuto ? ' off' : '') + '" title="' +
+          (p.horsAuto ? 'Exclu de la répartition automatique' : 'Inclus dans la répartition automatique') + '">AUTO</button>');
+        ta2.addEventListener("click", function(){ if(p.horsAuto) delete p.horsAuto; else p.horsAuto = true; sauver(); render(); });
+        var x = el('<button class="mx" title="Retirer de la liste" aria-label="Retirer ' + esc(p.nom) + '">✕</button>');
+        x.addEventListener("click", function(){ supprimerMembre(p); });
+        r.appendChild(tr); r.appendChild(ta2); r.appendChild(x);
+        box.appendChild(r);
+      });
+      if(!l.length) box.appendChild(el('<p class="meta">Personne dans ce BDE.</p>'));
+      g.appendChild(box);
+      var trous = 0;
+      state.shifts.forEach(function(sh){ if(!sh.tous && !sh.total) trous += Math.max(0, (sh.quotas[b.id]||0) - compte(sh, b.id)); });
+      var rb = el('<button class="mini">Répartir automatiquement' + (trous ? ' (' + trous + ' places)' : '') + '</button>');
+      rb.addEventListener("click", function(){
+        var res = repartir(b.id);
+        sauver(); render();
+        toast(res.remplies + "/" + res.places + " places remplies pour " + b.court +
+              (res.remplies < res.places ? " · pas assez de monde disponible" : "") +
+              (res.enchainements ? " · " + res.enchainements + " enchaînement" + (res.enchainements > 1 ? "s" : "") + " inévitable" + (res.enchainements > 1 ? "s" : "") : ""), null);
+      });
+      var eb = el('<button class="mini warn">Effacer les affectations ' + esc(b.court) + '</button>');
+      eb.addEventListener("click", function(){
+        if(!confirm("Retirer tous les membres " + b.nom + " de leurs shifts ? Les postes de responsable sont conservés.")) return;
+        var ids = state.people.filter(function(x){ return x.bde === b.id; }).map(function(x){ return x.id; });
+        state.shifts.forEach(function(sh){ sh.equipe = sh.equipe.filter(function(id){ return ids.indexOf(id) === -1; }); });
+        sauver(); render();
+      });
+      g.appendChild(rb); g.appendChild(eb);
+      var inp = el('<input placeholder="Ajouter quelqu\'un dans ' + esc(b.court) + '" style="margin-top:10px">');
+      function add(){
+        var v = inp.value.trim().replace(/\s+/g," ");
+        if(!v) return;
+        state.people.push({id:uid("p"), nom:v, bde:b.id});
+        inp.value = ""; sauver(); render();
+      }
+      inp.addEventListener("keydown", function(e){ if(e.key === "Enter") add(); });
+      g.appendChild(inp);
+      rg.appendChild(g);
+    });
+
+    var ug = el('<div class="adm"><h3>Urgences</h3>' +
+      '<p class="meta">Une ligne par entrée, au format <code>texte | numéro</code>.</p></div>');
+    ug.appendChild(el('<label>Numéros — le premier est mis en avant</label>'));
+    var tn = el('<textarea></textarea>');
+    tn.value = state.urgences.numeros.map(function(n){ return n.quoi + " | " + n.tel; }).join("\n");
+    tn.addEventListener("input", function(){
+      state.urgences.numeros = lignes(tn.value).map(function(l){
+        var x = l.split("|");
+        return {quoi:(x[0]||"").trim(), tel:(x[1]||"").trim()};
+      }).filter(function(n){ return n.quoi && n.tel; });
+      sauver();
+    });
+    ug.appendChild(tn);
+    ug.appendChild(el('<label>Canaux radio — format <code>canal | rôle</code></label>'));
+    var tc = el('<textarea></textarea>');
+    tc.value = state.urgences.canaux.map(function(k){ return k.quoi + " | " + k.role; }).join("\n");
+    tc.addEventListener("input", function(){
+      state.urgences.canaux = lignes(tc.value).map(function(l){
+        var x = l.split("|");
+        return {quoi:(x[0]||"").trim(), role:(x[1]||"").trim()};
+      }).filter(function(k){ return k.quoi; });
+      sauver();
+    });
+    ug.appendChild(tc);
+    ug.appendChild(el('<label>Consigne affichée sous les numéros</label>'));
+    var tg = el('<textarea style="min-height:70px"></textarea>');
+    tg.value = state.urgences.consigne || "";
+    tg.addEventListener("input", function(){ state.urgences.consigne = tg.value; sauver(); });
+    ug.appendChild(tg);
+    rg.appendChild(ug);
+
+    var pg = el('<div class="adm"><h3>Plan du camping</h3>' +
+      '<p class="meta">Dépose l\'image dans le dépôt, à côté de index.html, et écris son nom ici ' +
+      '(par exemple <code>plan-camping.png</code>). Vide, c\'est le plan d\'exemple qui s\'affiche.</p></div>');
+    pg.appendChild(el('<label>Fichier ou adresse de l\'image</label>'));
+    var ps = el('<input placeholder="plan-camping.png">');
+    ps.value = state.plan.src || "";
+    ps.addEventListener("input", function(){ state.plan.src = ps.value.trim(); sauver(); });
+    pg.appendChild(ps);
+    pg.appendChild(el('<label>Légende</label>'));
+    var pl2 = el('<input>');
+    pl2.value = state.plan.legende || "";
+    pl2.addEventListener("input", function(){ state.plan.legende = pl2.value; sauver(); });
+    pg.appendChild(pl2);
+    var pv = el('<button class="mini">Voir le plan</button>');
+    pv.addEventListener("click", function(){ go("plan"); });
+    pg.appendChild(pv);
+    rg.appendChild(pg);
+
+    var dat = el('<div class="adm"><h3>Données</h3>' +
+      '<p class="meta">Copie ce texte pour sauvegarder la configuration ou me la transmettre. ' +
+      'Colle-en une autre puis « Charger » pour la remplacer.</p></div>');
+    var ta = el('<textarea style="min-height:150px;font-family:ui-monospace,monospace;font-size:.78rem"></textarea>');
+    ta.value = JSON.stringify(state, null, 1);
+    var cp = el('<button class="mini">Tout sélectionner</button>');
+    cp.addEventListener("click", function(){ ta.focus(); ta.select(); });
+    var ld = el('<button class="mini">Charger ce contenu</button>');
+    ld.addEventListener("click", function(){
+      try{
+        var s = JSON.parse(ta.value);
+        if(!s.shifts || !s.people) throw new Error("structure");
+        state = s; sauver(); alert("Configuration chargée."); go("admin");
+      }catch(e){ alert("JSON invalide, rien n'a été chargé."); }
+    });
+    var rz = el('<button class="mini warn">Réinitialiser</button>');
+    rz.addEventListener("click", function(){
+      if(!confirm("Revenir aux données fictives de départ ?")) return;
+      state = seedData(); sauver(); go("admin");
+    });
+    dat.appendChild(ta); dat.appendChild(cp); dat.appendChild(ld); dat.appendChild(rz);
+    app.appendChild(dat);
+  }
+
+  /* ---------- démarrage ---------- */
+  document.getElementById("topP").addEventListener("click", function(){
+    if(vue.n === "plan") retour(); else go("plan");
+  });
+  document.getElementById("topU").addEventListener("click", function(){
+    if(vue.n === "sos") retour(); else go("sos");
+  });
+  topA.addEventListener("click", function(){
+    if(vue.n === "admin" || vue.n === "edit" || vue.n === "reglages"){ go(moi ? "me" : "pick"); return; }
+    go(admin ? "admin" : "gate");
+  });
+
+  badge("", CONNECTE ? "CONNEXION…" : "LOCAL");
+  state = charger();
+  defauts();
+  var m = memo("moi");
+  if(m && pers(m)) moi = m;
+  vue = {n: moi ? "me" : "pick"};
+  render();
+
+  // les pastilles « en cours » se mettent à jour toutes les minutes
+  setInterval(function(){
+    if(vue.n === "me" || vue.n === "planning" || vue.n === "fiche") render();
+  }, 30000);
+})();
+</script>
+
+<script type="module">
+/* Couche de synchronisation temps réel.
+   Sans config.js rempli, ce bloc ne fait rien et la page reste en mode local. */
+const C = window.WEI_CONFIG || {};
+const W = window.WEI;
+if (C.firebase && C.firebase.apiKey && W) {
+  const V = "12.19.0";
+  try {
+    const { initializeApp } = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`);
+    const { getFirestore, doc, onSnapshot, setDoc } =
+      await import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`);
+
+    const db = getFirestore(initializeApp(C.firebase));
+    const ref = doc(db, C.collection || "wei", C.document || "planning");
+    let dernier = null;
+
+    W.connect({
+      push(state) {
+        const json = JSON.stringify(state);
+        if (json === dernier) return;
+        dernier = json;
+        setDoc(ref, { json, maj: Date.now() })
+          .catch((e) => W.statut("ko", e && e.code ? e.code : "écriture refusée"));
+      }
+    });
+
+    onSnapshot(ref, (snap) => {
+      W.statut("ok");
+      if (!snap.exists()) { W.seedRemote(); return; }   // premier chargement : on sème la config
+      const d = snap.data();
+      if (!d || typeof d.json !== "string" || d.json === dernier) return;
+      dernier = d.json;
+      W.receive(d.json);
+    }, (e) => W.statut("ko", e && e.code ? e.code : ""));
+  } catch (e) {
+    W.statut("ko", "Firebase injoignable");
+  }
+}
+</script>
+</body>
+</html>
