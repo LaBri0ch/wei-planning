@@ -253,6 +253,30 @@
        text-transform:none;letter-spacing:0;font-size:.92rem;font-weight:500;color:var(--txt)}
   .opt input{width:auto;margin-top:3px;accent-color:var(--c1)}
   .opt:has(input:checked){border-color:var(--c1)}
+  .kstats{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 12px}
+  .kstat{flex:1;min-width:92px;border:2px solid var(--line);border-radius:13px;padding:10px 12px;background:var(--panel)}
+  .kstat b{display:block;font-size:1.5rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+  .kstat span{color:var(--dim);font-size:.75rem;font-weight:800;letter-spacing:.04em}
+  .kfil{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 12px}
+  .kfil button{padding:9px 13px;border-radius:10px;border:2px solid var(--line);background:none;
+               color:var(--dim);font-weight:800;font-size:.85rem;cursor:pointer}
+  .kfil button.on{border-color:var(--c1);color:var(--c1)}
+  .krow{display:flex;align-items:center;gap:12px;padding:12px 12px 12px 14px;margin-bottom:8px;
+        border:2px solid var(--line);border-left-width:8px;border-radius:14px;background:var(--panel)}
+  .krow.remise{border-left-color:var(--c1)}
+  .krow.rendue{border-left-color:var(--live);opacity:.75}
+  .krow .kn{font-size:1.6rem;font-weight:800;min-width:62px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .krow .kt{flex:1;min-width:0}
+  .krow .kr{font-weight:800;font-size:1rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .krow .ks{color:var(--dim);font-size:.82rem;margin-top:2px}
+  .kb{flex:0 0 auto;min-height:46px;padding:10px 14px;border-radius:11px;border:2px solid var(--c1);
+      background:none;color:var(--c1);font-weight:800;font-size:.9rem;cursor:pointer}
+  .kb.back{border-color:var(--live);color:var(--live)}
+  .kb:active{background:var(--panel-2)}
+  .brow{display:grid;grid-template-columns:90px 1fr auto 40px;gap:8px;align-items:center;margin-bottom:6px}
+  .brow input{padding:9px 11px;font-size:.95rem}
+  .bst{font-size:.72rem;font-weight:800;letter-spacing:.04em;color:var(--dim2);white-space:nowrap}
+  .bst.remise{color:var(--c1)} .bst.rendue{color:var(--live)}
   .mems{display:grid;gap:6px;margin-top:10px}
   .mem{display:flex;align-items:center;gap:10px;padding:6px 6px 6px 12px;border-radius:11px;
        background:var(--panel-2);border:2px solid var(--line)}
@@ -286,6 +310,7 @@
     </div>
     <div style="display:flex;align-items:center;gap:6px">
       <span id="sync" class="sync" hidden><span class="sdot"></span><span id="syncT"></span></span>
+      <button class="ico" id="topK" title="Clés des bungalows" hidden>Clés</button>
       <button class="ico" id="topP" title="Plan du camping">Plan</button>
       <button class="ico sos" id="topU" title="Numéros d'urgence">SOS</button>
       <button class="lnk" id="topA">Admin</button>
@@ -340,7 +365,7 @@
 
 <script id="seed" type="application/json">
 {
- "revision": "2026-09-21-sans-enchainement",
+ "revision": "2026-09-22-donnees-hugo",
  "version": 2,
  "event": {
   "nom": "WEI 2026",
@@ -375,11 +400,11 @@
    },
    {
     "quoi": "PC orga — 24h/24",
-    "tel": "0612345678"
+    "tel": "A Remplir"
    },
    {
     "quoi": "Responsable sécurité",
-    "tel": "0698765432"
+    "tel": "A Remplir"
    },
    {
     "quoi": "Poste de soins",
@@ -573,6 +598,23 @@
    "id": "p29",
    "nom": "Pierre CHARTON--LENNE",
    "bde": "par"
+  },
+  {
+   "id": "ppt9jm9",
+   "nom": "Lylian SERRE-LEONOR",
+   "bde": "par",
+   "horsAuto": true
+  },
+  {
+   "id": "psbifd0",
+   "nom": "Selene BOURSET",
+   "bde": "par",
+   "horsAuto": true
+  },
+  {
+   "id": "plu4f9m",
+   "nom": "Swann YASSIR",
+   "bde": "par"
   }
  ],
  "shifts": [
@@ -624,10 +666,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p04",
-    "p29",
+    "p03",
     "p08",
-    "p26"
+    "p09",
+    "p13"
    ]
   },
   {
@@ -644,7 +686,7 @@
     "lyo": 1
    },
    "equipe": [
-    "p20"
+    "p07"
    ]
   },
   {
@@ -661,10 +703,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p15",
-    "p23",
-    "p22",
-    "p18"
+    "p25",
+    "p21",
+    "p10",
+    "p20"
    ]
   },
   {
@@ -681,7 +723,7 @@
     "lyo": 1
    },
    "equipe": [
-    "p19"
+    "p14"
    ]
   },
   {
@@ -698,9 +740,9 @@
     "lyo": 0
    },
    "equipe": [
-    "p27",
-    "p03",
-    "p11"
+    "p01",
+    "p22",
+    "p03"
    ]
   },
   {
@@ -717,8 +759,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p24",
-    "p06"
+    "plu4f9m",
+    "p13"
    ]
   },
   {
@@ -735,9 +777,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p12",
-    "p14",
-    "p22"
+    "p27",
+    "p02",
+    "p18"
    ]
   },
   {
@@ -754,7 +796,7 @@
     "lyo": 0
    },
    "equipe": [
-    "p09"
+    "p17"
    ]
   },
   {
@@ -786,9 +828,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p25",
-    "p10",
-    "p04"
+    "p22",
+    "p13",
+    "p23"
    ]
   },
   {
@@ -805,7 +847,7 @@
     "lyo": 0
    },
    "equipe": [
-    "p27"
+    "p21"
    ]
   },
   {
@@ -822,8 +864,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p06",
-    "p14"
+    "p20",
+    "p07"
    ]
   },
   {
@@ -840,9 +882,9 @@
     "lyo": 0
    },
    "equipe": [
-    "p09",
-    "p13",
-    "p08"
+    "p24",
+    "p15",
+    "p19"
    ]
   },
   {
@@ -859,7 +901,7 @@
     "lyo": 0
    },
    "equipe": [
-    "p07"
+    "p14"
    ]
   },
   {
@@ -876,9 +918,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p28",
-    "p16",
-    "p22"
+    "p18",
+    "p17",
+    "p03"
    ]
   },
   {
@@ -925,9 +967,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p19",
-    "p01",
-    "p07"
+    "p23",
+    "plu4f9m",
+    "p25"
    ]
   },
   {
@@ -944,7 +986,7 @@
     "lyo": 0
    },
    "equipe": [
-    "p05"
+    "p27"
    ]
   },
   {
@@ -993,10 +1035,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p22",
-    "p13",
-    "p10",
-    "p26"
+    "p29",
+    "p18",
+    "p06",
+    "p24"
    ]
   },
   {
@@ -1013,8 +1055,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p04",
-    "p03"
+    "p19",
+    "p02"
    ]
   },
   {
@@ -1031,7 +1073,7 @@
     "lyo": 1
    },
    "equipe": [
-    "p29"
+    "p03"
    ]
   },
   {
@@ -1048,8 +1090,8 @@
     "lyo": 1
    },
    "equipe": [
-    "p02",
-    "p16"
+    "p05",
+    "p23"
    ]
   },
   {
@@ -1081,8 +1123,8 @@
     "lyo": 2
    },
    "equipe": [
+    "p10",
     "p19",
-    "p08",
     "p04"
    ]
   },
@@ -1100,7 +1142,7 @@
     "lyo": 0
    },
    "equipe": [
-    "p11"
+    "p09"
    ]
   },
   {
@@ -1117,8 +1159,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p13",
-    "p25"
+    "p08",
+    "p17"
    ]
   },
   {
@@ -1135,7 +1177,7 @@
     "lyo": 0
    },
    "equipe": [
-    "p03"
+    "p25"
    ]
   },
   {
@@ -1152,8 +1194,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p18",
-    "p14"
+    "p13",
+    "p06"
    ]
   },
   {
@@ -1170,10 +1212,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p09",
-    "p05",
-    "p29",
-    "p15"
+    "p15",
+    "p18",
+    "p07",
+    "p16"
    ]
   },
   {
@@ -1190,7 +1232,7 @@
     "lyo": 0
    },
    "equipe": [
-    "p17"
+    "p14"
    ]
   },
   {
@@ -1207,8 +1249,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p26",
-    "p16"
+    "p12",
+    "p20"
    ]
   },
   {
@@ -1225,7 +1267,7 @@
     "lyo": 0
    },
    "equipe": [
-    "p28"
+    "p05"
    ]
   },
   {
@@ -1257,8 +1299,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p22",
-    "p19"
+    "p11",
+    "p22"
    ]
   },
   {
@@ -1275,8 +1317,8 @@
     "lyo": 1
    },
    "equipe": [
-    "p20",
-    "p07"
+    "p04",
+    "p06"
    ]
   },
   {
@@ -1293,9 +1335,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p11",
-    "p10",
-    "p21"
+    "p26",
+    "p02",
+    "p29"
    ]
   },
   {
@@ -1327,9 +1369,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p14",
-    "p12",
-    "p06"
+    "plu4f9m",
+    "p09",
+    "p15"
    ],
    "resps": [
     "p28"
@@ -1349,8 +1391,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p05",
-    "p25"
+    "p17",
+    "p13"
    ]
   },
   {
@@ -1367,10 +1409,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p17",
-    "p15",
     "p16",
-    "p29"
+    "p25",
+    "p24",
+    "p14"
    ]
   },
   {
@@ -1402,9 +1444,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p23",
-    "p18",
-    "p20"
+    "p20",
+    "p07",
+    "p19"
    ],
    "resps": [
     "p01"
@@ -1424,8 +1466,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p03",
-    "p19"
+    "p04",
+    "p12"
    ]
   },
   {
@@ -1442,10 +1484,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p08",
-    "p07",
-    "p09",
-    "p24"
+    "p03",
+    "p18",
+    "p23",
+    "p27"
    ]
   },
   {
@@ -1462,8 +1504,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p02",
-    "p26"
+    "p21",
+    "p08"
    ]
   },
   {
@@ -1480,9 +1522,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p25",
-    "p14",
-    "p27"
+    "p11",
+    "p02",
+    "p17"
    ],
    "resps": [
     "p28"
@@ -1502,8 +1544,8 @@
     "lyo": 1
    },
    "equipe": [
-    "p06",
-    "p04"
+    "p09",
+    "p13"
    ]
   },
   {
@@ -1520,10 +1562,10 @@
     "lyo": 1
    },
    "equipe": [
+    "p26",
     "p15",
-    "p13",
-    "p21",
-    "p16"
+    "p05",
+    "p25"
    ]
   },
   {
@@ -1555,9 +1597,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p17",
-    "p10",
-    "p12"
+    "p02",
+    "p08",
+    "p09"
    ],
    "resps": [
     "p01"
@@ -1577,8 +1619,8 @@
     "lyo": 1
    },
    "equipe": [
-    "p05",
-    "p26"
+    "p27",
+    "p19"
    ]
   },
   {
@@ -1595,10 +1637,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p06",
-    "p02",
+    "p14",
+    "p20",
     "p11",
-    "p22"
+    "p13"
    ]
   },
   {
@@ -1615,8 +1657,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p23",
-    "p29"
+    "p29",
+    "p04"
    ]
   },
   {
@@ -1633,9 +1675,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p08",
-    "p14",
-    "p24"
+    "p24",
+    "p06",
+    "p14"
    ],
    "resps": [
     "p28"
@@ -1655,8 +1697,8 @@
     "lyo": 1
    },
    "equipe": [
-    "p15",
-    "p21"
+    "p26",
+    "p16"
    ]
   },
   {
@@ -1673,10 +1715,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p20",
-    "p16",
-    "p27",
-    "p19"
+    "p10",
+    "p21",
+    "p03",
+    "p22"
    ]
   },
   {
@@ -1708,9 +1750,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p03",
-    "p17",
-    "p07"
+    "p24",
+    "p10",
+    "p02"
    ],
    "resps": [
     "p01"
@@ -1730,8 +1772,8 @@
     "lyo": 1
    },
    "equipe": [
-    "p04",
-    "p10"
+    "p25",
+    "p22"
    ]
   },
   {
@@ -1748,9 +1790,9 @@
     "lyo": 2
    },
    "equipe": [
-    "p26",
-    "p25",
-    "p22",
+    "p14",
+    "p06",
+    "p13",
     "p18"
    ]
   },
@@ -1768,8 +1810,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p12",
-    "p11"
+    "p26",
+    "p21"
    ]
   },
   {
@@ -1786,12 +1828,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p19",
-    "p08",
-    "p16",
-    "p24",
-    "p27",
-    "p21"
+    "p03",
+    "p10",
+    "p21",
+    "p06",
+    "p18",
+    "p26"
    ]
   },
   {
@@ -1808,10 +1850,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p14",
-    "p28",
-    "p20",
-    "p15"
+    "p24",
+    "p22",
+    "p16",
+    "p28"
    ]
   },
   {
@@ -1843,8 +1885,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p06",
-    "p05"
+    "p05",
+    "p15"
    ]
   },
   {
@@ -1876,7 +1918,7 @@
     "lyo": 1
    },
    "equipe": [
-    "p02"
+    "p27"
    ],
    "note": "Assurée par les présidents de BDE."
   },
@@ -1894,8 +1936,8 @@
     "lyo": 1
    },
    "equipe": [
-    "p06",
-    "p05"
+    "p04",
+    "p23"
    ]
   },
   {
@@ -1927,10 +1969,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p23",
-    "p13",
-    "p29",
-    "p25"
+    "p11",
+    "p08",
+    "p12",
+    "p05"
    ]
   },
   {
@@ -1947,7 +1989,7 @@
     "lyo": 0
    },
    "equipe": [
-    "p09"
+    "p29"
    ]
   },
   {
@@ -1964,8 +2006,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p18",
-    "p26"
+    "p07",
+    "p01"
    ]
   },
   {
@@ -1983,9 +2025,9 @@
    },
    "equipe": [
     "p21",
-    "p16",
-    "p08",
-    "p11"
+    "p18",
+    "p24",
+    "p06"
    ]
   },
   {
@@ -2019,8 +2061,8 @@
     "lyo": 1
    },
    "equipe": [
-    "p13",
-    "p24"
+    "p28",
+    "p01"
    ]
   },
   {
@@ -2037,10 +2079,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p27",
-    "p09",
-    "p15",
-    "p02"
+    "p02",
+    "p12",
+    "p04",
+    "p09"
    ]
   },
   {
@@ -2072,8 +2114,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p08",
-    "p03"
+    "p17",
+    "p23"
    ]
   },
   {
@@ -2105,8 +2147,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p12",
-    "p14"
+    "p26",
+    "p03"
    ]
   },
   {
@@ -2154,7 +2196,7 @@
    },
    "equipe": [
     "p21",
-    "p17"
+    "p13"
    ]
   },
   {
@@ -2171,8 +2213,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p18",
-    "p23"
+    "p22",
+    "p15"
    ]
   },
   {
@@ -2219,8 +2261,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p25",
-    "p01"
+    "p16",
+    "p05"
    ]
   },
   {
@@ -2252,8 +2294,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p02",
-    "p06"
+    "p07",
+    "p10"
    ]
   },
   {
@@ -2315,8 +2357,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p10",
-    "p27"
+    "p15",
+    "p17"
    ]
   },
   {
@@ -2348,8 +2390,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p03",
-    "p09"
+    "p29",
+    "p26"
    ]
   },
   {
@@ -2366,8 +2408,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p29",
-    "p13"
+    "p25",
+    "p12"
    ]
   },
   {
@@ -2384,10 +2426,10 @@
     "lyo": 2
    },
    "equipe": [
-    "p07",
-    "p14",
-    "p05",
-    "p17"
+    "p19",
+    "p11",
+    "p02",
+    "p22"
    ]
   },
   {
@@ -2404,10 +2446,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p22",
-    "p11",
-    "p20",
-    "p01"
+    "p08",
+    "p16",
+    "p28",
+    "p24"
    ]
   },
   {
@@ -2439,10 +2481,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p03",
-    "p10",
     "p27",
-    "p21"
+    "p26",
+    "p23",
+    "p12"
    ]
   },
   {
@@ -2459,10 +2501,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p24",
-    "p15",
-    "p16",
-    "p18"
+    "p14",
+    "p17",
+    "plu4f9m",
+    "p10"
    ]
   },
   {
@@ -2494,8 +2536,8 @@
     "lyo": 1
    },
    "equipe": [
-    "p02",
-    "p17",
+    "p06",
+    "p20",
     "p09"
    ]
   },
@@ -2513,8 +2555,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p08",
-    "p07"
+    "p13",
+    "p25"
    ]
   },
   {
@@ -2531,8 +2573,8 @@
     "lyo": 1
    },
    "equipe": [
-    "p23",
-    "p03"
+    "p16",
+    "p07"
    ]
   },
   {
@@ -2549,8 +2591,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p22",
-    "p21"
+    "p21",
+    "p23"
    ]
   },
   {
@@ -2567,7 +2609,7 @@
     "lyo": 0
    },
    "equipe": [
-    "p04",
+    "p22",
     "p12"
    ]
   },
@@ -2585,8 +2627,8 @@
     "lyo": 1
    },
    "equipe": [
-    "p25",
-    "p07"
+    "plu4f9m",
+    "p04"
    ]
   },
   {
@@ -2603,8 +2645,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p13",
-    "p24"
+    "p01",
+    "p15"
    ]
   },
   {
@@ -2621,7 +2663,7 @@
     "lyo": 0
    },
    "equipe": [
-    "p10"
+    "p05"
    ]
   },
   {
@@ -2653,8 +2695,8 @@
     "lyo": 1
    },
    "equipe": [
-    "p03",
-    "p09"
+    "p08",
+    "p02"
    ]
   },
   {
@@ -2671,7 +2713,7 @@
     "lyo": 0
    },
    "equipe": [
-    "p04"
+    "p03"
    ]
   },
   {
@@ -2688,8 +2730,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p02",
-    "p15"
+    "p28",
+    "p06"
    ]
   },
   {
@@ -2706,7 +2748,7 @@
     "lyo": 1
    },
    "equipe": [
-    "p21",
+    "p15",
     "p13"
    ]
   },
@@ -2739,8 +2781,8 @@
     "lyo": 1
    },
    "equipe": [
-    "p17",
-    "p27"
+    "p24",
+    "p16"
    ]
   },
   {
@@ -2757,9 +2799,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p06",
-    "p24",
-    "p26"
+    "p10",
+    "p03",
+    "p19"
    ],
    "resps": [
     "p28"
@@ -2779,8 +2821,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p04",
-    "p23"
+    "p08",
+    "p29"
    ]
   },
   {
@@ -2797,10 +2839,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p14",
-    "p29",
-    "p22",
-    "p12"
+    "p11",
+    "p02",
+    "p07",
+    "p22"
    ]
   },
   {
@@ -2832,9 +2874,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p17",
-    "p25",
-    "p02"
+    "p05",
+    "p14",
+    "p25"
    ],
    "resps": [
     "p01"
@@ -2854,10 +2896,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p27",
-    "p09",
-    "p10",
-    "p05"
+    "p12",
+    "p16",
+    "p15",
+    "p27"
    ]
   },
   {
@@ -2874,8 +2916,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p11",
-    "p18"
+    "p21",
+    "p26"
    ]
   },
   {
@@ -2892,8 +2934,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p15",
-    "p16"
+    "p24",
+    "plu4f9m"
    ]
   },
   {
@@ -2910,8 +2952,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p07",
-    "p24"
+    "p10",
+    "p06"
    ],
    "resps": [
     "p28"
@@ -2931,7 +2973,7 @@
     "lyo": 0
    },
    "equipe": [
-    "p20"
+    "p11"
    ]
   },
   {
@@ -2948,8 +2990,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p23",
-    "p12"
+    "p09",
+    "p23"
    ]
   },
   {
@@ -2981,9 +3023,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p04",
-    "p05",
-    "p19"
+    "p29",
+    "p19",
+    "p04"
    ],
    "resps": [
     "p01"
@@ -3003,10 +3045,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p06",
-    "p03",
-    "p10",
-    "p13"
+    "p18",
+    "p16",
+    "p26",
+    "p14"
    ]
   },
   {
@@ -3023,8 +3065,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p25",
-    "p27"
+    "p20",
+    "p22"
    ]
   },
   {
@@ -3041,8 +3083,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p02",
-    "p11"
+    "plu4f9m",
+    "p05"
    ]
   },
   {
@@ -3059,9 +3101,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p12",
-    "p20",
-    "p08"
+    "p08",
+    "p09",
+    "p23"
    ],
    "resps": [
     "p28"
@@ -3081,10 +3123,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p21",
-    "p17",
     "p29",
-    "p18"
+    "p04",
+    "p17",
+    "p19"
    ]
   },
   {
@@ -3101,8 +3143,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p26",
-    "p23"
+    "p12",
+    "p27"
    ]
   },
   {
@@ -3119,9 +3161,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p05",
-    "p09",
-    "p24"
+    "p11",
+    "p08",
+    "p07"
    ],
    "resps": [
     "p01"
@@ -3141,10 +3183,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p27",
-    "p07",
-    "p13",
-    "p19"
+    "p20",
+    "p15",
+    "p19",
+    "p17"
    ]
   },
   {
@@ -3161,8 +3203,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p04",
-    "p06"
+    "p05",
+    "p12"
    ]
   },
   {
@@ -3179,34 +3221,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p28",
-    "p21",
-    "p17",
-    "p26",
-    "p12",
+    "p11",
+    "p27",
+    "plu4f9m",
+    "p07",
+    "p04",
     "p20"
-   ]
-  },
-  {
-   "id": "s146",
-   "code": "S29",
-   "jour": "j2",
-   "nom": "Rangement Extérieur",
-   "debut": "04:00",
-   "fin": "05:00",
-   "lieu": "",
-   "quotas": {
-    "par": 6,
-    "tls": 2,
-    "lyo": 0
-   },
-   "equipe": [
-    "p18",
-    "p08",
-    "p29",
-    "p23",
-    "p02",
-    "p11"
    ]
   },
   {
@@ -3223,10 +3243,674 @@
     "lyo": 2
    },
    "equipe": []
+  },
+  {
+   "id": "sbn6gbz",
+   "jour": "j2",
+   "nom": "Gestion flux / file d'attente",
+   "debut": "18:00",
+   "fin": "19:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p11"
+   ],
+   "fiche": {
+    "mission": "",
+    "taches": [],
+    "materiel": [],
+    "referent": ""
+   }
+  },
+  {
+   "id": "spxm9x0",
+   "jour": "j2",
+   "nom": "Gestion flux / file d'attente",
+   "debut": "19:00",
+   "fin": "20:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p29"
+   ],
+   "fiche": {
+    "mission": "",
+    "taches": [],
+    "materiel": [],
+    "referent": ""
+   }
+  },
+  {
+   "id": "s6175v1",
+   "jour": "j2",
+   "nom": "Gestion flux / file d'attente",
+   "debut": "20:00",
+   "fin": "21:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p10"
+   ],
+   "fiche": {
+    "mission": "",
+    "taches": [],
+    "materiel": [],
+    "referent": ""
+   }
+  },
+  {
+   "id": "s2i7j20",
+   "jour": "j2",
+   "nom": "Installation Pool Party",
+   "debut": "15:00",
+   "fin": "16:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p09"
+   ],
+   "fiche": {
+    "mission": "",
+    "taches": [],
+    "materiel": [],
+    "referent": ""
+   }
   }
  ],
  "coupure": 6,
- "fiches": {},
+ "fiches": {
+  "qg": {
+   "mission": "Tu tiens le poste de commandement du WEI : c'est ici qu'arrivent toutes les demandes, tous les problèmes et toutes les infos. Le QG n'est jamais vide.",
+   "taches": [
+    "Ne quitte jamais le QG avant que ton relais soit arrivé",
+    "Accueille chaque demande (clé perdue, objet trouvé, question, malaise signalé) et oriente vers le bon responsable",
+    "Garde le talkie allumé et relaie les messages entre les pôles",
+    "Urgence médicale : alerte immédiatement le poste de secours ; s'il est injoignable et que la personne est inconsciente ou respire mal, appelle le 15",
+    "Note chaque incident dans la main courante : heure, lieu, personnes concernées, ce qui a été fait",
+    "Tiens à jour les objets trouvés et les clés rendues",
+    "À la relève, fais un point de deux minutes sur ce qui est en cours"
+   ],
+   "materiel": [
+    "Talkie et chargeur",
+    "Main courante et stylos",
+    "Liste des participants et des bungalows",
+    "Carton objets trouvés",
+    "Téléphone du QG chargé"
+   ],
+   "referent": "Le responsable sécurité ; le poste de secours pour tout problème médical. Numéros et canaux dans SOS."
+  },
+  "bar soiree": {
+   "mission": "Tu sers au bar pendant la soirée en gardant la main sur la consommation : un bar qui tourne bien, c'est une soirée où personne ne finit au poste de secours.",
+   "taches": [
+    "Suis les consignes de ton responsable de bar : c'est lui qui répartit service, scan et réassort",
+    "Scanne le QR code du participant avec ton téléphone avant chaque boisson : chaque scan déduit une boisson de son compte",
+    "Compte vide = pas de boisson : les comptes ne peuvent pas être rechargés, pas d'exception",
+    "Refuse poliment de servir une personne manifestement ivre et préviens ton responsable",
+    "Propose de l'eau à chaque commande, elle est gratuite",
+    "Ne bois pas pendant ton shift",
+    "Ramasse tout de suite gobelets, flaques et verre cassé",
+    "Signale tout comportement inquiétant (harcèlement, malaise, bagarre) à ton responsable, n'interviens jamais seul",
+    "À la relève, transmets l'état des stocks et les incidents"
+   ],
+   "materiel": [
+    "Téléphone chargé avec l'application de scan",
+    "Batterie externe",
+    "Tireuse et fûts",
+    "Gobelets",
+    "Carafes d'eau",
+    "Sacs poubelle et essuie-tout"
+   ],
+   "referent": "Ton responsable de bar (badge RESPONSABLE sur le planning), puis le QG. Numéros et canaux dans SOS."
+  },
+  "bar before": {
+   "mission": "Tu tiens le bar du before, autour du repas : bière et eau uniquement. C'est là que se donne le rythme de la soirée.",
+   "taches": [
+    "On ne sert que de la bière et de l'eau, rien d'autre",
+    "Scanne le QR code du participant avec ton téléphone pour chaque bière : chaque scan déduit une boisson de son compte",
+    "Compte vide = pas de bière : les comptes ne peuvent pas être rechargés, pas d'exception",
+    "Propose de l'eau à chaque commande, elle est gratuite",
+    "Refuse poliment de servir une personne manifestement ivre et préviens le QG",
+    "Ne bois pas pendant ton shift",
+    "Garde le bar propre et réapprovisionné en gobelets et en eau",
+    "À la fin du before, transmets l'état des stocks à l'équipe de la soirée"
+   ],
+   "materiel": [
+    "Téléphone chargé avec l'application de scan",
+    "Batterie externe",
+    "Tireuse et fûts",
+    "Gobelets",
+    "Eau",
+    "Sacs poubelle"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "ronde camping": {
+   "mission": "Tu fais le tour du camping pour repérer ce qui ne va pas avant que ça devienne grave : quelqu'un de seul et mal, un accès secours bloqué, un début de dégradation.",
+   "taches": [
+    "Tourne toujours à deux minimum, jamais seul",
+    "Suis le circuit : bungalows réservés, sanitaires, parking, abords de la piscine",
+    "En dehors des horaires d'ouverture, personne dans la piscine ni autour du bassin : fais sortir calmement et préviens le QG",
+    "Ne laisse jamais une personne alcoolisée seule : raccompagne-la à son bungalow ou appelle le QG",
+    "Malaise ou blessure : alerte le poste de secours ; si la personne respire mais ne répond pas, mets-la en PLS en attendant",
+    "Garde les accès secours et les allées dégagés",
+    "Rappelle le calme près des bungalows sans entrer en conflit ; si ça dégénère, recule et appelle le QG",
+    "Transmets tout incident au QG à la fin de ta ronde"
+   ],
+   "materiel": [
+    "Lampe frontale",
+    "Talkie",
+    "Chasuble",
+    "Plan du camping (bouton Plan)"
+   ],
+   "referent": "Le QG ; le poste de secours pour tout problème médical. Numéros et canaux dans SOS."
+  },
+  "ronde salle": {
+   "mission": "Tu circules dans la salle pendant la soirée pour que la fête se passe bien pour tout le monde : repérer les malaises, le harcèlement et les débordements avant qu'ils s'installent.",
+   "taches": [
+    "Circule en binôme dans toute la salle, toilettes et abords extérieurs compris",
+    "Repère les personnes en difficulté (malaise, isolement, trop d'alcool) : emmène-les au calme avec de l'eau et alerte le poste de secours si besoin",
+    "Face à du harcèlement ou une agression : mets la personne en sécurité, écoute-la sans la juger et appelle le QG ; en cas de danger immédiat, le 17",
+    "Garde les sorties de secours dégagées et signale si la salle devient trop pleine",
+    "N'entre dans aucune bagarre : éloigne les gens autour et appelle le QG",
+    "Rappelle que l'eau est gratuite au bar"
+   ],
+   "materiel": [
+    "Talkie",
+    "Chasuble",
+    "Lampe"
+   ],
+   "referent": "Le QG ; le poste de secours pour tout problème médical. Numéros et canaux dans SOS."
+  },
+  "gestion flux / file d'attente": {
+   "mission": "Tu fais avancer la file du brunch ou du repas sans bousculade, et tu fais tourner les tables pour que tout le monde puisse s'asseoir.",
+   "taches": [
+    "Place-toi en tête de file avant l'ouverture du service",
+    "Forme une file unique et garde un passage libre à côté",
+    "Oriente les régimes particuliers (végétarien, sans porc, allergies) vers le bon comptoir",
+    "Envoie les gens au comptoir par petits groupes pour ne pas saturer le service",
+    "Fais tourner les tables : ceux qui ont fini de manger libèrent leur place pour les suivants",
+    "Samedi soir, les A1 restent sur place après leur repas : ne les fais pas partir",
+    "Préviens le QG si la file ne bouge plus",
+    "Reste calme et poli, même quand la file s'impatiente"
+   ],
+   "materiel": [
+    "Talkie",
+    "Chasuble"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "installation brunch": {
+   "mission": "Tu mets en place le brunch pour qu'il ouvre à l'heure.",
+   "taches": [
+    "Installe les tables de service et le sens de passage de la file",
+    "Dispose plats, couverts, gobelets et serviettes",
+    "Prépare les boissons chaudes et froides",
+    "Installe les poubelles de tri à la sortie de la file",
+    "Préviens le QG si quelque chose manque avant l'ouverture"
+   ],
+   "materiel": [
+    "Tables et nappes",
+    "Couverts et gobelets",
+    "Sacs poubelle"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "service brunch": {
+   "mission": "Tu sers le brunch : chacun repart avec son assiette, et les derniers ne trouvent pas les plats vides.",
+   "taches": [
+    "Lave-toi les mains et mets des gants avant de servir",
+    "Mets de côté dès le début les plats végétariens, sans porc et ceux liés à des allergies",
+    "Sers des portions régulières pour tenir jusqu'au bout du service",
+    "Réapprovisionne plats et boissons au fur et à mesure",
+    "Signale au QG dès qu'un produit va manquer",
+    "Nettoie les tables et ramasse les déchets au fil du service"
+   ],
+   "materiel": [
+    "Gants jetables",
+    "Ustensiles de service",
+    "Sacs poubelle",
+    "Produit désinfectant et lavettes"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "rangement brunch": {
+   "mission": "Tu remets l'espace du brunch à zéro pour la suite de la journée.",
+   "taches": [
+    "Débarrasse les tables et regroupe les restes",
+    "Nettoie et désinfecte les tables de service",
+    "Range le matériel à sa place",
+    "Trie les déchets et sors les sacs aux points de collecte du camping",
+    "Signale au QG toute dégradation ou tout matériel cassé ou manquant"
+   ],
+   "materiel": [
+    "Sacs poubelle de tri",
+    "Produit désinfectant et lavettes",
+    "Balai"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "service repas": {
+   "mission": "Tu sers le repas du soir : tout le monde mange, à l'heure, y compris ceux qui ont un régime particulier.",
+   "taches": [
+    "Lave-toi les mains et mets des gants avant de servir",
+    "Mets de côté dès le début les repas végétariens, sans porc et ceux liés à des allergies",
+    "Sers des portions régulières pour que les derniers aient autant que les premiers",
+    "Réapprovisionne au fur et à mesure et signale au QG ce qui va manquer",
+    "Veille à ce que personne ne reparte sans avoir mangé",
+    "Nettoie les tables au fil du service"
+   ],
+   "materiel": [
+    "Gants jetables",
+    "Ustensiles de service",
+    "Sacs poubelle",
+    "Produit désinfectant et lavettes"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "service repas (a5)": {
+   "mission": "Tu sers le repas du soir pendant le passage des A5 (5e année).",
+   "taches": [
+    "Lave-toi les mains et mets des gants avant de servir",
+    "Les promos passent par créneau : oriente vers son horaire quelqu'un qui arrive en avance",
+    "Mets de côté dès le début les repas végétariens, sans porc et ceux liés à des allergies",
+    "Sers des portions régulières pour que les derniers aient autant que les premiers",
+    "Réapprovisionne au fur et à mesure et signale au QG ce qui va manquer",
+    "Veille à ce que personne ne reparte sans avoir mangé",
+    "Nettoie les tables au fil du service"
+   ],
+   "materiel": [
+    "Gants jetables",
+    "Ustensiles de service",
+    "Sacs poubelle",
+    "Produit désinfectant et lavettes"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "service repas (a2/b2)": {
+   "mission": "Tu sers le repas du soir pendant le passage des A2 et B2 (2e année).",
+   "taches": [
+    "Lave-toi les mains et mets des gants avant de servir",
+    "Les promos passent par créneau : oriente vers son horaire quelqu'un qui arrive en avance",
+    "Mets de côté dès le début les repas végétariens, sans porc et ceux liés à des allergies",
+    "Sers des portions régulières pour que les derniers aient autant que les premiers",
+    "Réapprovisionne au fur et à mesure et signale au QG ce qui va manquer",
+    "Veille à ce que personne ne reparte sans avoir mangé",
+    "Nettoie les tables au fil du service"
+   ],
+   "materiel": [
+    "Gants jetables",
+    "Ustensiles de service",
+    "Sacs poubelle",
+    "Produit désinfectant et lavettes"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "service repas (a1)": {
+   "mission": "Tu sers le repas du soir pendant le passage des A1 (1re année). Ce sont les nouveaux, et ce WEI est fait pour eux : accueil chaleureux. À la fin du repas, ils restent sur place : une activité surprise les attend.",
+   "taches": [
+    "Lave-toi les mains et mets des gants avant de servir",
+    "Les promos passent par créneau : oriente vers son horaire quelqu'un qui arrive en avance",
+    "Mets de côté dès le début les repas végétariens, sans porc et ceux liés à des allergies",
+    "Sers des portions régulières pour que les derniers aient autant que les premiers",
+    "Réapprovisionne au fur et à mesure et signale au QG ce qui va manquer",
+    "Veille à ce que personne ne reparte sans avoir mangé",
+    "À la fin du repas, garde les A1 sur place : une activité surprise les attend",
+    "Ne révèle rien de la surprise, même si on insiste",
+    "Nettoie les tables au fil du service"
+   ],
+   "materiel": [
+    "Gants jetables",
+    "Ustensiles de service",
+    "Sacs poubelle",
+    "Produit désinfectant et lavettes"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "installation repas + bar before": {
+   "mission": "Tu prépares à la fois le repas du soir et le bar du before, pour que les deux ouvrent à l'heure.",
+   "taches": [
+    "Installe les tables de service et le sens de passage de la file",
+    "Prépare un coin régimes particuliers (végétarien, sans porc, allergies) bien identifié",
+    "Monte le bar du before : tireuse, gobelets, glace, eau",
+    "Installe les poubelles de tri",
+    "Fais un dernier tour 10 minutes avant l'ouverture et préviens le QG si quelque chose manque"
+   ],
+   "materiel": [
+    "Tables",
+    "Tireuse et fûts",
+    "Gobelets",
+    "Glace",
+    "Sacs poubelle"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "rangement repas": {
+   "mission": "Tu remets la salle du repas en état après le service, et tu libères la place pour l'installation de la soirée.",
+   "taches": [
+    "Débarrasse les tables et regroupe les restes",
+    "Nettoie et désinfecte les tables de service",
+    "Range le matériel du repas pour dégager l'espace de la soirée",
+    "Trie les déchets et sors les sacs aux points de collecte du camping",
+    "Signale au QG toute dégradation ou tout matériel cassé ou manquant"
+   ],
+   "materiel": [
+    "Sacs poubelle de tri",
+    "Produit désinfectant et lavettes",
+    "Balai"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "installation soiree": {
+   "mission": "Tu prépares la salle pour la soirée : la déco avant tout, puis le bar, pour une ouverture à l'heure et en sécurité.",
+   "taches": [
+    "Installe la décoration de la salle selon les consignes de l'orga : c'est la priorité du shift",
+    "Ne fixe rien sur les sorties de secours, les extincteurs ni leur signalisation, et tiens la déco à distance des spots et projecteurs",
+    "Ne monte sur l'escabeau que si quelqu'un le tient",
+    "Installe et teste le bar : tireuse, stocks, eau",
+    "Mets en place les poubelles et le point d'eau gratuite",
+    "Ne touche aux branchements électriques que sur consigne",
+    "Fais un dernier tour de la salle avec le premier responsable de bar avant l'ouverture"
+   ],
+   "materiel": [
+    "Décoration de la soirée",
+    "Scotch, serflex et ficelle",
+    "Escabeau",
+    "Tireuse et fûts",
+    "Gobelets",
+    "Sacs poubelle"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "installation pool party": {
+   "mission": "Tu prépares l'espace piscine pour la pool party : la déco avant tout, dans le respect des règles du camping.",
+   "taches": [
+    "Installe la décoration de l'espace piscine selon les consignes de l'orga : c'est la priorité du shift",
+    "Aucune déco dans le bassin ni sur ses bords, et rien qui puisse s'envoler dans l'eau",
+    "Installe la sono loin du bord, aucun câble électrique près de l'eau",
+    "Balise les zones interdites et le chemin d'accès",
+    "Installe les points d'eau à boire et les poubelles",
+    "Aucun verre au bord du bassin : gobelets uniquement",
+    "Vérifie avec le QG que la surveillance du bassin est en place avant l'ouverture"
+   ],
+   "materiel": [
+    "Décoration de la pool party",
+    "Scotch, serflex et ficelle",
+    "Sono",
+    "Rubalise",
+    "Gobelets",
+    "Sacs poubelle"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "animation piscine et surveillance bassin": {
+   "mission": "Tu animes la pool party tout en gardant un œil permanent sur le bassin. Tu n'es pas maître-nageur : ton rôle est de faire respecter les règles et d'alerter immédiatement.",
+   "taches": [
+    "Reste en permanence face au bassin, sans quitter l'eau des yeux, même en animant",
+    "Fais respecter les règles de la piscine : pas de bousculade, pas de verre au bord",
+    "Ne laisse pas entrer dans l'eau une personne alcoolisée",
+    "Au moindre doute sur quelqu'un dans l'eau, alerte immédiatement le surveillant du bassin et le poste de secours",
+    "Organise-toi avec ton binôme pour ne jamais laisser d'angle mort",
+    "À la fermeture, fais sortir tout le monde et vérifie que le bassin est vide"
+   ],
+   "materiel": [
+    "Talkie",
+    "Chasuble",
+    "Sifflet"
+   ],
+   "referent": "Le surveillant du bassin et le poste de secours en priorité, puis le QG. Numéros et canaux dans SOS."
+  },
+  "toboggan": {
+   "mission": "Tu gères le passage au toboggan : une personne à la fois, sans que la file déborde.",
+   "taches": [
+    "Fais partir une personne à la fois, seulement quand la précédente a dégagé la réception",
+    "Fais respecter les consignes affichées au départ du toboggan",
+    "Ne laisse pas monter une personne alcoolisée",
+    "Garde la file calme dans l'escalier",
+    "Au moindre incident, alerte immédiatement le surveillant du bassin"
+   ],
+   "materiel": [
+    "Talkie",
+    "Sifflet"
+   ],
+   "referent": "Le surveillant du bassin et le poste de secours en priorité, puis le QG. Numéros et canaux dans SOS."
+  },
+  "auto-tamponneuse": {
+   "mission": "Tu gères la file et les rotations des auto-tamponneuses, en appui de l'opérateur du manège.",
+   "taches": [
+    "Fais patienter la file derrière la barrière, jamais sur la piste",
+    "Fais monter les groupes à chaque tour selon le nombre de voitures disponibles",
+    "Rappelle les consignes de l'opérateur avant chaque tour",
+    "Ne laisse pas monter une personne manifestement ivre",
+    "Personne ne traverse la piste pendant un tour",
+    "Signale tout incident à l'opérateur et au QG"
+   ],
+   "materiel": [
+    "Talkie",
+    "Chasuble"
+   ],
+   "referent": "L'opérateur du manège pour tout souci technique, le QG pour le reste. Numéros et canaux dans SOS."
+  },
+  "distribution goodies": {
+   "mission": "Tu remets à chaque participant son kit à l'arrivée : c'est souvent son premier contact avec l'orga du WEI.",
+   "taches": [
+    "Pointe chaque participant sur la liste avant de lui remettre son kit",
+    "Remets le bracelet WEI : il montre que la personne fait partie du WEI, il se porte tout le week-end",
+    "Un kit par personne ; note les articles ou tailles manquants",
+    "Oriente ensuite vers la remise des clés",
+    "Préviens le QG quand le stock de kits baisse"
+   ],
+   "materiel": [
+    "Liste des participants",
+    "Kits goodies",
+    "Bracelets WEI",
+    "Stylos"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "remise de cles": {
+   "mission": "Tu remets à chaque participant la clé de son bungalow, et tu t'assures que chacun sait où il dort.",
+   "taches": [
+    "Vérifie le nom et le numéro de bungalow sur la liste de rooming avant de remettre une clé",
+    "Note chaque clé remise : nom, bungalow, heure",
+    "Montre le bungalow sur le plan du camping (bouton Plan)",
+    "Ne remets jamais une clé sans vérification, même à quelqu'un qui la prend pour un ami",
+    "Signale au QG tout problème de logement : erreur de rooming, bungalow pas prêt"
+   ],
+   "materiel": [
+    "Liste de rooming",
+    "Clés des bungalows",
+    "Feuille d'émargement",
+    "Plan du camping (bouton Plan)"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "reveil etudiant (tour camping)": {
+   "mission": "Tu fais le tour des bungalows pour que tout le monde soit debout à temps pour le brunch.",
+   "taches": [
+    "Fais le tour de tous les bungalows réservés en binôme (bouton Plan)",
+    "Frappe et annonce l'heure du brunch et du programme, sans entrer dans les bungalows",
+    "Si quelqu'un ne répond pas ou semble mal en point, préviens le poste de secours",
+    "Reste bienveillant : beaucoup ont peu dormi",
+    "Signale au QG les dégradations ou problèmes constatés"
+   ],
+   "materiel": [
+    "Plan du camping (bouton Plan)",
+    "Talkie",
+    "Enceinte portable"
+   ],
+   "referent": "Le QG ; le poste de secours pour tout problème médical. Numéros et canaux dans SOS."
+  },
+  "zumba": {
+   "mission": "Tu animes la zumba du matin pour réveiller le camping en douceur.",
+   "taches": [
+    "Installe la sono et délimite l'espace avant le début",
+    "Commence par un échauffement léger : beaucoup sortent de la soirée",
+    "Adapte l'intensité, personne n'est obligé de tout suivre",
+    "Fais boire de l'eau et arrête toute personne qui se sent mal ; poste de secours si besoin",
+    "Termine en annonçant l'ouverture du brunch"
+   ],
+   "materiel": [
+    "Sono et playlist",
+    "Eau"
+   ],
+   "referent": "Le QG ; le poste de secours pour tout problème médical. Numéros et canaux dans SOS."
+  },
+  "perimetre de la course et animation de la mousse": {
+   "mission": "Tu sécurises le parcours de la Color Run et tu fais vivre la zone mousse.",
+   "taches": [
+    "Prends ton poste sur le parcours avant le départ et n'en bouge pas pendant la course",
+    "Garde les coureurs sur le parcours et le public en dehors",
+    "Zone mousse : envoie la mousse par vagues et garde un passage où personne ne glisse",
+    "Pas de poudre ni de mousse envoyée au visage à bout portant",
+    "Signale tout coureur en difficulté au poste de secours",
+    "En fin de course, oriente les coureurs vers l'arrivée"
+   ],
+   "materiel": [
+    "Chasuble",
+    "Talkie",
+    "Canon à mousse",
+    "Poudre colorée"
+   ],
+   "referent": "Le QG ; le poste de secours pour tout problème médical. Numéros et canaux dans SOS."
+  },
+  "arrivee de la color run": {
+   "mission": "Tous les membres des BDE accueillent les coureurs à l'arrivée : c'est un des temps forts du week-end.",
+   "taches": [
+    "Rejoins la zone d'arrivée avant les premiers coureurs",
+    "Encourage, applaudis, fais de l'ambiance",
+    "Laisse la ligne d'arrivée et le couloir des coureurs dégagés",
+    "Oriente les coureurs vers l'eau",
+    "Signale tout coureur en difficulté au poste de secours"
+   ],
+   "materiel": [
+    "Eau pour les coureurs"
+   ],
+   "referent": "Le QG ; le poste de secours pour tout problème médical. Numéros et canaux dans SOS."
+  },
+  "rangement zone color run": {
+   "mission": "Tu rends la zone de la Color Run dans l'état où le camping nous l'a confiée.",
+   "taches": [
+    "Ramasse tous les déchets, sachets de poudre et bouteilles sur tout le parcours",
+    "Démonte le balisage",
+    "Balaie la poudre colorée sur les allées et terrasses",
+    "Rapporte le matériel au QG",
+    "Trie les déchets et sors les sacs aux points de collecte du camping",
+    "Signale au QG toute dégradation ou tout matériel cassé ou manquant"
+   ],
+   "materiel": [
+    "Sacs poubelle",
+    "Gants",
+    "Balais"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "gestion flux discours": {
+   "mission": "Tu passes dans le camping pour que tout le monde rejoigne à l'heure la zone devant la salle de soirée, avant le discours.",
+   "taches": [
+    "Fais le tour du camping en binôme : bungalows, allées, sanitaires (bouton Plan)",
+    "Annonce que le discours commence et presse les retardataires de rejoindre la zone devant la salle de soirée",
+    "Reste ferme mais sympa : on presse, on ne brusque pas",
+    "Si quelqu'un ne peut pas venir parce qu'il ne se sent pas bien, préviens le poste de secours",
+    "Signale au QG les zones que tu as vidées",
+    "Rejoins toi-même la zone devant la salle à la fin de ton tour"
+   ],
+   "materiel": [
+    "Talkie",
+    "Lampe frontale",
+    "Plan du camping (bouton Plan)"
+   ],
+   "referent": "Le QG ; le poste de secours pour tout problème médical. Numéros et canaux dans SOS."
+  },
+  "rangement salle et exterieur": {
+   "mission": "Tu remets la salle en état après la soirée.",
+   "taches": [
+    "Attends que le dernier participant soit sorti avant de commencer",
+    "Ramasse gobelets, bouteilles et déchets",
+    "Balaie et nettoie les flaques, attention au verre cassé",
+    "Range le matériel du bar à sa place",
+    "Trie les déchets et sors les sacs aux points de collecte du camping",
+    "Signale au QG toute dégradation ou tout matériel cassé ou manquant"
+   ],
+   "materiel": [
+    "Sacs poubelle",
+    "Gants",
+    "Balais et serpillières"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "rangement salle": {
+   "mission": "Tu remets la salle en état après la soirée.",
+   "taches": [
+    "Attends que le dernier participant soit sorti avant de commencer",
+    "Ramasse gobelets, bouteilles et déchets",
+    "Balaie et nettoie les flaques, attention au verre cassé",
+    "Range le matériel du bar à sa place",
+    "Trie les déchets et sors les sacs aux points de collecte du camping",
+    "Signale au QG toute dégradation ou tout matériel cassé ou manquant"
+   ],
+   "materiel": [
+    "Sacs poubelle",
+    "Gants",
+    "Balais et serpillières"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "installation village assos/olympiade": {
+   "mission": "Tu aides les assos à s'installer et tu vérifies que le Village Assos et l'Olympiade ne présentent aucun danger avant l'ouverture.",
+   "taches": [
+    "Accueille chaque asso et aide-la à monter son stand à l'emplacement prévu",
+    "Vérifie que chaque barnum est lesté ou haubané",
+    "Vérifie qu'aucun câble ne traîne en travers d'un passage et qu'aucune rallonge n'est exposée à l'eau",
+    "Pas de flamme ni de réchaud sous un barnum ou près d'un tissu",
+    "Installe le matériel des ateliers de l'Olympiade et garde les passages dégagés",
+    "Tout danger se corrige avant l'ouverture : si une asso refuse, préviens le QG"
+   ],
+   "materiel": [
+    "Lests pour barnums",
+    "Rubalise",
+    "Gaffer ou passe-câbles",
+    "Sacs poubelle"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "rangement village assos": {
+   "mission": "Tu démontes le Village Assos et tu rends l'espace propre.",
+   "taches": [
+    "Démonte les stands et les tables",
+    "Range le matériel de chaque stand à sa place",
+    "Ramasse les déchets sur toute la zone",
+    "Trie les déchets et sors les sacs aux points de collecte du camping",
+    "Signale au QG toute dégradation ou tout matériel cassé ou manquant"
+   ],
+   "materiel": [
+    "Sacs poubelle",
+    "Gants"
+   ],
+   "referent": "Le QG. Numéros et canaux dans SOS."
+  },
+  "nouveau shift": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  }
+ },
  "respPool": [
   "p28",
   "p01"
@@ -3311,9 +3995,15 @@
         return;
       }
       attente = null;
+      s.cles = state.cles || {};             // les clés sont synchronisées à part (voir recevoirCles)
       state = s;
       defauts();
       render();
+    },
+    recevoirCles: function(obj){
+      state.cles = obj || {};
+      if(vue.n === "cles" && rafraichirCles) rafraichirCles();
+      else if(vue.n === "reglages" && !saisieEnCours()) render();
     },
     statut: function(code, info){
       if(code === "ok") badge("ok", "EN DIRECT");
@@ -3345,6 +4035,8 @@
     if(!state.urgences.numeros) state.urgences.numeros = [];
     if(!state.urgences.canaux) state.urgences.canaux = [];
     if(!state.plan) state.plan = {src:"", legende:""};
+    if(!state.bungalows) state.bungalows = [];
+    if(!state.cles) state.cles = {};
   }
   function telLien(t){ return "tel:" + String(t).replace(/[^+0-9]/g,""); }
   function telAff(t){
@@ -3510,7 +4202,9 @@
     topA.textContent = estAdmin ? "Quitter l'admin" : "Admin";
     dock.hidden = true; dockin.innerHTML = "";
     app.innerHTML = "";
-    ({pick:vPick, me:vMoi, fiche:vFiche, planning:vPlanning, plan:vPlan, sos:vSos,
+    rafraichirCles = null;
+    document.getElementById("topK").hidden = !(admin || gereCles(moi));
+    ({pick:vPick, me:vMoi, fiche:vFiche, planning:vPlanning, plan:vPlan, sos:vSos, cles:vCles,
       gate:vGate, admin:vAdmin, edit:vEdit, reglages:vReglages}[vue.n] || vPick)();
     if(!estAdmin && vue.n !== "sos" && vue.n !== "pick" && vue.n !== "me"){
       var mini = sosPetit(); if(mini) app.appendChild(mini);
@@ -3691,6 +4385,11 @@
     app.appendChild(el('<div style="margin-top:10px"><span class="pill ' + st.c + '">' + st.l + '</span></div>'));
 
     if(s.note) app.appendChild(el('<div class="snote big">' + esc(s.note) + '</div>'));
+    if(estPosteCles(s)){
+      var ok = el('<button class="btn go" style="margin-top:14px">Ouvrir les clés des bungalows</button>');
+      ok.addEventListener("click", function(){ go("cles"); });
+      app.appendChild(ok);
+    }
     if(ficheVide(f)) app.appendChild(el('<div class="fsec"><h4>Fiche de poste</h4>' +
       '<p class="meta">Pas encore rédigée. Demande à ton responsable de shift ce qui est attendu.</p></div>'));
     if(f.mission) app.appendChild(el('<div class="fsec"><h4>Ta mission</h4><p>' + esc(f.mission) + '</p></div>'));
@@ -3818,6 +4517,106 @@
   }
 
   function retour(){ go(moi ? "me" : "pick"); }
+
+  /* ---------- bungalows et clés ----------------------------------------
+     La liste des bungalows (numéro + responsable) fait partie du planning.
+     L'état des clés est stocké à part, bungalow par bungalow : deux
+     personnes peuvent remettre des clés en même temps sans s'écraser. */
+  var rafraichirCles = null, filtreCles = "tous", rechercheCles = "";
+  function estPosteCles(sh){ return /cl[eé]s/i.test(sh.nom); }
+  function gereCles(pid){
+    return !!pid && mesAffectations(pid).some(estPosteCles);
+  }
+  function triNum(a, b){
+    var x = parseFloat(a.num), y = parseFloat(b.num);
+    if(!isNaN(x) && !isNaN(y) && x !== y) return x - y;
+    return String(a.num).localeCompare(String(b.num), "fr", {numeric:true});
+  }
+  function etatCle(num){ return (state.cles || {})[String(num)] || null; }
+  function signature(){ var p = moi && pers(moi); return p ? court(p.nom) : (admin ? "Orga" : "?"); }
+  function heureCourte(t){
+    var d = new Date(t);
+    return ["dim.","lun.","mar.","mer.","jeu.","ven.","sam."][d.getDay()] + " " + pad(d.getHours()) + ":" + pad(d.getMinutes());
+  }
+  function majCle(num, val){
+    num = String(num);
+    if(CONNECTE && !remote){ alert("Connexion au serveur en cours, réessaie dans quelques secondes."); return false; }
+    state.cles = state.cles || {};
+    if(val) state.cles[num] = val; else delete state.cles[num];
+    if(CONNECTE) remote.pushCle(num, val);
+    else sauver();
+    return true;
+  }
+
+  function vCles(){
+    var tete = el('<div></div>');
+    var b0 = el('<button class="lnk sticky-back">← Retour</button>');
+    b0.addEventListener("click", function(){ admin && !moi ? go("admin") : retour(); });
+    tete.appendChild(b0);
+    tete.appendChild(el('<h2 class="lead">Clés des bungalows</h2>'));
+    app.appendChild(tete);
+
+    var bgs = (state.bungalows || []).slice().sort(triNum);
+    if(!bgs.length){
+      app.appendChild(el('<div class="none"><b>Aucun bungalow enregistré</b>' +
+        'L\'orga les ajoute dans Admin → Personnes, BDE et données → Bungalows.</div>'));
+      return;
+    }
+    var stats = el('<div class="kstats"></div>');
+    var q = el('<input type="search" placeholder="Numéro de bungalow ou nom du responsable" aria-label="Chercher un bungalow">');
+    q.value = rechercheCles;
+    var fil = el('<div class="kfil"></div>');
+    var liste = el('<div></div>');
+    app.appendChild(stats); app.appendChild(q); app.appendChild(fil); app.appendChild(liste);
+
+    [["tous","Tous"],["a","À remettre"],["remise","Remises"],["rendue","Rendues"]].forEach(function(f){
+      var b = el('<button' + (filtreCles === f[0] ? ' class="on"' : '') + '>' + f[1] + '</button>');
+      b.addEventListener("click", function(){ filtreCles = f[0]; render(); });
+      fil.appendChild(b);
+    });
+
+    function dessiner(){
+      var n = bgs.length, nr = 0, nd = 0;
+      bgs.forEach(function(b){ var e = etatCle(b.num); if(e && e.etat === "remise") nr++; if(e && e.etat === "rendue") nd++; });
+      stats.innerHTML =
+        '<div class="kstat"><b>' + (n - nr - nd) + '</b><span>À REMETTRE</span></div>' +
+        '<div class="kstat"><b style="color:var(--c1)">' + nr + '</b><span>REMISES</span></div>' +
+        '<div class="kstat"><b style="color:var(--live)">' + nd + '</b><span>RENDUES</span></div>';
+      liste.innerHTML = "";
+      var f = rechercheCles.trim().toUpperCase(), vus = 0;
+      bgs.forEach(function(b){
+        var e = etatCle(b.num), et = e ? e.etat : "a";
+        if(filtreCles !== "tous" && filtreCles !== et) return;
+        if(f && String(b.num).toUpperCase().indexOf(f) !== 0 && String(b.resp || "").toUpperCase().indexOf(f) === -1) return;
+        vus++;
+        var ligne = !e ? 'Clé à remettre' :
+          (e.etat === "remise" ? 'Remise ' + heureCourte(e.remise) + ' par ' + esc(e.remisePar || "?")
+                               : 'Rendue ' + heureCourte(e.rendue) + ' · remise ' + heureCourte(e.remise));
+        var r = el('<div class="krow ' + (e ? e.etat : '') + '"><div class="kn">' + esc(b.num) + '</div>' +
+          '<div class="kt"><div class="kr">' + (b.resp ? esc(b.resp) : '<span style="color:var(--dim)">Responsable non renseigné</span>') +
+          '</div><div class="ks">' + ligne + '</div></div></div>');
+        if(!e || e.etat === "remise"){
+          var bt = el('<button class="kb' + (e ? ' back' : '') + '">' + (e ? 'Récupérée' : 'Remettre') + '</button>');
+          bt.addEventListener("click", function(){ basculer(b, e); });
+          r.appendChild(bt);
+        }
+        liste.appendChild(r);
+      });
+      if(!vus) liste.appendChild(el('<div class="none"><b>Aucun bungalow</b>Rien ne correspond à ta recherche.</div>'));
+    }
+    function basculer(b, e){
+      var avant = e ? JSON.parse(JSON.stringify(e)) : null, apres;
+      if(!e) apres = {etat:"remise", remise:Date.now(), remisePar:signature()};
+      else apres = {etat:"rendue", remise:e.remise, remisePar:e.remisePar, rendue:Date.now(), renduePar:signature()};
+      if(!majCle(b.num, apres)) return;
+      dessiner();
+      toast("Bungalow " + b.num + (apres.etat === "remise" ? " : clé remise" + (b.resp ? " à " + b.resp : "") : " : clé récupérée"),
+        function(){ majCle(b.num, avant); dessiner(); });
+    }
+    q.addEventListener("input", function(){ rechercheCles = q.value; dessiner(); });
+    rafraichirCles = dessiner;
+    dessiner();
+  }
 
   /* --- porte admin --- */
   function vGate(){
@@ -4164,10 +4963,29 @@
       return pen;
     }
     function chevauche(L, d, f){ for(var i=0;i<L.length;i++) if(L[i][0] < f && d < L[i][1]) return true; return false; }
-    var PAUSE = 30 * 60000, NUIT_CONTINUE = !!state.nuitContinue;
-    function jonctionOk(t){            // mode « nuit d'un bloc » : on peut enchaîner entre 1 h et 6 h
-      if(!NUIT_CONTINUE) return false;
-      var h = new Date(t).getHours(); return h >= 1 && h < 6;
+    var BLOC_MAX = state.blocMax || 180;  // minutes d'affilée au maximum (3 h par défaut, 4 h en option)
+    function tropLong(L, d, f){        // règle stricte, sauf pour un shift qui dure plus à lui seul
+      return bloc(L, d, f) > Math.max(BLOC_MAX, (f - d) / 60000);
+    }
+    var PAUSE = 30 * 60000, UNE_NUIT = !!state.nuitContinue;
+    function nuitCle(d, f){            // la nuit (22 h – 6 h) que touche [d,f], ou null
+      var x = new Date(d); x.setHours(0, 0, 0, 0);
+      for(var k = -1; k <= 0; k++){
+        var ws = new Date(x.getTime()); ws.setDate(ws.getDate() + k); ws.setHours(22, 0, 0, 0);
+        var we = new Date(ws.getTime()); we.setDate(we.getDate() + 1); we.setHours(6, 0, 0, 0);
+        if(d < we.getTime() && f > ws.getTime()) return jourDeT(ws.getTime());
+      }
+      return null;
+    }
+    function autreNuit(L, d, f){       // mode « une seule nuit » : [d,f] tombe-t-il sur une autre nuit que celle déjà faite ?
+      var k = nuitCle(d, f);
+      if(k === null) return false;
+      for(var i=0;i<L.length;i++){ var j = nuitCle(L[i][0], L[i][1]); if(j !== null && j !== k) return true; }
+      return false;
+    }
+    function jonctionOk(t){            // mode « une seule nuit » : on peut enchaîner pendant la nuit
+      if(!UNE_NUIT) return false;
+      var h = new Date(t).getHours(); return h >= 22 || h < 6;
     }
     function colles(L, d, f){          // créneaux de L sans vraie pause avant ou après [d,f]
       var n = 0;
@@ -4191,34 +5009,77 @@
       return [meme, autre];
     }
 
+    /* mode « une seule nuit » : chaque personne est rattachée à une nuit.
+       Ceux qui ont déjà un créneau de nuit (un poste de responsable, par ex.)
+       gardent la leur ; ceux qui en ont déjà deux ne font plus aucune nuit.
+       Les autres sont répartis entre les nuits au prorata de la demande. */
+    var nuitsDem = {};
+    slots.forEach(function(sl){ var k = nuitCle(sl.d, sl.f); if(k !== null) nuitsDem[k] = (nuitsDem[k] || 0) + (sl.f - sl.d); });
+    var clesNuits = Object.keys(nuitsDem).map(Number).sort();
+    function groupes(){
+      var g = {}, libres = [];
+      pool.forEach(function(p){
+        var ks = {};
+        base[p.id].forEach(function(x){ var k = nuitCle(x[0], x[1]); if(k !== null) ks[k] = 1; });
+        var n = Object.keys(ks);
+        if(n.length === 1) g[p.id] = Number(n[0]);
+        else if(n.length > 1) g[p.id] = -1;          // déjà sur deux nuits : aucune nuit de plus
+        else libres.push(p.id);
+      });
+      melange(libres);
+      var tot = 0; clesNuits.forEach(function(k){ tot += nuitsDem[k]; });
+      var i = 0;
+      clesNuits.forEach(function(k, idx){
+        var n = idx === clesNuits.length - 1 ? libres.length - i :
+                Math.round(libres.length * nuitsDem[k] / tot) + Math.floor(Math.random() * 5) - 2;
+        n = Math.max(0, Math.min(n, libres.length - i));
+        for(var c = 0; c < n && i < libres.length; c++) g[libres[i++]] = k;
+      });
+      return g;
+    }
+
+    slots.forEach(function(sl){
+      var n = 0;
+      for(var i = 0; i < slots.length; i++) if(slots[i].d <= sl.d && sl.d < slots[i].f) n++;
+      sl.pression = n;
+    });
+
     var meilleur = null;
     for(var essai = 0; essai < 40; essai++){
-      var iv = {}, pris = {};
+      var iv = {}, pris = {}, grp = UNE_NUIT ? groupes() : null;
       pool.forEach(function(p){ iv[p.id] = base[p.id].slice(); });
-      var ordre = melange(slots.slice()).sort(function(x, y){ return x.d - y.d; });
-      var aff = [], rates = 0, pen = 0;
+      var ordre = melange(slots.slice()).sort(essai % 2
+        ? function(x, y){ return (y.pression - x.pression) || (x.d - y.d); }
+        : function(x, y){ return x.d - y.d; });
+      var aff = [], trous = [], rates = 0, pen = 0;
       ordre.forEach(function(sl){
-        var choix = null, mini = Infinity, cle2 = sl.s.id;
-        pool.forEach(function(p){
+        var choix = null, mini = Infinity, cle2 = sl.s.id, kn = nuitCle(sl.d, sl.f);
+        function candidat(p, groupeSeul){
           if(sl.s.equipe.indexOf(p.id) > -1 || estResp(sl.s, p.id)) return;
           if(pris[cle2 + "|" + p.id]) return;
           var L = iv[p.id];
           if(chevauche(L, sl.d, sl.f)) return;
           if(chevauche(chefs[p.id], sl.d, sl.f)) return;   // reste à son poste de responsable
+          if(tropLong(L, sl.d, sl.f)) return;
+          if(UNE_NUIT && kn !== null){
+            if(autreNuit(L, sl.d, sl.f) || grp[p.id] === -1) return;   // règle stricte
+            if(groupeSeul && grp[p.id] !== kn) return;
+          }
           var sc = charge(L);
-          if(bloc(L, sl.d, sl.f) > 180) sc += 600;
+          if(bloc(L, sl.d, sl.f) > BLOC_MAX) sc += 600;
           sc += 700 * colles(L, sl.d, sl.f);
           sc += 450 * nuitMatin(L, sl.d, sl.f);
-          if(tardif(sl.f)){
+          if(!UNE_NUIT && tardif(sl.f)){
             var nn = nuits(L, sl.f);
             if(nn[1]) sc += 350;           // déjà une fin de nuit l'autre nuit : on épargne
             else if(nn[0]) sc -= 120;      // déjà de nuit ce soir-là : on regroupe
           }
           sc += Math.random() * 50;
           if(sc < mini){ mini = sc; choix = p.id; }
-        });
-        if(choix === null){ rates++; return; }
-        if(bloc(iv[choix], sl.d, sl.f) > 180) pen++;
+        }
+        pool.forEach(function(p){ candidat(p, UNE_NUIT && kn !== null); });
+        if(choix === null){ rates++; trous.push([sl.s, null, sl.d, sl.f]); return; }
+        if(bloc(iv[choix], sl.d, sl.f) > BLOC_MAX) pen++;
         pen += nuitMatin(iv[choix], sl.d, sl.f);
         iv[choix].push([sl.d, sl.f]);
         pris[cle2 + "|" + choix] = true;
@@ -4227,13 +5088,17 @@
       var ch = pool.map(function(p){ return charge(iv[p.id]); });
       var ecart = Math.max.apply(null, ch) - Math.min.apply(null, ch);
       var deuxNuits = pool.filter(function(p){
-        var js = {}; iv[p.id].forEach(function(x){ if(tardif(x[1])) js[jourDeT(x[1])] = 1; });
+        var js = {};
+        iv[p.id].forEach(function(x){
+          if(UNE_NUIT){ var k = nuitCle(x[0], x[1]); if(k !== null) js[k] = 1; }
+          else if(tardif(x[1])) js[jourDeT(x[1])] = 1;
+        });
         return Object.keys(js).length > 1;
       }).length;
       var chaines = 0;
       pool.forEach(function(p){ chaines += nbChaines(iv[p.id]); });
       var score = rates * 1e6 + chaines * 500 + pen * 400 + deuxNuits * 150 + ecart;
-      if(!meilleur || score < meilleur.score) meilleur = {score:score, aff:aff, iv:iv, rates:rates, pen:pen, ecart:ecart};
+      if(!meilleur || score < meilleur.score) meilleur = {score:score, aff:aff, trous:trous, iv:iv, rates:rates, pen:pen, ecart:ecart};
     }
 
     /* ---- optimisation globale (recuit simulé) ----------------------------
@@ -4246,7 +5111,8 @@
          3. pas de bloc de plus de 3 h,
          4. le moins possible de monde de nuit les deux nuits,
          5. des heures équilibrées entre tous. */
-    var IV = meilleur.iv, A = meilleur.aff, ids = pool.map(function(p){ return p.id; });
+    var IV = meilleur.iv, A = meilleur.aff.concat(meilleur.trous), ids = pool.map(function(p){ return p.id; });
+    var TROU = 5000;
     var total = 0; ids.forEach(function(id){ total += charge(IV[id]); });
     var moy = total / ids.length;
     var W_CH = 1000, W_NM = 800, W_BL = 600, W_2N = 350, W_LD = 60;
@@ -4259,9 +5125,9 @@
       var a = null, b = null;
       for(i = 0; i < t.length; i++){
         if(a !== null && t[i][0] <= b){ b = Math.max(b, t[i][1]); }
-        else { if(a !== null && (b - a) > 180*60000) c += W_BL; a = t[i][0]; b = t[i][1]; }
+        else { if(a !== null && (b - a) > BLOC_MAX*60000) c += W_BL; a = t[i][0]; b = t[i][1]; }
       }
-      if(a !== null && (b - a) > 180*60000) c += W_BL;
+      if(a !== null && (b - a) > BLOC_MAX*60000) c += W_BL;
       var nuitsVues = {}, nb = 0;
       for(i = 0; i < t.length; i++){
         if(!tardif(t[i][1])) continue;
@@ -4278,18 +5144,29 @@
     }
     function retire(L, d, f){ for(var m = 0; m < L.length; m++) if(L[m][0] === d && L[m][1] === f){ L.splice(m, 1); return; } }
     var occ = {};
-    A.forEach(function(a){ occ[a[0].id + "|" + a[1]] = 1; });
+    A.forEach(function(a){ if(a[1] !== null) occ[a[0].id + "|" + a[1]] = 1; });
     function dispo(pid, a){            // contraintes dures pour recevoir le créneau a
       if(occ[a[0].id + "|" + pid] || a[0].equipe.indexOf(pid) > -1 || estResp(a[0], pid)) return false;
+      if(UNE_NUIT && autreNuit(IV[pid], a[2], a[3])) return false;
+      if(tropLong(IV[pid], a[2], a[3])) return false;
       return !chevauche(IV[pid], a[2], a[3]) && !chevauche(chefs[pid], a[2], a[3]);
     }
     var C = {}, cout = 0;
     ids.forEach(function(id){ C[id] = coutP(id); cout += C[id]; });
+    A.forEach(function(a){ if(a[1] === null) cout += TROU; });
     var meilleurCout = cout, meilleursProprios = A.map(function(a){ return a[1]; });
     var N = 160000, T0 = 500, T1 = 1, T = T0, k = Math.pow(T1 / T0, 1 / N);
     for(var it = 0; it < N && A.length && ids.length > 1; it++, T *= k){
       var a1 = A[Math.floor(Math.random() * A.length)], P = a1[1], delta, cP, cQ, Q;
-      if(Math.random() < 0.5){                                   // transfert
+      if(P === null){                                            // place vide : on essaie de la pourvoir
+        Q = ids[Math.floor(Math.random() * ids.length)];
+        if(!dispo(Q, a1)) continue;
+        IV[Q].push([a1[2], a1[3]]);
+        cQ = coutP(Q); delta = cQ - C[Q] - TROU;
+        if(delta <= 0 || Math.random() < Math.exp(-delta / T)){
+          C[Q] = cQ; cout += delta; occ[a1[0].id + "|" + Q] = 1; a1[1] = Q;
+        } else retire(IV[Q], a1[2], a1[3]);
+      } else if(Math.random() < 0.5){                            // transfert
         Q = ids[Math.floor(Math.random() * ids.length)];
         if(Q === P || !dispo(Q, a1)) continue;
         retire(IV[P], a1[2], a1[3]); IV[Q].push([a1[2], a1[3]]);
@@ -4300,12 +5177,14 @@
         } else { retire(IV[Q], a1[2], a1[3]); IV[P].push([a1[2], a1[3]]); }
       } else {                                                   // échange
         var a2 = A[Math.floor(Math.random() * A.length)]; Q = a2[1];
-        if(Q === P || a2[0] === a1[0]) continue;
+        if(Q === null || Q === P || a2[0] === a1[0]) continue;
         if(occ[a2[0].id + "|" + P] || a2[0].equipe.indexOf(P) > -1 || estResp(a2[0], P)) continue;
         if(occ[a1[0].id + "|" + Q] || a1[0].equipe.indexOf(Q) > -1 || estResp(a1[0], Q)) continue;
         retire(IV[P], a1[2], a1[3]); retire(IV[Q], a2[2], a2[3]);
         if(chevauche(IV[P], a2[2], a2[3]) || chevauche(chefs[P], a2[2], a2[3]) ||
-           chevauche(IV[Q], a1[2], a1[3]) || chevauche(chefs[Q], a1[2], a1[3])){
+           chevauche(IV[Q], a1[2], a1[3]) || chevauche(chefs[Q], a1[2], a1[3]) ||
+           (UNE_NUIT && (autreNuit(IV[P], a2[2], a2[3]) || autreNuit(IV[Q], a1[2], a1[3]))) ||
+           tropLong(IV[P], a2[2], a2[3]) || tropLong(IV[Q], a1[2], a1[3])){
           IV[P].push([a1[2], a1[3]]); IV[Q].push([a2[2], a2[3]]); continue;
         }
         IV[P].push([a2[2], a2[3]]); IV[Q].push([a1[2], a1[3]]);
@@ -4326,11 +5205,12 @@
 
     // bilan sur la solution retenue
     var fin = {}; ids.forEach(function(id){ fin[id] = base[id].slice(); });
-    A.forEach(function(a){ fin[a[1]].push([a[2], a[3]]); });
+    var pourvues = A.filter(function(a){ return a[1] !== null; });
+    pourvues.forEach(function(a){ fin[a[1]].push([a[2], a[3]]); });
     var nbCh = 0, chF = [];
     ids.forEach(function(id){ nbCh += nbChaines(fin[id]); chF.push(charge(fin[id])); });
-    A.forEach(function(a){ a[0].equipe.push(a[1]); });
-    return {places:slots.length, remplies:A.length, enchainements:nbCh,
+    pourvues.forEach(function(a){ a[0].equipe.push(a[1]); });
+    return {places:slots.length, remplies:pourvues.length, enchainements:nbCh,
             ecart:Math.max.apply(null, chF) - Math.min.apply(null, chF)};
   }
   window.WEI.repartir = function(bid){ var r = repartir(bid); sauver(); render(); return r; };
@@ -4417,11 +5297,23 @@
       'deux créneaux, mais la demande de fin de nuit oblige alors une bonne partie des membres à veiller ' +
       'les deux nuits.</span></label>');
     var o2 = el('<label class="opt"><input type="radio" name="nuit"' + (state.nuitContinue ? ' checked' : '') + '>' +
-      '<span><b>Nuit d\'un bloc.</b> Pas d\'enchaînement en journée ni en soirée, mais entre 1 h et 6 h on ' +
-      'peut enchaîner jusqu\'à 3 h de suite. Chacun ne veille alors qu\'une seule nuit.</span></label>');
+      '<span><b>Une seule nuit par personne.</b> Chacun travaille au plus une nuit, entre 22 h et 6 h, et ' +
+      'ne fait aucun shift l\'autre nuit. Pendant sa nuit, on peut enchaîner jusqu\'à 3 h de suite ; ' +
+      'en journée, jamais.</span></label>');
     o1.querySelector("input").addEventListener("change", function(){ delete state.nuitContinue; sauver(); });
     o2.querySelector("input").addEventListener("change", function(){ state.nuitContinue = true; sauver(); });
     rr.appendChild(o1); rr.appendChild(o2);
+    var bm = el('<div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">' +
+      '<span class="meta" style="font-weight:700">Jamais plus de</span>' +
+      '<select style="width:auto"><option value="180">3 h</option><option value="240">4 h</option></select>' +
+      '<span class="meta" style="font-weight:700">de shift d\'affilée</span></div>');
+    var bms = bm.querySelector("select");
+    bms.value = String(state.blocMax || 180);
+    bms.addEventListener("change", function(){
+      if(bms.value === "180") delete state.blocMax; else state.blocMax = +bms.value;
+      sauver();
+    });
+    rr.appendChild(bm);
     rr.appendChild(el('<p class="meta" style="margin-top:8px">Le choix s\'applique à la prochaine répartition : ' +
       'efface les affectations d\'un BDE puis relance « Répartir automatiquement ».</p>'));
     app.appendChild(rr);
@@ -4535,8 +5427,87 @@
     pg.appendChild(pv);
     rg.appendChild(pg);
 
+    /* bungalows */
+    var bgs = state.bungalows;
+    var nRem = 0, nRen = 0;
+    bgs.forEach(function(b){ var e = etatCle(b.num); if(e && e.etat === "remise") nRem++; if(e && e.etat === "rendue") nRen++; });
+    var bb = el('<div class="adm"><div class="t"><h3>Bungalows</h3><span class="h">' + bgs.length + ' bungalow' +
+      (bgs.length > 1 ? 's' : '') + (bgs.length ? ' · ' + nRem + ' clé' + (nRem > 1 ? 's' : '') + ' dehors · ' + nRen + ' rendue' + (nRen > 1 ? 's' : '') : '') +
+      '</span></div><p class="meta">Le plus rapide : copie deux colonnes de ton tableur (numéro, responsable) et colle-les ici. ' +
+      'Un numéro déjà présent est mis à jour, un nouveau est ajouté.</p></div>');
+    var imp = el('<textarea style="min-height:90px" placeholder="208&#9;Camille ARNAUD&#10;209&#9;Théo BRUNET"></textarea>');
+    var ib = el('<button class="mini">Importer la liste</button>');
+    ib.addEventListener("click", function(){
+      var aj = 0, mj = 0;
+      imp.value.split(/\r?\n/).forEach(function(l){
+        l = l.trim(); if(!l) return;
+        var m = l.match(/^([^\t;,]+)[\t;,]+(.*)$/), num = (m ? m[1] : l).trim(), resp = (m ? m[2] : "").replace(/[\t;,]+/g, " ").trim();
+        if(!/[0-9]/.test(num)) return;                  // ligne d'en-tête ou vide
+        var ex = null;
+        for(var i = 0; i < bgs.length; i++) if(String(bgs[i].num) === num) ex = bgs[i];
+        if(ex){ if(resp && ex.resp !== resp){ ex.resp = resp; mj++; } }
+        else { bgs.push({id:uid("b"), num:num, resp:resp}); aj++; }
+      });
+      imp.value = ""; sauver(); render();
+      toast(aj + " bungalow" + (aj > 1 ? "s ajoutés" : " ajouté") + ", " + mj + " mis à jour", null);
+    });
+    bb.appendChild(imp); bb.appendChild(ib);
+    var ov = el('<button class="mini">Ouvrir l\'onglet Clés</button>');
+    ov.addEventListener("click", function(){ go("cles"); });
+    bb.appendChild(ov);
+
+    var lst = el('<div style="margin-top:12px"></div>');
+    bgs.slice().sort(triNum).forEach(function(b){
+      var e = etatCle(b.num);
+      var r = el('<div class="brow"></div>');
+      var ni = el('<input aria-label="Numéro" placeholder="N°">'); ni.value = b.num;
+      ni.addEventListener("change", function(){
+        var neuf = ni.value.trim(), ancien = String(b.num);
+        if(!neuf || neuf === ancien) { ni.value = ancien; return; }
+        if(bgs.some(function(x){ return x !== b && String(x.num) === neuf; })){
+          alert("Le bungalow " + neuf + " existe déjà."); ni.value = ancien; return;
+        }
+        var ec = etatCle(ancien);
+        b.num = neuf; sauver();
+        if(ec){ majCle(neuf, ec); majCle(ancien, null); }
+        render();
+      });
+      var ri = el('<input aria-label="Responsable" placeholder="Responsable du bungalow">'); ri.value = b.resp || "";
+      ri.addEventListener("input", function(){ b.resp = ri.value; sauver(); });
+      var st = el('<span class="bst ' + (e ? e.etat : '') + '">' + (!e ? 'CLÉ ICI' : e.etat === "remise" ? 'REMISE' : 'RENDUE') + '</span>');
+      var x = el('<button class="mx" aria-label="Supprimer le bungalow">✕</button>');
+      x.addEventListener("click", function(){
+        if(!confirm("Supprimer le bungalow " + b.num + " ?")) return;
+        var i = bgs.indexOf(b); if(i > -1) bgs.splice(i, 1);
+        if(etatCle(b.num)) majCle(b.num, null);
+        sauver(); render();
+      });
+      r.appendChild(ni); r.appendChild(ri); r.appendChild(st); r.appendChild(x);
+      lst.appendChild(r);
+    });
+    bb.appendChild(lst);
+    var ab = el('<button class="mini">+ Ajouter un bungalow</button>');
+    ab.addEventListener("click", function(){
+      var n = 1; while(bgs.some(function(x){ return String(x.num) === "Nouveau " + n; })) n++;
+      bgs.push({id:uid("b"), num:"Nouveau " + n, resp:""}); sauver(); render();
+    });
+    bb.appendChild(ab);
+    if(nRem || nRen){
+      var rz0 = el('<button class="mini warn">Remettre toutes les clés à zéro</button>');
+      rz0.addEventListener("click", function(){
+        if(!confirm("Effacer l'historique de toutes les clés (remises et rendues) ? À faire uniquement après des tests.")) return;
+        if(CONNECTE){ if(remote) remote.resetCles(); state.cles = {}; }
+        else { state.cles = {}; sauver(); }
+        render();
+      });
+      bb.appendChild(rz0);
+    }
+    app.appendChild(bb);
+
     var dat = el('<div class="adm"><h3>Données</h3>' +
       '<p class="meta">Copie ce texte pour sauvegarder la configuration ou me la transmettre. ' +
+      'Un bloc qui ne contient que des fiches de poste (<code>{"fiches": …}</code>) est ajouté ' +
+      'sans rien effacer. ' +
       'Colle-en une autre puis « Charger » pour la remplacer.</p></div>');
     var ta = el('<textarea style="min-height:150px;font-family:ui-monospace,monospace;font-size:.78rem"></textarea>');
     ta.value = JSON.stringify(state, null, 1);
@@ -4546,6 +5517,27 @@
     ld.addEventListener("click", function(){
       try{
         var s = JSON.parse(ta.value);
+        if(s && s.fiches && !s.shifts && !s.people){
+          // import partiel : les fiches sont fusionnées, rien d'autre ne bouge
+          state.fiches = state.fiches || {};
+          var noms = Object.keys(s.fiches), orphelines = [];
+          noms.forEach(function(n){
+            var f = s.fiches[n] || {};
+            state.fiches[cle(n)] = {
+              mission: String(f.mission || ""),
+              taches: [].concat(f.taches || []).map(String),
+              materiel: [].concat(f.materiel || []).map(String),
+              referent: String(f.referent || "")
+            };
+            if(!state.shifts.some(function(x){ return cle(x.nom) === cle(n); })) orphelines.push(n);
+          });
+          sauver();
+          alert(noms.length + " fiche" + (noms.length > 1 ? "s importées" : " importée") +
+                (orphelines.length ? ".\n\nAucun shift ne porte ce nom : " + orphelines.join(", ") +
+                 ". Vérifie l'orthographe du poste." : "."));
+          go("admin");
+          return;
+        }
         if(!s.shifts || !s.people) throw new Error("structure");
         state = s; sauver(); alert("Configuration chargée."); go("admin");
       }catch(e){ alert("JSON invalide, rien n'a été chargé."); }
@@ -4560,6 +5552,9 @@
   }
 
   /* ---------- démarrage ---------- */
+  document.getElementById("topK").addEventListener("click", function(){
+    if(vue.n === "cles") retour(); else go("cles");
+  });
   document.getElementById("topP").addEventListener("click", function(){
     if(vue.n === "plan") retour(); else go("plan");
   });
@@ -4595,20 +5590,31 @@ if (C.firebase && C.firebase.apiKey && W) {
   const V = "12.19.0";
   try {
     const { initializeApp } = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`);
-    const { getFirestore, doc, onSnapshot, setDoc } =
+    const { getFirestore, doc, onSnapshot, setDoc, updateDoc, FieldPath, deleteField } =
       await import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`);
 
     const db = getFirestore(initializeApp(C.firebase));
     const ref = doc(db, C.collection || "wei", C.document || "planning");
     let dernier = null;
 
+    const erreur = (e) => W.statut("ko", e && e.code ? e.code : "écriture refusée");
     W.connect({
+      // le planning : un seul champ JSON, sans les clés (elles ont leur propre champ)
       push(state) {
-        const json = JSON.stringify(state);
+        const copie = Object.assign({}, state);
+        delete copie.cles;
+        const json = JSON.stringify(copie);
         if (json === dernier) return;
         dernier = json;
-        setDoc(ref, { json, maj: Date.now() })
-          .catch((e) => W.statut("ko", e && e.code ? e.code : "écriture refusée"));
+        setDoc(ref, { json, maj: Date.now() }, { merge: true }).catch(erreur);
+      },
+      // une clé = un sous-champ : deux remises simultanées ne s'écrasent pas
+      pushCle(num, val) {
+        const chemin = new FieldPath("cles", String(num));
+        updateDoc(ref, chemin, val ? val : deleteField()).catch(erreur);
+      },
+      resetCles() {
+        updateDoc(ref, { cles: {} }).catch(erreur);
       }
     });
 
@@ -4616,9 +5622,12 @@ if (C.firebase && C.firebase.apiKey && W) {
       W.statut("ok");
       if (!snap.exists()) { W.seedRemote(); return; }   // premier chargement : on sème la config
       const d = snap.data();
-      if (!d || typeof d.json !== "string" || d.json === dernier) return;
-      dernier = d.json;
-      W.receive(d.json);
+      if (!d) return;
+      if (typeof d.json === "string" && d.json !== dernier) {
+        dernier = d.json;
+        W.receive(d.json);
+      }
+      W.recevoirCles(d.cles || {});
     }, (e) => W.statut("ko", e && e.code ? e.code : ""));
   } catch (e) {
     W.statut("ko", "Firebase injoignable");
