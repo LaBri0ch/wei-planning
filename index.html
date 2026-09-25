@@ -4977,6 +4977,18 @@
       }
       return null;
     }
+    var nuitDuJour = {};               // "j1" -> clé de la nuit qui commence ce jour-là à 22 h
+    state.jours.forEach(function(j){
+      var q = j.date.split("-");
+      nuitDuJour[j.id] = jourDeT(new Date(+q[0], +q[1]-1, +q[2], 22, 0, 0, 0).getTime());
+    });
+    var imposee = {};                  // choix manuel : cette personne ne veille que cette nuit-là
+    pool.forEach(function(p){ if(p.nuit && nuitDuJour[p.nuit]) imposee[p.id] = nuitDuJour[p.nuit]; });
+    function nuitInterdite(pid, d, f){
+      if(!UNE_NUIT || !imposee[pid]) return false;
+      var k = nuitCle(d, f);
+      return k !== null && k !== imposee[pid];
+    }
     function autreNuit(L, d, f){       // mode « une seule nuit » : [d,f] tombe-t-il sur une autre nuit que celle déjà faite ?
       var k = nuitCle(d, f);
       if(k === null) return false;
@@ -5017,21 +5029,25 @@
     slots.forEach(function(sl){ var k = nuitCle(sl.d, sl.f); if(k !== null) nuitsDem[k] = (nuitsDem[k] || 0) + (sl.f - sl.d); });
     var clesNuits = Object.keys(nuitsDem).map(Number).sort();
     function groupes(){
-      var g = {}, libres = [];
+      var g = {}, libres = [], deja = {};
       pool.forEach(function(p){
         var ks = {};
         base[p.id].forEach(function(x){ var k = nuitCle(x[0], x[1]); if(k !== null) ks[k] = 1; });
         var n = Object.keys(ks);
-        if(n.length === 1) g[p.id] = Number(n[0]);
-        else if(n.length > 1) g[p.id] = -1;          // déjà sur deux nuits : aucune nuit de plus
-        else libres.push(p.id);
+        if(n.length > 1) g[p.id] = -1;               // déjà sur deux nuits : aucune nuit de plus
+        else if(n.length === 1) g[p.id] = Number(n[0]);
+        else if(imposee[p.id]) g[p.id] = imposee[p.id];   // choix manuel
+        else { libres.push(p.id); return; }
+        if(g[p.id] !== -1) deja[g[p.id]] = (deja[g[p.id]] || 0) + 1;
       });
       melange(libres);
       var tot = 0; clesNuits.forEach(function(k){ tot += nuitsDem[k]; });
-      var i = 0;
+      var place = libres.length, i = 0;
       clesNuits.forEach(function(k, idx){
+        // cible proportionnelle à la demande, diminuée de ceux déjà placés sur cette nuit
+        var cible = Math.round((place + Object.keys(deja).reduce(function(a, c){ return a + deja[c]; }, 0)) * nuitsDem[k] / tot) - (deja[k] || 0);
         var n = idx === clesNuits.length - 1 ? libres.length - i :
-                Math.round(libres.length * nuitsDem[k] / tot) + Math.floor(Math.random() * 5) - 2;
+                cible + Math.floor(Math.random() * 5) - 2;
         n = Math.max(0, Math.min(n, libres.length - i));
         for(var c = 0; c < n && i < libres.length; c++) g[libres[i++]] = k;
       });
@@ -5063,6 +5079,7 @@
           if(tropLong(L, sl.d, sl.f)) return;
           if(UNE_NUIT && kn !== null){
             if(autreNuit(L, sl.d, sl.f) || grp[p.id] === -1) return;   // règle stricte
+            if(nuitInterdite(p.id, sl.d, sl.f)) return;                // nuit choisie à la main
             if(groupeSeul && grp[p.id] !== kn) return;
           }
           var sc = charge(L);
@@ -5147,7 +5164,7 @@
     A.forEach(function(a){ if(a[1] !== null) occ[a[0].id + "|" + a[1]] = 1; });
     function dispo(pid, a){            // contraintes dures pour recevoir le créneau a
       if(occ[a[0].id + "|" + pid] || a[0].equipe.indexOf(pid) > -1 || estResp(a[0], pid)) return false;
-      if(UNE_NUIT && autreNuit(IV[pid], a[2], a[3])) return false;
+      if(UNE_NUIT && (autreNuit(IV[pid], a[2], a[3]) || nuitInterdite(pid, a[2], a[3]))) return false;
       if(tropLong(IV[pid], a[2], a[3])) return false;
       return !chevauche(IV[pid], a[2], a[3]) && !chevauche(chefs[pid], a[2], a[3]);
     }
@@ -5183,7 +5200,8 @@
         retire(IV[P], a1[2], a1[3]); retire(IV[Q], a2[2], a2[3]);
         if(chevauche(IV[P], a2[2], a2[3]) || chevauche(chefs[P], a2[2], a2[3]) ||
            chevauche(IV[Q], a1[2], a1[3]) || chevauche(chefs[Q], a1[2], a1[3]) ||
-           (UNE_NUIT && (autreNuit(IV[P], a2[2], a2[3]) || autreNuit(IV[Q], a1[2], a1[3]))) ||
+           (UNE_NUIT && (autreNuit(IV[P], a2[2], a2[3]) || autreNuit(IV[Q], a1[2], a1[3]) ||
+                         nuitInterdite(P, a2[2], a2[3]) || nuitInterdite(Q, a1[2], a1[3]))) ||
            tropLong(IV[P], a2[2], a2[3]) || tropLong(IV[Q], a1[2], a1[3])){
           IV[P].push([a1[2], a1[3]]); IV[Q].push([a2[2], a2[3]]); continue;
         }
@@ -5263,6 +5281,38 @@
       });
   }
 
+  /* --- nuits : quel jour porte la nuit d'un créneau, et combien de monde il y faut --- */
+  function jourDeLaNuit(d, f){
+    for(var i = 0; i < state.jours.length; i++){
+      var q = state.jours[i].date.split("-");
+      var ws = new Date(+q[0], +q[1]-1, +q[2], 22, 0, 0, 0).getTime();
+      if(d.getTime() < ws + 8*3600000 && f.getTime() > ws) return state.jours[i].id;
+    }
+    return null;
+  }
+  function demandeNuit(bid){          // heures-personne à couvrir par nuit
+    var r = {};
+    state.shifts.forEach(function(s){
+      if(s.tous || s.total) return;
+      var q = s.quotas[bid] || 0;
+      if(!q) return;
+      var d = debutDe(s), f = finDe(s);
+      if(!d) return;
+      var j = jourDeLaNuit(d, f);
+      if(j) r[j] = (r[j] || 0) + q * (f - d) / 3600000;
+    });
+    return r;
+  }
+  function nuitsResp(pid){            // nuits déjà imposées par ses postes de responsable
+    var set = {};
+    state.shifts.forEach(function(s){
+      if(!estResp(s, pid)) return;
+      var j = jourDeLaNuit(debutDe(s), finDe(s));
+      if(j) set[j] = 1;
+    });
+    return Object.keys(set);
+  }
+
   /* --- admin : personnes, BDE, données --- */
   function vReglages(){
     var back = el('<button class="lnk">← Retour aux shifts</button>');
@@ -5314,6 +5364,65 @@
       sauver();
     });
     rr.appendChild(bm);
+
+    /* choix manuel des nuits, pour garder les amis ensemble */
+    state.bdes.forEach(function(b){
+      var gens = state.people.filter(function(p){ return p.bde === b.id && !p.horsAuto; });
+      if(!gens.length) return;
+      var dem = demandeNuit(b.id), jours = state.jours.filter(function(j){ return dem[j.id]; });
+      if(jours.length < 2) return;
+      var totDem = 0; jours.forEach(function(j){ totDem += dem[j.id]; });
+      var deuxNuits = gens.filter(function(p){ return nuitsResp(p.id).length > 1; });
+      var dispo = gens.length - deuxNuits.length;
+
+      var bloc = el('<div class="grp"><div class="gt" style="color:' + b.couleur + '">Qui veille quelle nuit — ' +
+        esc(b.nom) + '</div><p class="meta">Clique sur un nom pour le déplacer d\'une nuit à l\'autre : ' +
+        'ceux que tu places ensemble veilleront la même nuit. Le reste est tiré au sort. ' +
+        'Ne s\'applique qu\'au mode « une seule nuit par personne ».</p></div>');
+      var cols = el('<div class="rgrid" style="margin-top:8px"></div>');
+
+      function colonne(titre, sous, liste, couleur){
+        var c = el('<div style="border:2px solid var(--line);border-radius:12px;padding:10px">' +
+          '<div class="gt"' + (couleur ? ' style="color:' + couleur + '"' : '') + '>' + titre + '</div>' +
+          '<p class="meta" style="margin:2px 0 6px">' + sous + '</p><div class="chips"></div></div>');
+        var box = c.querySelector(".chips");
+        liste.sort(function(x, y){ return x.nom.localeCompare(y.nom, "fr"); }).forEach(function(p){
+          var ch = el('<button class="chip">' + esc(p.nom) + '</button>');
+          ch.addEventListener("click", function(){
+            var ordre = [null].concat(jours.map(function(j){ return j.id; }));
+            var i = ordre.indexOf(p.nuit || null);
+            var suiv = ordre[(i + 1) % ordre.length];
+            if(suiv) p.nuit = suiv; else delete p.nuit;
+            sauver(); render();
+          });
+          box.appendChild(ch);
+        });
+        if(!liste.length) box.appendChild(el('<span class="meta">Personne</span>'));
+        return c;
+      }
+
+      var auto = gens.filter(function(p){ return !p.nuit && nuitsResp(p.id).length !== 1 && nuitsResp(p.id).length < 2; });
+      cols.appendChild(colonne("Au hasard", auto.length + " personne" + (auto.length > 1 ? "s" : ""), auto, ""));
+      jours.forEach(function(j){
+        var fixes = gens.filter(function(p){ return nuitsResp(p.id).length === 1 && nuitsResp(p.id)[0] === j.id; });
+        var choisis = gens.filter(function(p){ return p.nuit === j.id && nuitsResp(p.id).length !== 1; });
+        var cible = Math.round(dispo * dem[j.id] / totDem);
+        var n = choisis.length + fixes.length;
+        cols.appendChild(colonne("Nuit de " + esc(j.nom.toLowerCase()),
+          n + " sur " + cible + " conseillés · " + Math.round(dem[j.id]) + " h à couvrir" +
+          (fixes.length ? " · dont " + fixes.length + " responsable" + (fixes.length > 1 ? "s" : "") : ""),
+          choisis.concat(fixes), b.couleur));
+      });
+      bloc.appendChild(cols);
+      if(deuxNuits.length) bloc.appendChild(el('<p class="meta" style="margin-top:8px">Sur les deux nuits, ' +
+        'donc hors équipes de nuit : ' + esc(deuxNuits.map(function(p){ return court(p.nom); }).join(", ")) + '.</p>'));
+      var raz = el('<button class="mini">Tout remettre au hasard</button>');
+      raz.addEventListener("click", function(){
+        gens.forEach(function(p){ delete p.nuit; }); sauver(); render();
+      });
+      bloc.appendChild(raz);
+      rr.appendChild(bloc);
+    });
     rr.appendChild(el('<p class="meta" style="margin-top:8px">Le choix s\'applique à la prochaine répartition : ' +
       'efface les affectations d\'un BDE puis relance « Répartir automatiquement ».</p>'));
     app.appendChild(rr);
