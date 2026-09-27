@@ -253,6 +253,22 @@
        text-transform:none;letter-spacing:0;font-size:.92rem;font-weight:500;color:var(--txt)}
   .opt input{width:auto;margin-top:3px;accent-color:var(--c1)}
   .opt:has(input:checked){border-color:var(--c1)}
+  .obox{border:2px solid var(--line);border-radius:14px;background:var(--panel);padding:14px;margin-bottom:10px}
+  .obox h3{font-size:1.05rem;font-weight:800;margin:0 0 2px}
+  .oligne{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+  .otag{font-size:.72rem;font-weight:800;letter-spacing:.04em;padding:3px 8px;border-radius:999px;
+        border:1.5px solid var(--line);color:var(--dim)}
+  .oteam{flex:1;min-width:150px;display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:11px;
+         border:2px solid var(--line);background:var(--panel-2);color:var(--txt);font-weight:700;
+         font-size:.98rem;cursor:pointer;text-align:left}
+  .oteam .on{color:var(--dim2);font-size:.8rem;font-variant-numeric:tabular-nums}
+  .oteam.gagne{border-color:var(--live);background:#12251B;color:var(--live)}
+  .oteam.vide{color:var(--dim);cursor:default;font-weight:600}
+  .ovs{color:var(--dim2);font-size:.8rem;font-weight:800}
+  .omat{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;margin-bottom:5px;
+        background:var(--panel-2);border:2px solid var(--line);cursor:pointer;font-size:.95rem}
+  .omat.ok{border-color:var(--live);color:var(--live)}
+  .omat .od{color:var(--dim);font-size:.82rem;margin-left:auto}
   .grilbox{overflow:auto;max-height:72vh;border:2px solid var(--line);border-radius:12px;margin-top:10px}
   table.gril{border-collapse:separate;border-spacing:0;font-size:.8rem}
   .gril th,.gril td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);
@@ -334,6 +350,7 @@
     </div>
     <div style="display:flex;align-items:center;gap:6px">
       <span id="sync" class="sync" hidden><span class="sdot"></span><span id="syncT"></span></span>
+      <button class="ico" id="topO" title="Olympiades" hidden>Olymp.</button>
       <button class="ico" id="topK" title="Clés des bungalows" hidden>Clés</button>
       <button class="ico" id="topP" title="Plan du camping">Plan</button>
       <button class="ico sos" id="topU" title="Numéros d'urgence">SOS</button>
@@ -389,13 +406,13 @@
 
 <script id="seed" type="application/json">
 {
- "revision": "2026-09-22-donnees-hugo",
+ "revision": "2026-09-27-setup-final",
  "version": 2,
  "event": {
   "nom": "WEI 2026",
-  "lieu": "Camping Lou Broustaricq — Sanguinet"
+  "lieu": ""
  },
- "mdp": 3207802196,
+ "mdp": 1106131498,
  "bdes": [
   {
    "id": "par",
@@ -432,7 +449,7 @@
    },
    {
     "quoi": "Poste de soins",
-    "tel": "0611223344"
+    "tel": "A remplir"
    }
   ],
   "canaux": [
@@ -486,132 +503,152 @@
   {
    "id": "p02",
    "nom": "Lucas CUREAUX",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j1"
   },
   {
    "id": "p03",
    "nom": "Eric COCCOLI",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j1"
   },
   {
    "id": "p04",
    "nom": "Lou DELATTRE",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j2"
   },
   {
    "id": "p05",
    "nom": "Tom FERRUS",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j1"
   },
   {
    "id": "p06",
    "nom": "Rafaël JAMET",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j1"
   },
   {
    "id": "p07",
    "nom": "Marc POULET",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j1"
   },
   {
    "id": "p08",
    "nom": "Jeanne DREVON",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j2"
   },
   {
    "id": "p09",
    "nom": "Lucas DUPLANT",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j1"
   },
   {
    "id": "p10",
    "nom": "Cyriaque DU BOISHAMON",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j2"
   },
   {
    "id": "p11",
    "nom": "Gabriel SUSSET",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j2"
   },
   {
    "id": "p12",
    "nom": "Nolan BLATEAU",
-   "bde": "par"
+   "bde": "par",
+   "horsAuto": true
   },
   {
    "id": "p13",
    "nom": "Nathan KRUCH",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j2"
   },
   {
    "id": "p14",
    "nom": "Emma RENAULT",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j2"
   },
   {
    "id": "p15",
    "nom": "Ambre DONNER",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j1"
   },
   {
    "id": "p16",
    "nom": "Hadrien KIAS",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j2"
   },
   {
    "id": "p17",
    "nom": "Hugo LANNOU",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j1"
   },
   {
    "id": "p18",
    "nom": "Enora GUERINEAU",
-   "bde": "par"
-  },
-  {
-   "id": "p19",
-   "nom": "Faustine MATHIEU",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j1"
   },
   {
    "id": "p20",
    "nom": "Noemi BILLY-VALENCIA",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j2"
   },
   {
    "id": "p21",
    "nom": "Anjali VIAL",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j1"
   },
   {
    "id": "p22",
    "nom": "Tristan POTIER",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j1"
   },
   {
    "id": "p23",
    "nom": "Arthur VALERY--BATAN",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j2"
   },
   {
    "id": "p24",
    "nom": "Quentin LASSAGNE",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j1"
   },
   {
    "id": "p25",
    "nom": "Chayma BELKOUANE",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j2"
   },
   {
    "id": "p26",
    "nom": "Mehdi CHABBA",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j2"
   },
   {
    "id": "p27",
    "nom": "Oscar MAUDET",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j1"
   },
   {
    "id": "p28",
@@ -621,7 +658,8 @@
   {
    "id": "p29",
    "nom": "Pierre CHARTON--LENNE",
-   "bde": "par"
+   "bde": "par",
+   "horsAuto": true
   },
   {
    "id": "ppt9jm9",
@@ -638,7 +676,132 @@
   {
    "id": "plu4f9m",
    "nom": "Swann YASSIR",
-   "bde": "par"
+   "bde": "par",
+   "nuit": "j2"
+  },
+  {
+   "id": "p044rez",
+   "nom": "Nehla PERROUX",
+   "bde": "tls",
+   "nuit": "j2"
+  },
+  {
+   "id": "p8yrf5c",
+   "nom": "Nathan DECORDE",
+   "bde": "tls",
+   "nuit": "j1"
+  },
+  {
+   "id": "pkw92m8",
+   "nom": "Timothé LLILIO",
+   "bde": "tls",
+   "nuit": "j1"
+  },
+  {
+   "id": "p6u2p1n",
+   "nom": "Nina COUDURIER-CURVEUR",
+   "bde": "tls",
+   "nuit": "j1"
+  },
+  {
+   "id": "p1gilzq",
+   "nom": "Kaelin ABIVEN",
+   "bde": "tls",
+   "nuit": "j2"
+  },
+  {
+   "id": "pjveo9n",
+   "nom": "Inès REPINCAY",
+   "bde": "tls",
+   "nuit": "j1"
+  },
+  {
+   "id": "ppcszjb",
+   "nom": "Paul MANCUSO",
+   "bde": "tls",
+   "nuit": "j2"
+  },
+  {
+   "id": "pl69twk",
+   "nom": "Louna FRANCON",
+   "bde": "tls",
+   "nuit": "j1"
+  },
+  {
+   "id": "p5uv9li",
+   "nom": "Victoria RANDON",
+   "bde": "tls",
+   "nuit": "j1"
+  },
+  {
+   "id": "pww0iul",
+   "nom": "Simon ROUBARDEAU",
+   "bde": "tls",
+   "nuit": "j1"
+  },
+  {
+   "id": "p8t2i3y",
+   "nom": "Arthur CHANE-KUANG-SANG",
+   "bde": "tls",
+   "nuit": "j2"
+  },
+  {
+   "id": "p1cyzql",
+   "nom": "Jérémy MANDIAK",
+   "bde": "tls",
+   "nuit": "j2"
+  },
+  {
+   "id": "p5y7nej",
+   "nom": "Alexis CHOSE",
+   "bde": "tls",
+   "horsAuto": true
+  },
+  {
+   "id": "pp6qrux",
+   "nom": "Théophile LEBRAT",
+   "bde": "lyo"
+  },
+  {
+   "id": "pq8405v",
+   "nom": "Diane RAVIGNON",
+   "bde": "lyo"
+  },
+  {
+   "id": "pnid0hs",
+   "nom": "Aloïs PIERCY",
+   "bde": "lyo"
+  },
+  {
+   "id": "pi5cqwc",
+   "nom": "Raphael MOREL",
+   "bde": "lyo"
+  },
+  {
+   "id": "pb3wjrb",
+   "nom": "Louis BRUNET",
+   "bde": "lyo"
+  },
+  {
+   "id": "pqeazbc",
+   "nom": "Maxime ROLLAND",
+   "bde": "lyo"
+  },
+  {
+   "id": "pfyashv",
+   "nom": "Adrien BOUTE",
+   "bde": "lyo"
+  },
+  {
+   "id": "plzhyy0",
+   "nom": "Aymen SLIFI",
+   "bde": "lyo"
+  },
+  {
+   "id": "pq3u3f6",
+   "nom": "Arthur BOMBES DE VILLIERS",
+   "bde": "lyo",
+   "horsAuto": true
   }
  ],
  "shifts": [
@@ -655,8 +818,11 @@
     "tls": 0,
     "lyo": 0
    },
-   "equipe": [],
-   "total": 4,
+   "equipe": [
+    "p28",
+    "p04"
+   ],
+   "total": 2,
    "note": "Assuré par les membres BDE présents dès le jeudi soir, pour que ceux qui arrivent en bus puissent poser leurs affaires."
   },
   {
@@ -672,7 +838,10 @@
     "tls": 0,
     "lyo": 0
    },
-   "equipe": [],
+   "equipe": [
+    "pjveo9n",
+    "pl69twk"
+   ],
    "total": 2,
    "note": "Assuré par les membres BDE présents dès le jeudi soir, pour que ceux qui arrivent en bus puissent poser leurs affaires."
   },
@@ -690,10 +859,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p03",
-    "p08",
-    "p09",
-    "p13"
+    "pqeazbc",
+    "p1cyzql",
+    "p22",
+    "p06",
+    "p10",
+    "p03"
    ]
   },
   {
@@ -710,7 +881,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p07"
+    "plzhyy0",
+    "pww0iul",
+    "p15"
    ]
   },
   {
@@ -727,10 +900,12 @@
     "lyo": 1
    },
    "equipe": [
+    "pi5cqwc",
+    "p1gilzq",
     "p25",
-    "p21",
-    "p10",
-    "p20"
+    "p16",
+    "p08",
+    "p26"
    ]
   },
   {
@@ -747,7 +922,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p14"
+    "pp6qrux",
+    "pjveo9n",
+    "p17"
    ]
   },
   {
@@ -764,9 +941,10 @@
     "lyo": 0
    },
    "equipe": [
-    "p01",
-    "p22",
-    "p03"
+    "p8yrf5c",
+    "p06",
+    "p27",
+    "p24"
    ]
   },
   {
@@ -783,8 +961,8 @@
     "lyo": 0
    },
    "equipe": [
-    "plu4f9m",
-    "p13"
+    "p23",
+    "p29"
    ]
   },
   {
@@ -801,9 +979,11 @@
     "lyo": 1
    },
    "equipe": [
-    "p27",
-    "p02",
-    "p18"
+    "pqeazbc",
+    "p1gilzq",
+    "p20",
+    "plu4f9m",
+    "p04"
    ]
   },
   {
@@ -820,7 +1000,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p17"
+    "pww0iul",
+    "p08"
    ]
   },
   {
@@ -836,7 +1017,10 @@
     "tls": 2,
     "lyo": 0
    },
-   "equipe": []
+   "equipe": [
+    "pl69twk",
+    "pjveo9n"
+   ]
   },
   {
    "id": "s012",
@@ -852,9 +1036,11 @@
     "lyo": 1
    },
    "equipe": [
-    "p22",
-    "p13",
-    "p23"
+    "pb3wjrb",
+    "p044rez",
+    "p07",
+    "p01",
+    "p05"
    ]
   },
   {
@@ -871,7 +1057,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p21"
+    "p5uv9li",
+    "p16"
    ]
   },
   {
@@ -888,8 +1075,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p20",
-    "p07"
+    "p02",
+    "p24"
    ]
   },
   {
@@ -906,9 +1093,10 @@
     "lyo": 0
    },
    "equipe": [
-    "p24",
-    "p15",
-    "p19"
+    "p1cyzql",
+    "p03",
+    "p21",
+    "p20"
    ]
   },
   {
@@ -925,7 +1113,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p14"
+    "p6u2p1n",
+    "p23"
    ]
   },
   {
@@ -942,9 +1131,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p18",
-    "p17",
-    "p03"
+    "pi5cqwc",
+    "pl69twk",
+    "p8t2i3y",
+    "p10",
+    "p13",
+    "p26"
    ]
   },
   {
@@ -960,7 +1152,9 @@
     "tls": 1,
     "lyo": 0
    },
-   "equipe": []
+   "equipe": [
+    "p8yrf5c"
+   ]
   },
   {
    "id": "s019",
@@ -975,7 +1169,10 @@
     "tls": 2,
     "lyo": 0
    },
-   "equipe": []
+   "equipe": [
+    "p5uv9li",
+    "pww0iul"
+   ]
   },
   {
    "id": "s020",
@@ -991,9 +1188,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p23",
-    "plu4f9m",
-    "p25"
+    "plzhyy0",
+    "p044rez",
+    "p6u2p1n",
+    "p08",
+    "p17",
+    "ppt9jm9"
    ]
   },
   {
@@ -1010,7 +1210,7 @@
     "lyo": 0
    },
    "equipe": [
-    "p27"
+    "p15"
    ]
   },
   {
@@ -1026,7 +1226,10 @@
     "tls": 0,
     "lyo": 2
    },
-   "equipe": []
+   "equipe": [
+    "pq8405v",
+    "pp6qrux"
+   ]
   },
   {
    "id": "s023",
@@ -1059,10 +1262,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p29",
-    "p18",
-    "p06",
-    "p24"
+    "pqeazbc",
+    "p8t2i3y",
+    "p07",
+    "p13",
+    "p28",
+    "p09"
    ]
   },
   {
@@ -1079,9 +1284,23 @@
     "lyo": 0
    },
    "equipe": [
-    "p19",
-    "p02"
+    "p03",
+    "p23"
    ]
+  },
+  {
+   "id": "ssql8lf",
+   "jour": "j1",
+   "nom": "QG",
+   "debut": "17:00",
+   "fin": "18:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 2
+   },
+   "equipe": []
   },
   {
    "id": "s026",
@@ -1097,7 +1316,8 @@
     "lyo": 1
    },
    "equipe": [
-    "p03"
+    "pq8405v",
+    "p20"
    ]
   },
   {
@@ -1114,8 +1334,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p05",
-    "p23"
+    "plzhyy0",
+    "p1gilzq",
+    "p21",
+    "p08"
    ]
   },
   {
@@ -1131,7 +1353,10 @@
     "tls": 2,
     "lyo": 0
    },
-   "equipe": []
+   "equipe": [
+    "p8yrf5c",
+    "p1cyzql"
+   ]
   },
   {
    "id": "s029",
@@ -1147,9 +1372,12 @@
     "lyo": 2
    },
    "equipe": [
-    "p10",
-    "p19",
-    "p04"
+    "pfyashv",
+    "pqeazbc",
+    "p044rez",
+    "p23",
+    "p16",
+    "p03"
    ]
   },
   {
@@ -1166,7 +1394,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p09"
+    "pjveo9n",
+    "p10"
    ]
   },
   {
@@ -1183,8 +1412,12 @@
     "lyo": 0
    },
    "equipe": [
-    "p08",
-    "p17"
+    "ppcszjb",
+    "p01",
+    "p11"
+   ],
+   "resps": [
+    "p28"
    ]
   },
   {
@@ -1201,7 +1434,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p25"
+    "p8t2i3y",
+    "p18"
    ]
   },
   {
@@ -1218,8 +1452,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p13",
-    "p06"
+    "p14",
+    "plu4f9m"
    ]
   },
   {
@@ -1236,10 +1470,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p15",
-    "p18",
-    "p07",
-    "p16"
+    "pnid0hs",
+    "pww0iul",
+    "p02",
+    "p06",
+    "p22",
+    "p24"
    ]
   },
   {
@@ -1256,7 +1492,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p14"
+    "p1gilzq",
+    "p04"
    ]
   },
   {
@@ -1273,8 +1510,11 @@
     "lyo": 0
    },
    "equipe": [
-    "p12",
-    "p20"
+    "p05",
+    "p28"
+   ],
+   "resps": [
+    "pkw92m8"
    ]
   },
   {
@@ -1291,7 +1531,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p05"
+    "p5uv9li",
+    "p07"
    ]
   },
   {
@@ -1307,7 +1548,10 @@
     "tls": 2,
     "lyo": 0
    },
-   "equipe": []
+   "equipe": [
+    "p8yrf5c",
+    "p6u2p1n"
+   ]
   },
   {
    "id": "s039",
@@ -1323,8 +1567,9 @@
     "lyo": 0
    },
    "equipe": [
-    "p11",
-    "p22"
+    "pjveo9n",
+    "p13",
+    "p17"
    ]
   },
   {
@@ -1341,8 +1586,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p04",
-    "p06"
+    "pfyashv",
+    "p8t2i3y",
+    "p16",
+    "p26"
    ]
   },
   {
@@ -1359,9 +1606,11 @@
     "lyo": 1
    },
    "equipe": [
-    "p26",
-    "p02",
-    "p29"
+    "pq8405v",
+    "ppcszjb",
+    "p08",
+    "p20",
+    "p14"
    ]
   },
   {
@@ -1377,7 +1626,10 @@
     "tls": 0,
     "lyo": 2
    },
-   "equipe": []
+   "equipe": [
+    "pb3wjrb",
+    "pqeazbc"
+   ]
   },
   {
    "id": "s043",
@@ -1393,9 +1645,11 @@
     "lyo": 1
    },
    "equipe": [
-    "plu4f9m",
-    "p09",
-    "p15"
+    "pfyashv",
+    "p5uv9li",
+    "p15",
+    "p02",
+    "p22"
    ],
    "resps": [
     "p28"
@@ -1415,28 +1669,9 @@
     "lyo": 0
    },
    "equipe": [
-    "p17",
-    "p13"
-   ]
-  },
-  {
-   "id": "s045",
-   "code": "S16",
-   "jour": "j1",
-   "nom": "Ronde Camping",
-   "debut": "22:00",
-   "fin": "23:30",
-   "lieu": "",
-   "quotas": {
-    "par": 4,
-    "tls": 1,
-    "lyo": 1
-   },
-   "equipe": [
-    "p16",
-    "p25",
-    "p24",
-    "p14"
+    "pww0iul",
+    "p27",
+    "p24"
    ]
   },
   {
@@ -1452,7 +1687,10 @@
     "tls": 2,
     "lyo": 0
    },
-   "equipe": []
+   "equipe": [
+    "pjveo9n",
+    "p8yrf5c"
+   ]
   },
   {
    "id": "s047",
@@ -1468,9 +1706,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p20",
-    "p07",
-    "p19"
+    "pnid0hs",
+    "p03",
+    "p09",
+    "p24"
    ],
    "resps": [
     "p01"
@@ -1490,8 +1729,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p04",
-    "p12"
+    "p02",
+    "p18"
    ]
   },
   {
@@ -1508,10 +1747,11 @@
     "lyo": 1
    },
    "equipe": [
-    "p03",
-    "p18",
-    "p23",
-    "p27"
+    "plzhyy0",
+    "p17",
+    "p27",
+    "p05",
+    "psbifd0"
    ]
   },
   {
@@ -1528,68 +1768,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p21",
-    "p08"
-   ]
-  },
-  {
-   "id": "s051",
-   "code": "S18",
-   "jour": "j1",
-   "nom": "Bar Soirée",
-   "debut": "00:00",
-   "fin": "01:00",
-   "lieu": "",
-   "quotas": {
-    "par": 3,
-    "tls": 1,
-    "lyo": 1
-   },
-   "equipe": [
-    "p11",
-    "p02",
-    "p17"
-   ],
-   "resps": [
-    "p28"
-   ]
-  },
-  {
-   "id": "s052",
-   "code": "S18",
-   "jour": "j1",
-   "nom": "Ronde Salle",
-   "debut": "00:00",
-   "fin": "01:00",
-   "lieu": "",
-   "quotas": {
-    "par": 2,
-    "tls": 1,
-    "lyo": 1
-   },
-   "equipe": [
-    "p09",
-    "p13"
-   ]
-  },
-  {
-   "id": "s053",
-   "code": "S18",
-   "jour": "j1",
-   "nom": "Ronde Camping",
-   "debut": "00:00",
-   "fin": "01:00",
-   "lieu": "",
-   "quotas": {
-    "par": 4,
-    "tls": 1,
-    "lyo": 1
-   },
-   "equipe": [
-    "p26",
-    "p15",
-    "p05",
-    "p25"
+    "p07",
+    "p21"
    ]
   },
   {
@@ -1598,14 +1778,17 @@
    "jour": "j1",
    "nom": "QG",
    "debut": "00:00",
-   "fin": "01:30",
+   "fin": "01:00",
    "lieu": "",
    "quotas": {
     "par": 0,
     "tls": 2,
     "lyo": 0
    },
-   "equipe": []
+   "equipe": [
+    "pjveo9n",
+    "pl69twk"
+   ]
   },
   {
    "id": "s055",
@@ -1621,12 +1804,13 @@
     "lyo": 1
    },
    "equipe": [
-    "p02",
-    "p08",
-    "p09"
+    "pnid0hs",
+    "p07",
+    "p05",
+    "p15"
    ],
    "resps": [
-    "p01"
+    "pkw92m8"
    ]
   },
   {
@@ -1643,8 +1827,10 @@
     "lyo": 1
    },
    "equipe": [
+    "pqeazbc",
+    "p6u2p1n",
     "p27",
-    "p19"
+    "p24"
    ]
   },
   {
@@ -1661,10 +1847,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p14",
-    "p20",
-    "p11",
-    "p13"
+    "plzhyy0",
+    "p8yrf5c",
+    "p02",
+    "p22",
+    "p03",
+    "p09"
    ]
   },
   {
@@ -1681,8 +1869,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p29",
-    "p04"
+    "p18",
+    "p06"
    ]
   },
   {
@@ -1699,9 +1887,11 @@
     "lyo": 1
    },
    "equipe": [
-    "p24",
-    "p06",
-    "p14"
+    "pq8405v",
+    "p5uv9li",
+    "p09",
+    "p17",
+    "psbifd0"
    ],
    "resps": [
     "p28"
@@ -1721,8 +1911,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p26",
-    "p16"
+    "plzhyy0",
+    "pl69twk",
+    "p22",
+    "p06"
    ]
   },
   {
@@ -1739,10 +1931,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p10",
+    "pfyashv",
+    "pjveo9n",
+    "p15",
     "p21",
-    "p03",
-    "p22"
+    "p18",
+    "p27"
    ]
   },
   {
@@ -1758,7 +1952,10 @@
     "tls": 2,
     "lyo": 0
    },
-   "equipe": []
+   "equipe": [
+    "p6u2p1n",
+    "pww0iul"
+   ]
   },
   {
    "id": "s063",
@@ -1774,9 +1971,11 @@
     "lyo": 1
    },
    "equipe": [
-    "p24",
-    "p10",
-    "p02"
+    "pq8405v",
+    "pww0iul",
+    "p15",
+    "p22",
+    "p21"
    ],
    "resps": [
     "p01"
@@ -1796,8 +1995,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p25",
-    "p22"
+    "pnid0hs",
+    "pl69twk",
+    "p03"
    ]
   },
   {
@@ -1814,10 +2014,14 @@
     "lyo": 2
    },
    "equipe": [
-    "p14",
-    "p06",
-    "p13",
-    "p18"
+    "pfyashv",
+    "pqeazbc",
+    "p5uv9li",
+    "p8yrf5c",
+    "p07",
+    "p17",
+    "p02",
+    "p09"
    ]
   },
   {
@@ -1834,8 +2038,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p26",
-    "p21"
+    "p06",
+    "p05"
    ]
   },
   {
@@ -1852,12 +2056,16 @@
     "lyo": 1
    },
    "equipe": [
-    "p03",
-    "p10",
-    "p21",
-    "p06",
-    "p18",
-    "p26"
+    "pq8405v",
+    "p5uv9li",
+    "pl69twk",
+    "p6u2p1n",
+    "p05",
+    "p07",
+    "p24",
+    "p27",
+    "p02",
+    "p17"
    ]
   },
   {
@@ -1874,10 +2082,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p24",
-    "p22",
-    "p16",
-    "p28"
+    "pfyashv",
+    "pww0iul",
+    "p03",
+    "p18",
+    "psbifd0",
+    "p21"
    ]
   },
   {
@@ -1893,7 +2103,10 @@
     "tls": 0,
     "lyo": 2
    },
-   "equipe": []
+   "equipe": [
+    "plzhyy0",
+    "pqeazbc"
+   ]
   },
   {
    "id": "s070",
@@ -1909,8 +2122,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p05",
-    "p15"
+    "p16",
+    "p26"
    ]
   },
   {
@@ -1926,7 +2139,10 @@
     "tls": 0,
     "lyo": 2
    },
-   "equipe": []
+   "equipe": [
+    "pb3wjrb",
+    "pnid0hs"
+   ]
   },
   {
    "id": "s072",
@@ -1942,7 +2158,9 @@
     "lyo": 1
    },
    "equipe": [
-    "p27"
+    "pp6qrux",
+    "p5y7nej",
+    "ppt9jm9"
    ],
    "note": "Assurée par les présidents de BDE."
   },
@@ -1960,8 +2178,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p04",
-    "p23"
+    "pi5cqwc",
+    "p1cyzql",
+    "p25",
+    "p13"
    ]
   },
   {
@@ -1977,7 +2197,10 @@
     "tls": 2,
     "lyo": 0
    },
-   "equipe": []
+   "equipe": [
+    "p044rez",
+    "pkw92m8"
+   ]
   },
   {
    "id": "s075",
@@ -1993,10 +2216,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p11",
-    "p08",
-    "p12",
-    "p05"
+    "pb3wjrb",
+    "p8t2i3y",
+    "p10",
+    "p04",
+    "plu4f9m",
+    "p11"
    ]
   },
   {
@@ -2013,7 +2238,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p29"
+    "ppcszjb",
+    "p20"
    ]
   },
   {
@@ -2030,8 +2256,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p07",
-    "p01"
+    "p28",
+    "p15"
    ]
   },
   {
@@ -2048,10 +2274,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p21",
-    "p18",
-    "p24",
-    "p06"
+    "pi5cqwc",
+    "p5uv9li",
+    "p05",
+    "p14",
+    "p22",
+    "p01"
    ]
   },
   {
@@ -2068,7 +2296,31 @@
     "lyo": 0
    },
    "equipe": [
-    "p20"
+    "p8yrf5c",
+    "p07"
+   ]
+  },
+  {
+   "id": "s081",
+   "code": "S7",
+   "jour": "j2",
+   "nom": "Installation Olympiades ",
+   "debut": "11:30",
+   "fin": "12:30",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p044rez",
+    "p27",
+    "p24",
+    "psbifd0"
+   ],
+   "resps": [
+    "p26"
    ]
   },
   {
@@ -2085,28 +2337,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p28",
-    "p01"
-   ]
-  },
-  {
-   "id": "s081",
-   "code": "S7",
-   "jour": "j2",
-   "nom": "Installation Village Assos/Olympiade",
-   "debut": "12:00",
-   "fin": "13:00",
-   "lieu": "",
-   "quotas": {
-    "par": 4,
-    "tls": 1,
-    "lyo": 1
-   },
-   "equipe": [
-    "p02",
-    "p12",
-    "p04",
-    "p09"
+    "pq8405v",
+    "pl69twk",
+    "p13",
+    "p04"
    ]
   },
   {
@@ -2122,105 +2356,113 @@
     "tls": 0,
     "lyo": 2
    },
-   "equipe": []
+   "equipe": [
+    "plzhyy0",
+    "pnid0hs"
+   ]
   },
   {
-   "id": "s083",
-   "code": "S8",
+   "id": "s9xtohe",
    "jour": "j2",
-   "nom": "Activité 1",
-   "debut": "13:00",
+   "nom": "Maquillage",
+   "debut": "12:30",
+   "fin": "14:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "ppcszjb",
+    "p25"
+   ],
+   "resps": [
+    "p26"
+   ]
+  },
+  {
+   "id": "s6lrvnx",
+   "jour": "j2",
+   "nom": "Olympiades - Faucheuse",
+   "debut": "12:30",
+   "fin": "14:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "pkw92m8",
+    "p03",
+    "p09"
+   ],
+   "resps": [
+    "p26"
+   ]
+  },
+  {
+   "id": "ssmy72h",
+   "jour": "j2",
+   "nom": "Olympiades - Ventrigliss",
+   "debut": "12:30",
    "fin": "14:00",
    "lieu": "",
    "quotas": {
     "par": 2,
     "tls": 0,
-    "lyo": 0
+    "lyo": 1
    },
    "equipe": [
+    "pfyashv",
     "p17",
+    "p02"
+   ],
+   "resps": [
+    "p26"
+   ]
+  },
+  {
+   "id": "s6dd0aa",
+   "jour": "j2",
+   "nom": "Olympiades - Shootbasket",
+   "debut": "12:30",
+   "fin": "14:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p1cyzql",
+    "p08",
     "p23"
+   ],
+   "resps": [
+    "p26"
    ]
   },
   {
-   "id": "s084",
-   "code": "S8",
+   "id": "s7jvsfx",
    "jour": "j2",
-   "nom": "Activité 2",
-   "debut": "13:00",
-   "fin": "14:00",
-   "lieu": "",
-   "quotas": {
-    "par": 0,
-    "tls": 2,
-    "lyo": 0
-   },
-   "equipe": []
-  },
-  {
-   "id": "s085",
-   "code": "S8",
-   "jour": "j2",
-   "nom": "Activité 3",
-   "debut": "13:00",
+   "nom": "Olympiades - Course scotch",
+   "debut": "12:30",
    "fin": "14:00",
    "lieu": "",
    "quotas": {
     "par": 2,
-    "tls": 0,
+    "tls": 1,
     "lyo": 0
    },
    "equipe": [
-    "p26",
-    "p03"
-   ]
-  },
-  {
-   "id": "s086",
-   "code": "S8",
-   "jour": "j2",
-   "nom": "Activité 4",
-   "debut": "13:00",
-   "fin": "14:00",
-   "lieu": "",
-   "quotas": {
-    "par": 0,
-    "tls": 0,
-    "lyo": 2
-   },
-   "equipe": []
-  },
-  {
-   "id": "s087",
-   "code": "S8",
-   "jour": "j2",
-   "nom": "Activité 5",
-   "debut": "13:00",
-   "fin": "14:00",
-   "lieu": "",
-   "quotas": {
-    "par": 0,
-    "tls": 2,
-    "lyo": 0
-   },
-   "equipe": []
-  },
-  {
-   "id": "s088",
-   "code": "S8",
-   "jour": "j2",
-   "nom": "Activité 6",
-   "debut": "13:00",
-   "fin": "14:00",
-   "lieu": "",
-   "quotas": {
-    "par": 2,
-    "tls": 0,
-    "lyo": 0
-   },
-   "equipe": [
-    "p21",
-    "p13"
+    "p6u2p1n",
+    "p18",
+    "p20"
+   ],
+   "resps": [
+    "p26"
    ]
   },
   {
@@ -2237,80 +2479,16 @@
     "lyo": 0
    },
    "equipe": [
-    "p22",
-    "p15"
-   ]
-  },
-  {
-   "id": "s090",
-   "code": "S9",
-   "jour": "j2",
-   "nom": "Activité 1",
-   "debut": "14:00",
-   "fin": "15:00",
-   "lieu": "",
-   "quotas": {
-    "par": 0,
-    "tls": 0,
-    "lyo": 2
-   },
-   "equipe": []
-  },
-  {
-   "id": "s091",
-   "code": "S9",
-   "jour": "j2",
-   "nom": "Activité 2",
-   "debut": "14:00",
-   "fin": "15:00",
-   "lieu": "",
-   "quotas": {
-    "par": 0,
-    "tls": 2,
-    "lyo": 0
-   },
-   "equipe": []
-  },
-  {
-   "id": "s092",
-   "code": "S9",
-   "jour": "j2",
-   "nom": "Activité 3",
-   "debut": "14:00",
-   "fin": "15:00",
-   "lieu": "",
-   "quotas": {
-    "par": 2,
-    "tls": 0,
-    "lyo": 0
-   },
-   "equipe": [
     "p16",
-    "p05"
+    "p11"
    ]
   },
   {
-   "id": "s093",
-   "code": "S9",
+   "id": "s3wz6wt",
    "jour": "j2",
-   "nom": "Activité 4",
-   "debut": "14:00",
-   "fin": "15:00",
-   "lieu": "",
-   "quotas": {
-    "par": 0,
-    "tls": 2,
-    "lyo": 0
-   },
-   "equipe": []
-  },
-  {
-   "id": "s094",
-   "code": "S9",
-   "jour": "j2",
-   "nom": "Activité 5",
-   "debut": "14:00",
-   "fin": "15:00",
+   "nom": "Olympiades - Acces libre parcours",
+   "debut": "13:00",
+   "fin": "14:00",
    "lieu": "",
    "quotas": {
     "par": 2,
@@ -2318,8 +2496,11 @@
     "lyo": 0
    },
    "equipe": [
-    "p07",
-    "p10"
+    "p10",
+    "plu4f9m"
+   ],
+   "resps": [
+    "p26"
    ]
   },
   {
@@ -2335,86 +2516,90 @@
     "tls": 2,
     "lyo": 0
    },
-   "equipe": []
-  },
-  {
-   "id": "s096",
-   "code": "S10",
-   "jour": "j2",
-   "nom": "Activité 1",
-   "debut": "15:00",
-   "fin": "16:00",
-   "lieu": "",
-   "quotas": {
-    "par": 0,
-    "tls": 0,
-    "lyo": 2
-   },
-   "equipe": []
-  },
-  {
-   "id": "s097",
-   "code": "S10",
-   "jour": "j2",
-   "nom": "Activité 2",
-   "debut": "15:00",
-   "fin": "16:00",
-   "lieu": "",
-   "quotas": {
-    "par": 0,
-    "tls": 2,
-    "lyo": 0
-   },
-   "equipe": []
-  },
-  {
-   "id": "s098",
-   "code": "S10",
-   "jour": "j2",
-   "nom": "Activité 3",
-   "debut": "15:00",
-   "fin": "16:00",
-   "lieu": "",
-   "quotas": {
-    "par": 2,
-    "tls": 0,
-    "lyo": 0
-   },
    "equipe": [
-    "p15",
-    "p17"
+    "p8yrf5c",
+    "pww0iul"
    ]
   },
   {
-   "id": "s099",
-   "code": "S10",
+   "id": "sm3bcup",
    "jour": "j2",
-   "nom": "Activité 4",
-   "debut": "15:00",
+   "nom": "Olympiades - Accès libre faucheuse",
+   "debut": "14:00",
    "fin": "16:00",
    "lieu": "",
    "quotas": {
-    "par": 0,
-    "tls": 2,
-    "lyo": 0
+    "par": 1,
+    "tls": 0,
+    "lyo": 1
    },
-   "equipe": []
+   "equipe": [
+    "pq8405v",
+    "p17"
+   ],
+   "resps": [
+    "p26"
+   ]
   },
   {
-   "id": "s100",
-   "code": "S10",
+   "id": "skdtyvz",
    "jour": "j2",
-   "nom": "Activité 5",
-   "debut": "15:00",
+   "nom": "Olympiades - Accès libre Ventrigliss",
+   "debut": "14:00",
    "fin": "16:00",
    "lieu": "",
    "quotas": {
-    "par": 2,
+    "par": 1,
     "tls": 0,
+    "lyo": 1
+   },
+   "equipe": [
+    "pb3wjrb",
+    "p22"
+   ],
+   "resps": [
+    "p26"
+   ]
+  },
+  {
+   "id": "sj4pql0",
+   "jour": "j2",
+   "nom": "Olympiades - Acces Libre Parcours",
+   "debut": "14:00",
+   "fin": "16:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
     "lyo": 0
    },
    "equipe": [
-    "p29",
+    "p1gilzq",
+    "p24"
+   ],
+   "resps": [
+    "p26"
+   ]
+  },
+  {
+   "id": "s5zudeb",
+   "jour": "j2",
+   "nom": "Olympiades - 8e et 1/4",
+   "debut": "14:00",
+   "fin": "15:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "pnid0hs",
+    "pjveo9n",
+    "p01",
+    "p27"
+   ],
+   "resps": [
     "p26"
    ]
   },
@@ -2432,8 +2617,71 @@
     "lyo": 0
    },
    "equipe": [
+    "p04",
+    "p21"
+   ]
+  },
+  {
+   "id": "s2i7j20",
+   "jour": "j2",
+   "nom": "Installation Pool Party",
+   "debut": "15:00",
+   "fin": "16:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p044rez",
+    "p03"
+   ]
+  },
+  {
+   "id": "sxwr5di",
+   "jour": "j2",
+   "nom": "Olympiades - 1/2 et Finale",
+   "debut": "15:00",
+   "fin": "16:00",
+   "lieu": "",
+   "quotas": {
+    "par": 2,
+    "tls": 1,
+    "lyo": 1
+   },
+   "equipe": [
+    "plzhyy0",
+    "p5uv9li",
     "p25",
-    "p12"
+    "p14"
+   ],
+   "resps": [
+    "p26"
+   ]
+  },
+  {
+   "id": "slg3uoc",
+   "jour": "j2",
+   "nom": "Olympiades - Finale et Rangement",
+   "debut": "15:30",
+   "fin": "17:00",
+   "lieu": "",
+   "quotas": {
+    "par": 3,
+    "tls": 2,
+    "lyo": 1
+   },
+   "equipe": [
+    "pp6qrux",
+    "pl69twk",
+    "p6u2p1n",
+    "p27",
+    "p11",
+    "p06"
+   ],
+   "resps": [
+    "p26"
    ]
   },
   {
@@ -2450,10 +2698,17 @@
     "lyo": 2
    },
    "equipe": [
-    "p19",
-    "p11",
+    "pqeazbc",
+    "pi5cqwc",
+    "p1cyzql",
+    "pjveo9n",
+    "p23",
     "p02",
-    "p22"
+    "p12",
+    "p13"
+   ],
+   "resps": [
+    "p26"
    ]
   },
   {
@@ -2470,10 +2725,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p08",
-    "p16",
+    "pfyashv",
+    "p8t2i3y",
     "p28",
-    "p24"
+    "p18",
+    "plu4f9m",
+    "p05"
    ]
   },
   {
@@ -2489,7 +2746,10 @@
     "tls": 2,
     "lyo": 0
    },
-   "equipe": []
+   "equipe": [
+    "ppcszjb",
+    "pkw92m8"
+   ]
   },
   {
    "id": "s105",
@@ -2501,14 +2761,18 @@
    "lieu": "",
    "quotas": {
     "par": 4,
-    "tls": 1,
-    "lyo": 1
+    "tls": 2,
+    "lyo": 2
    },
    "equipe": [
-    "p27",
-    "p26",
-    "p23",
-    "p12"
+    "pq8405v",
+    "plzhyy0",
+    "pww0iul",
+    "p1gilzq",
+    "p13",
+    "p16",
+    "p02",
+    "p21"
    ]
   },
   {
@@ -2525,10 +2789,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p14",
+    "pnid0hs",
+    "p8yrf5c",
     "p17",
-    "plu4f9m",
-    "p10"
+    "p03",
+    "p20",
+    "p01"
    ]
   },
   {
@@ -2544,7 +2810,10 @@
     "tls": 0,
     "lyo": 2
    },
-   "equipe": []
+   "equipe": [
+    "pqeazbc",
+    "pb3wjrb"
+   ]
   },
   {
    "id": "s108",
@@ -2560,27 +2829,11 @@
     "lyo": 1
    },
    "equipe": [
+    "pp6qrux",
+    "p1gilzq",
+    "p14",
     "p06",
-    "p20",
-    "p09"
-   ]
-  },
-  {
-   "id": "s109",
-   "code": "S13",
-   "jour": "j2",
-   "nom": "QG",
-   "debut": "18:00",
-   "fin": "18:30",
-   "lieu": "",
-   "quotas": {
-    "par": 2,
-    "tls": 0,
-    "lyo": 0
-   },
-   "equipe": [
-    "p13",
-    "p25"
+    "p04"
    ]
   },
   {
@@ -2597,8 +2850,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p16",
-    "p07"
+    "pfyashv",
+    "p044rez",
+    "p29",
+    "p12"
    ]
   },
   {
@@ -2615,8 +2870,9 @@
     "lyo": 0
    },
    "equipe": [
-    "p21",
-    "p23"
+    "pkw92m8",
+    "p01",
+    "plu4f9m"
    ]
   },
   {
@@ -2633,8 +2889,25 @@
     "lyo": 0
    },
    "equipe": [
-    "p22",
-    "p12"
+    "p28",
+    "psbifd0"
+   ]
+  },
+  {
+   "id": "sbn6gbz",
+   "jour": "j2",
+   "nom": "Gestion flux / file d'attente",
+   "debut": "18:00",
+   "fin": "19:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p5uv9li",
+    "p23"
    ]
   },
   {
@@ -2651,8 +2924,10 @@
     "lyo": 1
    },
    "equipe": [
-    "plu4f9m",
-    "p04"
+    "pi5cqwc",
+    "p1gilzq",
+    "p14",
+    "p21"
    ]
   },
   {
@@ -2669,8 +2944,9 @@
     "lyo": 0
    },
    "equipe": [
-    "p01",
-    "p15"
+    "p6u2p1n",
+    "p09",
+    "p18"
    ]
   },
   {
@@ -2687,7 +2963,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p05"
+    "pl69twk",
+    "p25"
    ]
   },
   {
@@ -2703,7 +2980,27 @@
     "tls": 2,
     "lyo": 0
    },
-   "equipe": []
+   "equipe": [
+    "pww0iul",
+    "p8yrf5c"
+   ]
+  },
+  {
+   "id": "spxm9x0",
+   "jour": "j2",
+   "nom": "Gestion flux / file d'attente",
+   "debut": "19:00",
+   "fin": "20:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "p8t2i3y",
+    "p07"
+   ]
   },
   {
    "id": "s117",
@@ -2719,8 +3016,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p08",
-    "p02"
+    "pnid0hs",
+    "pkw92m8",
+    "plu4f9m",
+    "p11"
    ]
   },
   {
@@ -2737,7 +3036,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p03"
+    "pjveo9n",
+    "p26"
    ]
   },
   {
@@ -2754,17 +3054,34 @@
     "lyo": 0
    },
    "equipe": [
-    "p28",
-    "p06"
+    "p13",
+    "p01"
+   ]
+  },
+  {
+   "id": "s6175v1",
+   "jour": "j2",
+   "nom": "Gestion flux / file d'attente",
+   "debut": "20:00",
+   "fin": "21:00",
+   "lieu": "",
+   "quotas": {
+    "par": 1,
+    "tls": 1,
+    "lyo": 0
+   },
+   "equipe": [
+    "ppcszjb",
+    "p10"
    ]
   },
   {
    "id": "s120",
    "code": "S17",
    "jour": "j2",
-   "nom": "Rangement Repas",
+   "nom": "Rangement Repas/ Installation Soirée",
    "debut": "21:00",
-   "fin": "21:30",
+   "fin": "22:00",
    "lieu": "",
    "quotas": {
     "par": 2,
@@ -2772,8 +3089,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p15",
-    "p13"
+    "pi5cqwc",
+    "p8yrf5c",
+    "p12",
+    "p08"
    ]
   },
   {
@@ -2789,24 +3108,9 @@
     "tls": 2,
     "lyo": 0
    },
-   "equipe": []
-  },
-  {
-   "id": "s122",
-   "code": "S19",
-   "jour": "j2",
-   "nom": "Installation Soirée",
-   "debut": "21:30",
-   "fin": "22:00",
-   "lieu": "",
-   "quotas": {
-    "par": 2,
-    "tls": 2,
-    "lyo": 1
-   },
    "equipe": [
-    "p24",
-    "p16"
+    "p6u2p1n",
+    "p5uv9li"
    ]
   },
   {
@@ -2823,9 +3127,11 @@
     "lyo": 1
    },
    "equipe": [
-    "p10",
-    "p03",
-    "p19"
+    "pi5cqwc",
+    "ppcszjb",
+    "plu4f9m",
+    "p13",
+    "p16"
    ],
    "resps": [
     "p28"
@@ -2845,8 +3151,9 @@
     "lyo": 0
    },
    "equipe": [
-    "p08",
-    "p29"
+    "p1cyzql",
+    "p11",
+    "p25"
    ]
   },
   {
@@ -2863,10 +3170,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p11",
-    "p02",
-    "p07",
-    "p22"
+    "pp6qrux",
+    "p044rez",
+    "p04",
+    "p26",
+    "p08",
+    "p23"
    ]
   },
   {
@@ -2882,7 +3191,9 @@
     "tls": 0,
     "lyo": 2
    },
-   "equipe": []
+   "equipe": [
+    "pb3wjrb"
+   ]
   },
   {
    "id": "s127",
@@ -2898,8 +3209,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p05",
-    "p14",
+    "pb3wjrb",
+    "p8t2i3y",
+    "p26",
+    "p11",
     "p25"
    ],
    "resps": [
@@ -2920,10 +3233,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p12",
+    "pp6qrux",
+    "p1gilzq",
+    "plu4f9m",
     "p16",
-    "p15",
-    "p27"
+    "p14",
+    "p10"
    ]
   },
   {
@@ -2940,8 +3255,9 @@
     "lyo": 0
    },
    "equipe": [
-    "p21",
-    "p26"
+    "p1cyzql",
+    "p23",
+    "p13"
    ]
   },
   {
@@ -2958,8 +3274,8 @@
     "lyo": 0
    },
    "equipe": [
-    "p24",
-    "plu4f9m"
+    "p20",
+    "p04"
    ]
   },
   {
@@ -2976,8 +3292,9 @@
     "lyo": 0
    },
    "equipe": [
+    "p1gilzq",
     "p10",
-    "p06"
+    "p14"
    ],
    "resps": [
     "p28"
@@ -2992,12 +3309,16 @@
    "fin": "01:00",
    "lieu": "",
    "quotas": {
-    "par": 1,
-    "tls": 1,
+    "par": 4,
+    "tls": 2,
     "lyo": 0
    },
    "equipe": [
-    "p11"
+    "p8t2i3y",
+    "p20",
+    "ppt9jm9",
+    "p29",
+    "p13"
    ]
   },
   {
@@ -3014,8 +3335,9 @@
     "lyo": 0
    },
    "equipe": [
-    "p09",
-    "p23"
+    "p044rez",
+    "p11",
+    "p08"
    ]
   },
   {
@@ -3031,7 +3353,10 @@
     "tls": 2,
     "lyo": 0
    },
-   "equipe": []
+   "equipe": [
+    "ppcszjb",
+    "p1cyzql"
+   ]
   },
   {
    "id": "s135",
@@ -3047,9 +3372,11 @@
     "lyo": 1
    },
    "equipe": [
-    "p29",
-    "p19",
-    "p04"
+    "pp6qrux",
+    "p1gilzq",
+    "p20",
+    "p08",
+    "p25"
    ],
    "resps": [
     "p01"
@@ -3069,9 +3396,11 @@
     "lyo": 1
    },
    "equipe": [
-    "p18",
-    "p16",
-    "p26",
+    "pi5cqwc",
+    "p8t2i3y",
+    "plu4f9m",
+    "p10",
+    "p04",
     "p14"
    ]
   },
@@ -3089,8 +3418,9 @@
     "lyo": 0
    },
    "equipe": [
-    "p20",
-    "p22"
+    "p044rez",
+    "p16",
+    "p26"
    ]
   },
   {
@@ -3107,8 +3437,8 @@
     "lyo": 0
    },
    "equipe": [
-    "plu4f9m",
-    "p05"
+    "p23",
+    "p11"
    ]
   },
   {
@@ -3125,9 +3455,11 @@
     "lyo": 1
    },
    "equipe": [
-    "p08",
-    "p09",
-    "p23"
+    "pp6qrux",
+    "ppcszjb",
+    "p16",
+    "p04",
+    "p14"
    ],
    "resps": [
     "p28"
@@ -3147,10 +3479,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p29",
-    "p04",
-    "p17",
-    "p19"
+    "pi5cqwc",
+    "p8t2i3y",
+    "p26",
+    "p20",
+    "p13",
+    "p08"
    ]
   },
   {
@@ -3167,8 +3501,9 @@
     "lyo": 0
    },
    "equipe": [
-    "p12",
-    "p27"
+    "p1cyzql",
+    "p25",
+    "plu4f9m"
    ]
   },
   {
@@ -3185,9 +3520,10 @@
     "lyo": 1
    },
    "equipe": [
-    "p11",
+    "ppcszjb",
     "p08",
-    "p07"
+    "p10",
+    "p13"
    ],
    "resps": [
     "p01"
@@ -3207,10 +3543,12 @@
     "lyo": 1
    },
    "equipe": [
-    "p20",
-    "p15",
-    "p19",
-    "p17"
+    "pi5cqwc",
+    "p1cyzql",
+    "p25",
+    "p04",
+    "p16",
+    "p23"
    ]
   },
   {
@@ -3227,8 +3565,27 @@
     "lyo": 0
    },
    "equipe": [
-    "p05",
-    "p12"
+    "p044rez",
+    "p26",
+    "p11"
+   ]
+  },
+  {
+   "id": "s147",
+   "code": "S29",
+   "jour": "j2",
+   "nom": "QG",
+   "debut": "03:00",
+   "fin": "05:00",
+   "lieu": "",
+   "quotas": {
+    "par": 0,
+    "tls": 0,
+    "lyo": 2
+   },
+   "equipe": [
+    "pp6qrux",
+    "pb3wjrb"
    ]
   },
   {
@@ -3245,116 +3602,72 @@
     "lyo": 1
    },
    "equipe": [
-    "p11",
-    "p27",
-    "plu4f9m",
-    "p07",
-    "p04",
-    "p20"
+    "pi5cqwc",
+    "p1cyzql",
+    "ppcszjb",
+    "p8t2i3y",
+    "p16",
+    "p10",
+    "p20",
+    "p13",
+    "p14",
+    "p25"
    ]
   },
   {
-   "id": "s147",
-   "code": "S29",
+   "id": "swas16q",
    "jour": "j2",
-   "nom": "QG",
-   "debut": "03:00",
+   "nom": "Ronde Camping",
+   "debut": "04:00",
    "fin": "05:00",
    "lieu": "",
    "quotas": {
-    "par": 0,
-    "tls": 0,
+    "par": 2,
+    "tls": 2,
     "lyo": 2
    },
-   "equipe": []
-  },
-  {
-   "id": "sbn6gbz",
-   "jour": "j2",
-   "nom": "Gestion flux / file d'attente",
-   "debut": "18:00",
-   "fin": "19:00",
-   "lieu": "",
-   "quotas": {
-    "par": 1,
-    "tls": 1,
-    "lyo": 0
-   },
    "equipe": [
-    "p11"
-   ],
-   "fiche": {
-    "mission": "",
-    "taches": [],
-    "materiel": [],
-    "referent": ""
-   }
-  },
-  {
-   "id": "spxm9x0",
-   "jour": "j2",
-   "nom": "Gestion flux / file d'attente",
-   "debut": "19:00",
-   "fin": "20:00",
-   "lieu": "",
-   "quotas": {
-    "par": 1,
-    "tls": 1,
-    "lyo": 0
-   },
-   "equipe": [
+    "ppt9jm9",
     "p29"
-   ],
-   "fiche": {
-    "mission": "",
-    "taches": [],
-    "materiel": [],
-    "referent": ""
-   }
+   ]
   },
   {
-   "id": "s6175v1",
-   "jour": "j2",
-   "nom": "Gestion flux / file d'attente",
-   "debut": "20:00",
-   "fin": "21:00",
+   "id": "s9jdzd6",
+   "jour": "j3",
+   "nom": "Reveil - Distrib Petit Dej",
+   "debut": "07:00",
+   "fin": "09:00",
+   "lieu": "",
+   "quotas": {
+    "par": 4,
+    "tls": 2,
+    "lyo": 2
+   },
+   "equipe": [
+    "pkw92m8",
+    "pl69twk",
+    "p27",
+    "p15",
+    "p06",
+    "p18"
+   ]
+  },
+  {
+   "id": "sg9vbp3",
+   "jour": "j3",
+   "nom": "Retour des clés",
+   "debut": "12:00",
+   "fin": "14:00",
    "lieu": "",
    "quotas": {
     "par": 1,
     "tls": 1,
-    "lyo": 0
+    "lyo": 1
    },
    "equipe": [
-    "p10"
-   ],
-   "fiche": {
-    "mission": "",
-    "taches": [],
-    "materiel": [],
-    "referent": ""
-   }
-  },
-  {
-   "id": "s2i7j20",
-   "jour": "j2",
-   "nom": "Installation Pool Party",
-   "debut": "15:00",
-   "fin": "16:00",
-   "lieu": "",
-   "quotas": {
-    "par": 1,
-    "tls": 1,
-    "lyo": 0
-   },
-   "equipe": [
-    "p09"
-   ],
-   "fiche": {
-    "mission": "",
-    "taches": [],
-    "materiel": [],
-    "referent": ""
-   }
+    "pjveo9n",
+    "p05"
+   ]
   }
  ],
  "coupure": 6,
@@ -3933,12 +4246,1725 @@
    "taches": [],
    "materiel": [],
    "referent": ""
+  },
+  "olympiades - ventrigliss": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "olympiades - faucheuse": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "olympiades - shootbasket": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "olympiades - course scotchee": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "olympiades - 8e (relais eau + sumo/corde)": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "installation olympiades": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "maquillage": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "olympiades - acces libre faucheuse": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "olympiades - acces libre ventrigliss": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "olympiades - acces libre": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "olympiades - acces libre parcours": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "olympiades - 8e et 1/4": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "olympiades - 1/2 et finale": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "olympiades - rangement et finale": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "olympiades - course scotch": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "olympiades - finale et rangement": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "postes village assos (4 stands)": {
+   "mission": "",
+   "taches": [],
+   "materiel": [],
+   "referent": ""
+  },
+  "reveil - distrib petit dej": {
+   "mission": "Reveiller les gens et distribuer les petits dej",
+   "taches": [
+    "Survivre à la veille",
+    "Tenir jusqu'a 9h",
+    "Se lever à 7h"
+   ],
+   "materiel": [],
+   "referent": ""
   }
  },
  "respPool": [
   "p28",
-  "p01"
- ]
+  "p01",
+  "pkw92m8",
+  "p26"
+ ],
+ "bungalows": [
+  {
+   "id": "bggk0wg",
+   "num": "208",
+   "resp": "Pierre"
+  },
+  {
+   "id": "bz0bj8c",
+   "num": "109",
+   "resp": "Camille"
+  },
+  {
+   "id": "bqi5ziy",
+   "num": "222",
+   "resp": "Louis"
+  }
+ ],
+ "blocMax": 240,
+ "nuitContinue": true,
+ "cles": {
+  "109": {
+   "remisePar": "Alexis C.",
+   "remise": 1790070824620,
+   "renduePar": "Orga",
+   "etat": "rendue",
+   "rendue": 1790070848649
+  },
+  "208": {
+   "remise": 1790070852298,
+   "remisePar": "Orga",
+   "rendue": 1790506244574,
+   "etat": "rendue",
+   "renduePar": "Cyriaque D."
+  },
+  "222": {
+   "remise": 1790506245055,
+   "rendue": 1790506245258,
+   "remisePar": "Cyriaque D.",
+   "etat": "rendue",
+   "renduePar": "Cyriaque D."
+  }
+ },
+ "olympiades": {
+  "equipes": [
+   "Bouguechal",
+   "Yazigui",
+   "Maéva",
+   "Riou",
+   "Duboc",
+   "Franck",
+   "Manach",
+   "Gobron",
+   "Gaïd",
+   "Lartigue",
+   "Deckner",
+   "Benthaier",
+   "Savu",
+   "Constant",
+   "Fradet",
+   "de Lepine",
+   "Delerba",
+   "Bertolaso",
+   "Eutamne",
+   "Moka",
+   "Chippari",
+   "Marchis",
+   "Sanchez",
+   "Nguyen",
+   "Chabchoub",
+   "Harold",
+   "Pichon",
+   "Abidi",
+   "Gadek",
+   "Tera",
+   "Bettaieb",
+   "Cousin"
+  ],
+  "epreuves": {
+   "vent": {
+    "name": "Ventriglisse",
+    "rules": [
+     "5 passages en 1 contre 1, un joueur par équipe.",
+     "Premier arrivé = 1 point.",
+     "Première équipe à 3 points qualifiée."
+    ],
+    "score": {
+     "rows": 5,
+     "label": "Passage"
+    }
+   },
+   "fauch": {
+    "name": "Faucheuse",
+    "rules": [
+     "5 contre 5, l'équipe choisit ses joueurs.",
+     "Touché = éliminé.",
+     "L'équipe du dernier joueur debout gagne.",
+     "Égalité : chifoumi."
+    ],
+    "score": {
+     "type": "last"
+    }
+   },
+   "shoot": {
+    "name": "Shootbasket",
+    "rules": [
+     "1 tireur + 1 passeur à la poubelle par équipe, 4 min.",
+     "Les joueurs annoncent leur score à chaque panier.",
+     "Le plus de ballons gagne. Égalité : chifoumi."
+    ],
+    "score": {
+     "type": "total"
+    }
+   },
+   "course": {
+    "name": "Course scotchée",
+    "rules": [
+     "5 courses entre binômes scotchés.",
+     "1 course gagnée = 1 point.",
+     "Première équipe à 3 points qualifiée."
+    ],
+    "score": {
+     "rows": 5,
+     "label": "Course"
+    }
+   },
+   "eau": {
+    "name": "Relais eau",
+    "rules": [
+     "10 contre 10, en file indienne, l'eau passe par-dessus la tête.",
+     "Cup salé : une fois plein, le dernier le boit cul sec.",
+     "Premier cup plein et bu gagne. Égalité : chifoumi."
+    ],
+    "score": {
+     "type": "first"
+    }
+   },
+   "bubble": {
+    "name": "Bubble foot",
+    "rules": [
+     "3 contre 3, choisis par l'équipe, pas de changement.",
+     "Match de 4 min, le plus de buts gagne.",
+     "Égalité : but en or en 1 contre 1 (1 min max, puis chifoumi)."
+    ],
+    "score": {
+     "type": "bubble"
+    }
+   },
+   "corde": {
+    "name": "Tir à la corde",
+    "rules": [
+     "3 tireurs par équipe, 2 manches gagnantes.",
+     "Manche gagnée quand le repère central passe la ligne de son camp."
+    ],
+    "score": {
+     "rows": 3,
+     "label": "Manche"
+    }
+   },
+   "sumo": {
+    "name": "Sumo",
+    "rules": [
+     "1 contre 1, 2 manches gagnantes.",
+     "Manche perdue si on sort du cercle ou touche le sol avec autre chose que les pieds."
+    ],
+    "score": {
+     "rows": 3,
+     "label": "Manche"
+    }
+   },
+   "parcours": {
+    "name": "Parcours du combattant",
+    "rules": [
+     "Relais de 5 binômes, chacun fait le parcours complet.",
+     "Ramping → chamboule-tout (lunettes percées, 3 gobelets à faire tomber) → brouette → gonflable → 10 tours → assiettes avec plateau de verres.",
+     "Premier 5e binôme à l'arrivée gagne le tournoi."
+    ],
+    "score": {
+     "rows": 5,
+     "label": "Binôme",
+     "type": "relay"
+    }
+   }
+  },
+  "jeux": [
+   {
+    "k": "vent",
+    "c": "c-vent",
+    "name": "Ventriglisse",
+    "stage": "1/16 de finale",
+    "time": "13h30 – 14h05",
+    "who": "Équipes 1 à 8",
+    "matches": "M1 à M4",
+    "where": "2 pistes (A et B)",
+    "goal": "Glisser le plus vite possible jusqu'au bout de la piste.",
+    "rules": [
+     "Chaque match se joue en 5 passages de 1 contre 1.",
+     "À chaque passage, chaque équipe envoie un joueur. Il se place derrière la ligne de départ.",
+     "Départ au signal de l'arbitre.",
+     "Le premier joueur qui franchit l'arrivée gagne le passage.",
+     "En cas de faux départ, le passage est rejoué."
+    ],
+    "win": "1 passage gagné = 1 point. La première équipe à 3 points est qualifiée, on arrête le match.",
+    "tie": "Pas d'égalité possible : 5 passages, donc toujours un gagnant.",
+    "staff": [
+     [
+      "3",
+      "Shift 3, de 12h30 à 14h : 1 arbitre sur la piste A, 1 arbitre sur la piste B, 1 personne à l'appel et au placement des équipes."
+     ],
+     [
+      "2",
+      "Shift 4, de 14h à 16h : surveillance en accès libre."
+     ]
+    ],
+    "mat": "Ventriglisse",
+    "setup": [
+     "Gonfler les 2 pistes côte à côte.",
+     "Mouiller et savonner les pistes.",
+     "Marquer la ligne de départ et l'arrivée."
+    ],
+    "flow": [
+     "Appeler les 2 équipes et les placer au départ de leur piste.",
+     "Rappeler les règles en 30 secondes.",
+     "Enchaîner les passages et annoncer le score à voix haute.",
+     "Remettre de l'eau et du savon entre deux matchs.",
+     "Noter le vainqueur sur la fiche arbitre."
+    ],
+    "plan": [
+     [
+      "13h30",
+      "M1 (piste A) · M2 (piste B)"
+     ],
+     [
+      "13h48",
+      "M3 (piste A) · M4 (piste B)"
+     ],
+     [
+      "14h05",
+      "Accès libre"
+     ]
+    ]
+   },
+   {
+    "k": "fauch",
+    "c": "c-fauch",
+    "name": "Faucheuse",
+    "stage": "1/16 de finale",
+    "time": "13h30 – 14h05",
+    "who": "Équipes 9 à 16",
+    "matches": "M5 à M8",
+    "where": "Faucheuse gonflable",
+    "goal": "Rester debout le plus longtemps possible en esquivant la faucheuse.",
+    "rules": [
+     "5 contre 5 : chaque équipe choisit ses 5 joueurs.",
+     "Chaque équipe porte une couleur de chasuble.",
+     "Les joueurs sautent ou se baissent pour éviter le bras de la faucheuse.",
+     "Un joueur touché ou tombé est éliminé et sort de la structure."
+    ],
+    "win": "L'équipe du dernier joueur encore debout gagne.",
+    "tie": "Si les 2 derniers tombent en même temps : chifoumi.",
+    "staff": [
+     [
+      "3",
+      "Shift 3, de 12h30 à 14h : 1 arbitre qui annonce les éliminés, 1 personne à la machine, 1 personne à l'appel et aux chasubles."
+     ],
+     [
+      "2",
+      "Shift 4, de 14h à 16h : surveillance en accès libre."
+     ]
+    ],
+    "mat": "Faucheuse",
+    "setup": [
+     "Gonfler et tester la faucheuse.",
+     "Préparer 2 lots de chasubles de couleurs différentes."
+    ],
+    "flow": [
+     "Appeler les 2 équipes et leur donner les chasubles.",
+     "Placer les 10 joueurs en alternant les couleurs.",
+     "Lancer la faucheuse et annoncer chaque élimination.",
+     "Arrêter la machine quand il ne reste qu'une équipe debout.",
+     "Récupérer les chasubles et noter le vainqueur."
+    ],
+    "plan": [
+     [
+      "13h30",
+      "M5"
+     ],
+     [
+      "13h38",
+      "M6"
+     ],
+     [
+      "13h46",
+      "M7"
+     ],
+     [
+      "13h54",
+      "M8"
+     ],
+     [
+      "14h05",
+      "Accès libre"
+     ]
+    ]
+   },
+   {
+    "k": "shoot",
+    "c": "c-shoot",
+    "name": "Shootbasket",
+    "stage": "1/16 de finale",
+    "time": "13h30 – 14h05",
+    "who": "Équipes 17 à 24",
+    "matches": "M9 à M12",
+    "where": "2 poubelles · 2 matchs en même temps",
+    "goal": "Mettre plus de ballons dans la poubelle que l'autre équipe en 4 minutes.",
+    "rules": [
+     "Pas de paniers : on vise une grosse poubelle. Il y a 2 poubelles, donc 2 matchs en même temps.",
+     "Chaque équipe a un tireur derrière la ligne de tir et un passeur placé à la poubelle.",
+     "Le passeur récupère le ballon et le renvoie au tireur.",
+     "Les deux équipes tirent en même temps pendant 4 minutes, avec 1 ballon chacune.",
+     "À chaque panier, les joueurs annoncent leur score à voix haute.",
+     "Le 5e ballon sert de secours si un ballon part trop loin ou crève."
+    ],
+    "win": "1 ballon rentré = 1 point. L'équipe qui a le plus de points au bout de 4 minutes gagne.",
+    "tie": "Même score : chifoumi.",
+    "staff": [
+     [
+      "3",
+      "Shift 3, de 12h30 à 14h : 1 arbitre à la poubelle 1, 1 arbitre à la poubelle 2, 1 personne au chrono, à l'appel et au ballon de secours."
+     ]
+    ],
+    "mat": "Shootbasket",
+    "extraMat": [
+     "2 grosses poubelles"
+    ],
+    "setup": [
+     "Placer les 2 poubelles, chacune avec sa ligne de tir à la même distance.",
+     "Garder le ballon de secours près du chrono."
+    ],
+    "flow": [
+     "Sur chaque poubelle : placer les 2 tireurs derrière la ligne et les 2 passeurs à la poubelle.",
+     "Lancer le chrono de 4 minutes pour les 2 matchs en même temps.",
+     "Les joueurs annoncent leur score, l'arbitre vérifie.",
+     "Au coup de sifflet, plus aucun tir ne compte.",
+     "Noter le score et le vainqueur."
+    ],
+    "plan": [
+     [
+      "13h30",
+      "M9 (poubelle 1) · M10 (poubelle 2)"
+     ],
+     [
+      "13h48",
+      "M11 (poubelle 1) · M12 (poubelle 2)"
+     ],
+     [
+      "14h05",
+      "Accès libre"
+     ]
+    ]
+   },
+   {
+    "k": "course",
+    "c": "c-course",
+    "name": "Course scotchée",
+    "stage": "1/16 de finale",
+    "time": "13h30 – 14h05",
+    "who": "Équipes 25 à 32",
+    "matches": "M13 à M16",
+    "where": "Couloir de course",
+    "goal": "Courir le plus vite possible à deux, attachés ensemble.",
+    "rules": [
+     "Chaque match se joue en 5 courses.",
+     "À chaque course, chaque équipe envoie un binôme, attaché avec du scotch.",
+     "Départ au signal de l'arbitre.",
+     "Si le scotch lâche, le binôme s'arrête et se fait rescotcher avant de repartir.",
+     "Le premier binôme qui franchit l'arrivée gagne la course."
+    ],
+    "win": "1 course gagnée = 1 point. La première équipe à 3 points est qualifiée.",
+    "tie": "Pas d'égalité possible : 5 courses, donc toujours un gagnant.",
+    "staff": [
+     [
+      "3",
+      "Shift 3, de 12h30 à 14h : 1 personne au départ, 1 arbitre à l'arrivée, 1 personne au scotch."
+     ]
+    ],
+    "mat": "Course scotchée",
+    "setup": [
+     "Tracer le départ et l'arrivée.",
+     "Préparer des morceaux de scotch d'avance."
+    ],
+    "flow": [
+     "Chaque équipe forme ses 5 binômes.",
+     "Scotcher les 2 binômes de la course suivante pendant que la course en cours se joue.",
+     "Donner le départ et annoncer le score après chaque course.",
+     "Noter le vainqueur."
+    ],
+    "plan": [
+     [
+      "13h30",
+      "M13"
+     ],
+     [
+      "13h38",
+      "M14"
+     ],
+     [
+      "13h46",
+      "M15"
+     ],
+     [
+      "13h54",
+      "M16"
+     ],
+     [
+      "14h05",
+      "Accès libre"
+     ]
+    ]
+   },
+   {
+    "k": "eau",
+    "c": "c-late",
+    "name": "Relais eau",
+    "stage": "1/8 de finale",
+    "time": "14h15 – 14h40",
+    "who": "16 équipes",
+    "matches": "M17 à M24",
+    "where": "4 couloirs",
+    "goal": "Remplir son cup en faisant passer l'eau par-dessus la tête, puis le boire cul sec.",
+    "rules": [
+     "10 contre 10 : toute l'équipe joue, en file indienne.",
+     "Le premier joueur prend de l'eau dans la réserve.",
+     "L'eau passe de joueur en joueur, par-dessus la tête, sans se retourner.",
+     "Le dernier joueur vide l'eau dans le cup, puis le contenant revient au premier.",
+     "Le cup est salé avant le départ.",
+     "Quand le cup est plein, le dernier joueur le boit cul sec."
+    ],
+    "win": "La première équipe dont le cup est plein puis bu cul sec gagne.",
+    "tie": "Cups bus en même temps : chifoumi.",
+    "staff": [
+     [
+      "3",
+      "Shift 5 : 1 arbitre pour les couloirs 1 et 2, 1 arbitre pour les couloirs 3 et 4, 1 personne à l'appel et au remplissage des réserves."
+     ]
+    ],
+    "mat": "Relais eau",
+    "setup": [
+     "Installer 4 couloirs, chacun avec 2 réserves d'eau et 2 cups à remplir.",
+     "Marquer le niveau « plein » sur chaque cup.",
+     "Saler chaque cup avant le départ : 1 cuillère à café maximum par cup.",
+     "Prévoir de l'eau claire à côté pour se rincer la bouche."
+    ],
+    "flow": [
+     "Vague 1 : placer les 4 matchs, une équipe de chaque côté de chaque couloir.",
+     "Donner le départ en même temps pour les 4 couloirs.",
+     "Valider le cup plein, puis vérifier que le dernier joueur le boit cul sec.",
+     "Noter le vainqueur.",
+     "Remplir les réserves, rincer et resaler les cups avant la vague 2."
+    ],
+    "plan": [
+     [
+      "14h15",
+      "Vague 1 : M17, M18, M19, M20"
+     ],
+     [
+      "14h28",
+      "Vague 2 : M21, M22, M23, M24"
+     ],
+     [
+      "14h40",
+      "Accès libre"
+     ]
+    ]
+   },
+   {
+    "k": "bubble",
+    "c": "c-late",
+    "name": "Bubble foot",
+    "stage": "1/4 de finale",
+    "time": "14h50 – 15h15",
+    "who": "8 équipes",
+    "matches": "M25 à M28",
+    "where": "1 terrain",
+    "goal": "Marquer plus de buts que l'adversaire en 4 minutes, dans des bulles.",
+    "rules": [
+     "3 contre 3 : chaque équipe choisit ses 3 joueurs.",
+     "Pas de changement pendant le match.",
+     "Match de 4 minutes.",
+     "On ne charge pas un joueur qui est au sol."
+    ],
+    "win": "1 but = 1 point. L'équipe qui a le plus de buts à la fin gagne.",
+    "tie": "But en or en 1 contre 1 : le premier qui marque qualifie son équipe. S'il n'y a toujours pas de but après 1 minute : chifoumi.",
+    "staff": [
+     [
+      "3",
+      "Shift 5 : 1 arbitre, 1 personne au chrono, 1 personne aux bulles et à l'appel."
+     ]
+    ],
+    "mat": "Bubble foot",
+    "setup": [
+     "Délimiter le terrain et poser les 2 cages de foot.",
+     "Vérifier les 6 bulles."
+    ],
+    "flow": [
+     "Appeler les équipes du match suivant pendant le match en cours.",
+     "Enfiler les bulles (environ 2 min entre deux matchs).",
+     "Coup d'envoi, 4 minutes chrono.",
+     "En cas d'égalité, but en or en 1 contre 1.",
+     "Noter le score et le vainqueur."
+    ],
+    "plan": [
+     [
+      "14h50",
+      "M25"
+     ],
+     [
+      "14h56",
+      "M26"
+     ],
+     [
+      "15h02",
+      "M27"
+     ],
+     [
+      "15h08",
+      "M28"
+     ],
+     [
+      "15h15",
+      "Accès libre"
+     ]
+    ]
+   },
+   {
+    "k": "corde",
+    "c": "c-late",
+    "name": "Tir à la corde",
+    "stage": "1/2 finale",
+    "time": "15h25 – 15h50",
+    "who": "Vainqueurs M25 et M26",
+    "matches": "M29",
+    "where": "Espace tir à la corde",
+    "goal": "Tirer l'autre équipe dans son camp.",
+    "rules": [
+     "Chaque équipe tient la corde de son côté.",
+     "Un foulard attaché au milieu de la corde sert de repère.",
+     "Au signal, les deux équipes tirent.",
+     "Une manche est gagnée quand le foulard passe la ligne de son camp.",
+     "3 tireurs par équipe."
+    ],
+    "win": "2 manches gagnantes : la première équipe à 2 manches va en finale.",
+    "tie": "Une 3e manche départage les équipes à 1 manche partout.",
+    "staff": [
+     [
+      "1",
+      "Shift 5 : 1 arbitre, aidé par la personne à la coordination."
+     ]
+    ],
+    "mat": "Tir à la corde et sumo",
+    "matFilter": [
+     "Corde",
+     "Foulard"
+    ],
+    "setup": [
+     "Tracer une ligne au centre et une ligne de chaque côté.",
+     "Attacher le foulard au milieu de la corde."
+    ],
+    "flow": [
+     "Chaque équipe choisit ses 3 tireurs.",
+     "Placer le foulard au-dessus de la ligne centrale.",
+     "Donner le signal de départ.",
+     "Arrêter la manche dès que le foulard passe une ligne.",
+     "Changer de côté entre les manches.",
+     "Noter le vainqueur."
+    ],
+    "plan": [
+     [
+      "15h25",
+      "M29"
+     ],
+     [
+      "15h50",
+      "Fin des 1/2"
+     ]
+    ]
+   },
+   {
+    "k": "sumo",
+    "c": "c-late",
+    "name": "Sumo",
+    "stage": "1/2 finale",
+    "time": "15h25 – 15h50",
+    "who": "Vainqueurs M27 et M28",
+    "matches": "M30",
+    "where": "Gonflable sumo",
+    "goal": "Faire sortir l'adversaire du cercle ou le faire tomber.",
+    "rules": [
+     "Chaque manche est un 1 contre 1, en tenue gonflable de sumo.",
+     "L'équipe choisit son joueur pour chaque manche.",
+     "Une manche est perdue par celui qui sort du cercle.",
+     "Une manche est aussi perdue par celui qui touche le sol avec autre chose que les pieds."
+    ],
+    "win": "2 manches gagnantes : la première équipe à 2 manches va en finale.",
+    "tie": "Une 3e manche départage les équipes à 1 manche partout.",
+    "staff": [
+     [
+      "1",
+      "Shift 5 : 1 arbitre, aidé par la personne à la coordination."
+     ]
+    ],
+    "mat": "Tir à la corde et sumo",
+    "matFilter": [
+     "Gonflable sumo"
+    ],
+    "setup": [
+     "Installer le gonflable et le cercle.",
+     "Préparer les tenues de sumo."
+    ],
+    "flow": [
+     "Chaque équipe désigne son joueur pour la manche.",
+     "Aider les 2 joueurs à enfiler les tenues.",
+     "Donner le signal de départ de chaque manche.",
+     "Annoncer le vainqueur de chaque manche.",
+     "Noter le vainqueur."
+    ],
+    "plan": [
+     [
+      "15h25",
+      "M30"
+     ],
+     [
+      "15h50",
+      "Fin des 1/2"
+     ]
+    ]
+   },
+   {
+    "k": "parcours",
+    "c": "c-late",
+    "name": "Parcours du combattant",
+    "stage": "Finale",
+    "time": "16h00 – 16h15",
+    "who": "Les 2 finalistes",
+    "matches": "M31",
+    "where": "2 parcours côte à côte",
+    "goal": "Faire passer ses 5 binômes sur le parcours avant l'autre équipe.",
+    "rules": [
+     "Relais : les 10 joueurs passent en 5 binômes.",
+     "Chaque binôme fait le parcours en entier, puis tape dans la main du binôme suivant.",
+     "1. Ramping sous l'obstacle.",
+     "2. Chamboule-tout avec les lunettes percées : il faut faire tomber les 3 gobelets pour passer à la suite.",
+     "3. Brouette : un joueur tient les jambes de l'autre.",
+     "4. Passage dans le gonflable.",
+     "5. 10 tours sur soi, comptés à voix haute par l'arbitre.",
+     "6. Marche sur les assiettes avec un plateau de verres en plastique. Si un verre tombe, on le remet et on repart du début des assiettes."
+    ],
+    "win": "La première équipe dont le 5e binôme franchit l'arrivée gagne le tournoi.",
+    "tie": "Arrivée en même temps : chifoumi.",
+    "staff": [
+     [
+      "3",
+      "Shift 5, de 15h50 à 16h00 : préparer les 2 parcours et briefer le shift 6."
+     ],
+     [
+      "4",
+      "Shift 6 : 1 arbitre par parcours, 1 personne au départ des binômes, 1 personne pour le public."
+     ]
+    ],
+    "mat": "Parcours du combattant",
+    "setup": [
+     "Installer 2 parcours identiques, un par équipe.",
+     "Remettre en place le chamboule-tout, les assiettes et les verres après chaque binôme."
+    ],
+    "flow": [
+     "Chaque équipe forme ses 5 binômes et les place dans l'ordre.",
+     "Départ en même temps pour les 2 équipes.",
+     "L'arbitre de chaque parcours vérifie chaque atelier.",
+     "Le binôme suivant part seulement après avoir tapé dans la main du précédent.",
+     "Annoncer le vainqueur, puis direction la remise des prix."
+    ],
+    "plan": [
+     [
+      "15h50",
+      "Mise en place"
+     ],
+     [
+      "16h00",
+      "M31 · Finale"
+     ],
+     [
+      "16h15",
+      "Remise des prix"
+     ]
+    ]
+   }
+  ],
+  "shifts": [
+   {
+    "k": "s1",
+    "title": "Préparation",
+    "start": "10h30",
+    "end": "12h30",
+    "n": 4,
+    "role": "Monter toutes les zones de jeu avant l'arrivée des équipes.",
+    "where": "Tout le terrain des Olympiades",
+    "posts": [
+     [
+      "Ateliers des 1/16",
+      "ventriglisse (2 pistes), faucheuse, shootbasket, course scotchée"
+     ],
+     [
+      "Zones des phases finales",
+      "relais eau (4 couloirs), bubble foot, corde et sumo, 2 parcours du combattant"
+     ],
+     [
+      "Annexes",
+      "stand maquillage, atelier pom-pom, coin remise des prix"
+     ]
+    ],
+    "missions": [
+     "Installer les 4 ateliers des 1/16 en priorité : ce sont les premiers utilisés.",
+     "Monter le relais eau (4 couloirs) et le terrain de bubble foot, avec les 6 bulles prêtes.",
+     "Préparer le tir à la corde, le cercle de sumo et les 2 parcours du combattant.",
+     "Monter le stand maquillage et l'atelier pom-pom.",
+     "Préparer le coin remise des prix : farine, sacs de bouffe, utilitaires.",
+     "Poser les fiches arbitres sur chaque atelier."
+    ],
+    "steps": [
+     [
+      "10h30",
+      "Arrivée, répartition des zones entre les 4"
+     ],
+     [
+      "10h30 – 11h30",
+      "Ateliers des 1/16 + stand maquillage"
+     ],
+     [
+      "11h30 – 12h30",
+      "Zones des phases finales + annexes"
+     ],
+     [
+      "12h30",
+      "Passage de relais aux shifts 2 et 3"
+     ]
+    ],
+    "relay": "À 12h30 : faire le tour des zones avec les shifts 2 et 3 et signaler ce qui n'est pas terminé."
+   },
+   {
+    "k": "s2",
+    "title": "Stand maquillage",
+    "start": "12h30",
+    "end": "14h00",
+    "n": 2,
+    "role": "Maquiller les 32 équipes avant le début du tournoi.",
+    "where": "Stand maquillage",
+    "posts": [
+     [
+      "Maquilleur·se",
+      "2 personnes, 1 par poste"
+     ]
+    ],
+    "missions": [
+     "Finir d'installer le stand et préparer la peinture.",
+     "Faire passer toutes les équipes entre 12h45 et 13h30 : c'est obligatoire avant le tournoi.",
+     "Vérifier qu'aucune équipe n'a été oubliée avant 13h30.",
+     "Après 13h30 : retouches pour les retardataires, puis ranger le stand."
+    ],
+    "steps": [
+     [
+      "12h30 – 12h45",
+      "Installation du stand"
+     ],
+     [
+      "12h45 – 13h30",
+      "Passage des 32 équipes"
+     ],
+     [
+      "13h30 – 14h00",
+      "Retouches, puis rangement du stand"
+     ]
+    ],
+    "relay": "À 14h : stand rangé, le matériel restant va au coin rangement."
+   },
+   {
+    "k": "s3",
+    "title": "Ateliers des 1/16",
+    "start": "12h30",
+    "end": "14h00",
+    "n": 12,
+    "role": "Gérer les 4 ateliers des 1/16 de finale : 3 personnes par atelier.",
+    "where": "Ventriglisse, faucheuse, shootbasket, course scotchée",
+    "posts": [
+     [
+      "Ventriglisse · équipes 1 à 8",
+      "3"
+     ],
+     [
+      "Faucheuse · équipes 9 à 16",
+      "3"
+     ],
+     [
+      "Shootbasket · équipes 17 à 24",
+      "3"
+     ],
+     [
+      "Course scotchée · équipes 25 à 32",
+      "3"
+     ]
+    ],
+    "missions": [
+     "Sur chaque atelier : 1 arbitre qui remplit la fiche, 1 au chrono et au score, 1 qui appelle et place les équipes. Au ventriglisse, 1 arbitre par piste ; au shootbasket, 1 arbitre par poubelle.",
+     "Accueillir les 8 équipes de ton atelier et leur expliquer les règles.",
+     "Faire jouer les 4 matchs dans l'ordre (M1 à M16) et aux horaires prévus.",
+     "Noter chaque vainqueur et l'envoyer au relais eau pour les 1/8."
+    ],
+    "steps": [
+     [
+      "12h30 – 13h00",
+      "Finir d'installer ton atelier, lire les fiches arbitres"
+     ],
+     [
+      "13h00 – 13h30",
+      "Accueil et briefing des 8 équipes"
+     ],
+     [
+      "13h30 – 14h05",
+      "4 matchs des 1/16"
+     ],
+     [
+      "14h05",
+      "Résultats envoyés, l'atelier passe en accès libre"
+     ]
+    ],
+    "relay": "Les 1/16 finissent à 14h05 : reste jusqu'au dernier match, puis passe l'atelier au shift 4 (ventriglisse et faucheuse)."
+   },
+   {
+    "k": "s4",
+    "title": "Surveillance accès libre",
+    "start": "14h00",
+    "end": "16h00",
+    "n": 4,
+    "role": "Surveiller les structures ouvertes aux équipes éliminées.",
+    "where": "Ventriglisse et faucheuse",
+    "posts": [
+     [
+      "Ventriglisse",
+      "2"
+     ],
+     [
+      "Faucheuse",
+      "2"
+     ]
+    ],
+    "missions": [
+     "Laisser jouer les équipes éliminées en toute sécurité.",
+     "Gérer la file d'attente et le nombre de joueurs en même temps.",
+     "Arrêter le jeu en cas de comportement dangereux.",
+     "Garder les structures en état pour le rangement."
+    ],
+    "steps": [
+     [
+      "14h00",
+      "Relais avec le shift 3"
+     ],
+     [
+      "14h05 – 16h00",
+      "Surveillance de l'accès libre"
+     ],
+     [
+      "16h00",
+      "Fermeture des structures"
+     ]
+    ],
+    "relay": "À 16h : fermer les structures et les signaler au shift 6 pour le rangement."
+   },
+   {
+    "k": "s5",
+    "title": "Phases finales",
+    "start": "14h00",
+    "end": "16h00",
+    "n": 3,
+    "role": "Gérer chaque épreuve du tournoi, des 1/8 jusqu'à la finale.",
+    "where": "Relais eau → bubble foot → corde et sumo → parcours",
+    "posts": [
+     [
+      "1/8 · Relais eau",
+      "1 arbitre pour les couloirs 1-2, 1 pour les couloirs 3-4, 1 pour l'appel et le remplissage"
+     ],
+     [
+      "1/4 · Bubble foot",
+      "1 arbitre, 1 chrono, 1 pour les bulles et l'appel"
+     ],
+     [
+      "1/2 · Corde et sumo",
+      "1 arbitre corde, 1 arbitre sumo, 1 coordination"
+     ],
+     [
+      "Finale",
+      "préparer les 2 parcours et briefer le shift 6"
+     ]
+    ],
+    "missions": [
+     "Suivre le tournoi d'épreuve en épreuve, en groupe de 3.",
+     "Utiliser chaque battement de 10 min pour préparer l'épreuve suivante.",
+     "Remplir les fiches arbitres et mettre le bracket à jour.",
+     "Annoncer les équipes qualifiées au micro ou à voix haute."
+    ],
+    "steps": [
+     [
+      "14h00 – 14h15",
+      "Préparer le relais eau, récupérer les 16 qualifiés"
+     ],
+     [
+      "14h15 – 14h40",
+      "1/8 · Relais eau (2 vagues de 4)"
+     ],
+     [
+      "14h50 – 15h15",
+      "1/4 · Bubble foot (4 matchs de 4 min)"
+     ],
+     [
+      "15h25 – 15h50",
+      "1/2 · Corde et sumo en même temps"
+     ],
+     [
+      "15h50 – 16h00",
+      "Préparer les 2 parcours, briefer le shift 6"
+     ]
+    ],
+    "relay": "À 16h : donner au shift 6 les 2 équipes finalistes et les règles du parcours."
+   },
+   {
+    "k": "s6",
+    "title": "Finale et rangement",
+    "start": "16h00",
+    "end": "17h30",
+    "n": 4,
+    "role": "Aider à gérer la finale, puis ranger les Olympiades.",
+    "where": "Parcours du combattant, puis tout le terrain",
+    "posts": [
+     [
+      "Finale",
+      "1 arbitre par parcours, 1 au départ des binômes, 1 pour le public"
+     ],
+     [
+      "Rangement",
+      "les 4 ensemble, avec la checklist de l'onglet Phase 2"
+     ]
+    ],
+    "missions": [
+     "Encadrer la finale : relais des 5 binômes sur chaque parcours.",
+     "Aider pendant la remise des prix : coupe-file, sacs, farine.",
+     "Ranger toutes les zones en suivant la checklist de l'onglet Phase 2.",
+     "Faire un dernier tour du terrain avant de partir."
+    ],
+    "steps": [
+     [
+      "16h00 – 16h15",
+      "Finale · parcours du combattant"
+     ],
+     [
+      "16h15 – 16h30",
+      "Remise des prix"
+     ],
+     [
+      "16h30 – 17h30",
+      "Rangement complet"
+     ]
+    ],
+    "relay": "Fin à 17h30 : tout est rangé, rien ne reste sur le terrain."
+   }
+  ],
+  "materiel": [
+   {
+    "g": "Ventriglisse",
+    "c": "c-vent",
+    "items": [
+     [
+      "Ventriglisse gonflable",
+      ""
+     ],
+     [
+      "Savon",
+      ""
+     ],
+     [
+      "Eau",
+      ""
+     ]
+    ]
+   },
+   {
+    "g": "Faucheuse",
+    "c": "c-fauch",
+    "items": [
+     [
+      "Faucheuse gonflable",
+      ""
+     ],
+     [
+      "Chasubles",
+      "10 couleurs"
+     ]
+    ]
+   },
+   {
+    "g": "Shootbasket",
+    "c": "c-shoot",
+    "items": [
+     [
+      "Ballons",
+      "5 (dont 1 de secours)"
+     ]
+    ]
+   },
+   {
+    "g": "Course scotchée",
+    "c": "c-course",
+    "items": [
+     [
+      "Scotch",
+      "beaucoup"
+     ],
+     [
+      "T-shirts numérotés",
+      "10 (n° 1 à 10)"
+     ]
+    ]
+   },
+   {
+    "g": "Relais eau",
+    "c": "c-late",
+    "items": [
+     [
+      "Contenants de tailles différentes",
+      "40"
+     ],
+     [
+      "Sel",
+      ""
+     ]
+    ]
+   },
+   {
+    "g": "Bubble foot",
+    "c": "c-late",
+    "items": [
+     [
+      "Bulles",
+      "6"
+     ],
+     [
+      "Ballons",
+      "2"
+     ],
+     [
+      "Cages de foot",
+      "2"
+     ]
+    ]
+   },
+   {
+    "g": "Tir à la corde et sumo",
+    "c": "c-late",
+    "items": [
+     [
+      "Gonflable sumo",
+      ""
+     ],
+     [
+      "Corde",
+      ""
+     ],
+     [
+      "Foulard",
+      ""
+     ]
+    ]
+   },
+   {
+    "g": "Parcours du combattant",
+    "c": "c-late",
+    "items": [
+     [
+      "Gonflable parcours du combattant",
+      ""
+     ],
+     [
+      "Lunettes percées",
+      ""
+     ],
+     [
+      "Cups",
+      "4"
+     ],
+     [
+      "Assiettes en carton",
+      "30"
+     ],
+     [
+      "Plateaux",
+      "4"
+     ]
+    ]
+   },
+   {
+    "g": "Stand maquillage",
+    "c": "c-late",
+    "items": [
+     [
+      "Peinture",
+      ""
+     ],
+     [
+      "Paillettes",
+      ""
+     ]
+    ]
+   },
+   {
+    "g": "Remise des prix",
+    "c": "c-late",
+    "items": [
+     [
+      "Farine",
+      ""
+     ],
+     [
+      "Bouffe pour les gagnants",
+      ""
+     ]
+    ]
+   }
+  ],
+  "matchs": [
+   {
+    "id": 1,
+    "stage": "1/16",
+    "ep": "vent",
+    "zone": "vent",
+    "time": "13h30",
+    "place": "Piste A",
+    "a": {
+     "seed": 1
+    },
+    "b": {
+     "seed": 2
+    }
+   },
+   {
+    "id": 2,
+    "stage": "1/16",
+    "ep": "vent",
+    "zone": "vent",
+    "time": "13h30",
+    "place": "Piste B",
+    "a": {
+     "seed": 3
+    },
+    "b": {
+     "seed": 4
+    }
+   },
+   {
+    "id": 3,
+    "stage": "1/16",
+    "ep": "vent",
+    "zone": "vent",
+    "time": "13h48",
+    "place": "Piste A",
+    "a": {
+     "seed": 5
+    },
+    "b": {
+     "seed": 6
+    }
+   },
+   {
+    "id": 4,
+    "stage": "1/16",
+    "ep": "vent",
+    "zone": "vent",
+    "time": "13h48",
+    "place": "Piste B",
+    "a": {
+     "seed": 7
+    },
+    "b": {
+     "seed": 8
+    }
+   },
+   {
+    "id": 5,
+    "stage": "1/16",
+    "ep": "fauch",
+    "zone": "fauch",
+    "time": "13h30",
+    "place": "Faucheuse",
+    "a": {
+     "seed": 9
+    },
+    "b": {
+     "seed": 10
+    }
+   },
+   {
+    "id": 6,
+    "stage": "1/16",
+    "ep": "fauch",
+    "zone": "fauch",
+    "time": "13h38",
+    "place": "Faucheuse",
+    "a": {
+     "seed": 11
+    },
+    "b": {
+     "seed": 12
+    }
+   },
+   {
+    "id": 7,
+    "stage": "1/16",
+    "ep": "fauch",
+    "zone": "fauch",
+    "time": "13h46",
+    "place": "Faucheuse",
+    "a": {
+     "seed": 13
+    },
+    "b": {
+     "seed": 14
+    }
+   },
+   {
+    "id": 8,
+    "stage": "1/16",
+    "ep": "fauch",
+    "zone": "fauch",
+    "time": "13h54",
+    "place": "Faucheuse",
+    "a": {
+     "seed": 15
+    },
+    "b": {
+     "seed": 16
+    }
+   },
+   {
+    "id": 9,
+    "stage": "1/16",
+    "ep": "shoot",
+    "zone": "shoot",
+    "time": "13h30",
+    "place": "Poubelle 1",
+    "a": {
+     "seed": 17
+    },
+    "b": {
+     "seed": 18
+    }
+   },
+   {
+    "id": 10,
+    "stage": "1/16",
+    "ep": "shoot",
+    "zone": "shoot",
+    "time": "13h30",
+    "place": "Poubelle 2",
+    "a": {
+     "seed": 19
+    },
+    "b": {
+     "seed": 20
+    }
+   },
+   {
+    "id": 11,
+    "stage": "1/16",
+    "ep": "shoot",
+    "zone": "shoot",
+    "time": "13h48",
+    "place": "Poubelle 1",
+    "a": {
+     "seed": 21
+    },
+    "b": {
+     "seed": 22
+    }
+   },
+   {
+    "id": 12,
+    "stage": "1/16",
+    "ep": "shoot",
+    "zone": "shoot",
+    "time": "13h48",
+    "place": "Poubelle 2",
+    "a": {
+     "seed": 23
+    },
+    "b": {
+     "seed": 24
+    }
+   },
+   {
+    "id": 13,
+    "stage": "1/16",
+    "ep": "course",
+    "zone": "course",
+    "time": "13h30",
+    "place": "Course scotchée",
+    "a": {
+     "seed": 25
+    },
+    "b": {
+     "seed": 26
+    }
+   },
+   {
+    "id": 14,
+    "stage": "1/16",
+    "ep": "course",
+    "zone": "course",
+    "time": "13h38",
+    "place": "Course scotchée",
+    "a": {
+     "seed": 27
+    },
+    "b": {
+     "seed": 28
+    }
+   },
+   {
+    "id": 15,
+    "stage": "1/16",
+    "ep": "course",
+    "zone": "course",
+    "time": "13h46",
+    "place": "Course scotchée",
+    "a": {
+     "seed": 29
+    },
+    "b": {
+     "seed": 30
+    }
+   },
+   {
+    "id": 16,
+    "stage": "1/16",
+    "ep": "course",
+    "zone": "course",
+    "time": "13h54",
+    "place": "Course scotchée",
+    "a": {
+     "seed": 31
+    },
+    "b": {
+     "seed": 32
+    }
+   },
+   {
+    "id": 17,
+    "stage": "1/8",
+    "ep": "eau",
+    "zone": "vent",
+    "time": "14h15",
+    "place": "Couloir 1",
+    "a": {
+     "from": 1
+    },
+    "b": {
+     "from": 2
+    }
+   },
+   {
+    "id": 18,
+    "stage": "1/8",
+    "ep": "eau",
+    "zone": "vent",
+    "time": "14h15",
+    "place": "Couloir 2",
+    "a": {
+     "from": 3
+    },
+    "b": {
+     "from": 4
+    }
+   },
+   {
+    "id": 19,
+    "stage": "1/8",
+    "ep": "eau",
+    "zone": "fauch",
+    "time": "14h15",
+    "place": "Couloir 3",
+    "a": {
+     "from": 5
+    },
+    "b": {
+     "from": 6
+    }
+   },
+   {
+    "id": 20,
+    "stage": "1/8",
+    "ep": "eau",
+    "zone": "fauch",
+    "time": "14h15",
+    "place": "Couloir 4",
+    "a": {
+     "from": 7
+    },
+    "b": {
+     "from": 8
+    }
+   },
+   {
+    "id": 21,
+    "stage": "1/8",
+    "ep": "eau",
+    "zone": "shoot",
+    "time": "14h28",
+    "place": "Couloir 1",
+    "a": {
+     "from": 9
+    },
+    "b": {
+     "from": 10
+    }
+   },
+   {
+    "id": 22,
+    "stage": "1/8",
+    "ep": "eau",
+    "zone": "shoot",
+    "time": "14h28",
+    "place": "Couloir 2",
+    "a": {
+     "from": 11
+    },
+    "b": {
+     "from": 12
+    }
+   },
+   {
+    "id": 23,
+    "stage": "1/8",
+    "ep": "eau",
+    "zone": "course",
+    "time": "14h28",
+    "place": "Couloir 3",
+    "a": {
+     "from": 13
+    },
+    "b": {
+     "from": 14
+    }
+   },
+   {
+    "id": 24,
+    "stage": "1/8",
+    "ep": "eau",
+    "zone": "course",
+    "time": "14h28",
+    "place": "Couloir 4",
+    "a": {
+     "from": 15
+    },
+    "b": {
+     "from": 16
+    }
+   },
+   {
+    "id": 25,
+    "stage": "1/4",
+    "ep": "bubble",
+    "zone": "vent",
+    "time": "14h50",
+    "place": "Terrain de bubble foot",
+    "a": {
+     "from": 17
+    },
+    "b": {
+     "from": 18
+    }
+   },
+   {
+    "id": 26,
+    "stage": "1/4",
+    "ep": "bubble",
+    "zone": "fauch",
+    "time": "14h56",
+    "place": "Terrain de bubble foot",
+    "a": {
+     "from": 19
+    },
+    "b": {
+     "from": 20
+    }
+   },
+   {
+    "id": 27,
+    "stage": "1/4",
+    "ep": "bubble",
+    "zone": "shoot",
+    "time": "15h02",
+    "place": "Terrain de bubble foot",
+    "a": {
+     "from": 21
+    },
+    "b": {
+     "from": 22
+    }
+   },
+   {
+    "id": 28,
+    "stage": "1/4",
+    "ep": "bubble",
+    "zone": "course",
+    "time": "15h08",
+    "place": "Terrain de bubble foot",
+    "a": {
+     "from": 23
+    },
+    "b": {
+     "from": 24
+    }
+   },
+   {
+    "id": 29,
+    "stage": "1/2",
+    "ep": "corde",
+    "zone": "late",
+    "time": "15h25",
+    "place": "Tir à la corde",
+    "a": {
+     "from": 25
+    },
+    "b": {
+     "from": 26
+    }
+   },
+   {
+    "id": 30,
+    "stage": "1/2",
+    "ep": "sumo",
+    "zone": "late",
+    "time": "15h25",
+    "place": "Sumo",
+    "a": {
+     "from": 27
+    },
+    "b": {
+     "from": 28
+    }
+   },
+   {
+    "id": 31,
+    "stage": "Finale",
+    "ep": "parcours",
+    "zone": "late",
+    "time": "16h00",
+    "place": "Parcours du combattant",
+    "a": {
+     "from": 29
+    },
+    "b": {
+     "from": 30
+    }
+   }
+  ],
+  "phases": [
+   [
+    "1/16",
+    "1/16 · 13h30",
+    "Ateliers"
+   ],
+   [
+    "1/8",
+    "1/8 · 14h15",
+    "Relais eau"
+   ],
+   [
+    "1/4",
+    "1/4 · 14h50",
+    "Bubble foot"
+   ],
+   [
+    "1/2",
+    "1/2 · 15h25",
+    "Corde / Sumo"
+   ],
+   [
+    "Finale",
+    "Finale · 16h00",
+    "Parcours"
+   ]
+  ]
+ },
+ "olymp": {}
 }
 </script>
 
@@ -4019,7 +6045,8 @@
         return;
       }
       attente = null;
-      s.cles = state.cles || {};             // les clés sont synchronisées à part (voir recevoirCles)
+      s.cles = state.cles || {};             // clés et olympiades sont synchronisées à part
+      s.olymp = state.olymp || {};
       state = s;
       defauts();
       render();
@@ -4028,6 +6055,10 @@
       state.cles = obj || {};
       if(vue.n === "cles" && rafraichirCles) rafraichirCles();
       else if(vue.n === "reglages" && !saisieEnCours()) render();
+    },
+    recevoirOlymp: function(obj){
+      state.olymp = obj || {};
+      if(vue.n === "olymp" && rafraichirOlymp) rafraichirOlymp();
     },
     statut: function(code, info){
       if(code === "ok") badge("ok", "EN DIRECT");
@@ -4061,6 +6092,7 @@
     if(!state.plan) state.plan = {src:"", legende:""};
     if(!state.bungalows) state.bungalows = [];
     if(!state.cles) state.cles = {};
+    if(!state.olymp) state.olymp = {};
   }
   function telLien(t){ return "tel:" + String(t).replace(/[^+0-9]/g,""); }
   function telAff(t){
@@ -4228,8 +6260,9 @@
     app.innerHTML = "";
     rafraichirCles = null;
     document.getElementById("topK").hidden = !(admin || gereCles(moi));
+    document.getElementById("topO").hidden = !(admin || gereOlymp(moi));
     ({pick:vPick, me:vMoi, fiche:vFiche, planning:vPlanning, plan:vPlan, sos:vSos, cles:vCles, tableau:vTableau,
-      gate:vGate, admin:vAdmin, edit:vEdit, reglages:vReglages}[vue.n] || vPick)();
+      gate:vGate, admin:vAdmin, edit:vEdit, reglages:vReglages, olymp:vOlymp}[vue.n] || vPick)();
     if(!estAdmin && vue.n !== "sos" && vue.n !== "pick" && vue.n !== "me"){
       var mini = sosPetit(); if(mini) app.appendChild(mini);
     }
@@ -4414,6 +6447,20 @@
       ok.addEventListener("click", function(){ go("cles"); });
       app.appendChild(ok);
     }
+    if(estPosteOlymp(s)){
+      var oe = epreuveDuShift(s);
+      var jeu = oe ? (oly().jeux.filter(function(x){ return x.k === oe; })[0] || null) : null;
+      if(jeu) app.appendChild(el('<div class="snote big">Épreuve : <b>' + esc(jeu.name) + '</b> · ' +
+        esc(jeu.who) + ' · ' + esc(jeu.matches) + '</div>'));
+      var ob = el('<button class="btn go" style="margin-top:14px">' +
+        (jeu ? 'Règles et tableau des Olympiades' : 'Ouvrir les Olympiades') + '</button>');
+      ob.addEventListener("click", function(){
+        if(jeu){ sectionOlymp = "epreuves"; epreuveOuverte = jeu.k; }
+        else { sectionOlymp = "deroule"; epreuveOuverte = null; }
+        go("olymp");
+      });
+      app.appendChild(ob);
+    }
     if(ficheVide(f)) app.appendChild(el('<div class="fsec"><h4>Fiche de poste</h4>' +
       '<p class="meta">Pas encore rédigée. Demande à ton responsable de shift ce qui est attendu.</p></div>'));
     if(f.mission) app.appendChild(el('<div class="fsec"><h4>Ta mission</h4><p>' + esc(f.mission) + '</p></div>'));
@@ -4562,6 +6609,15 @@
     var d = new Date(t);
     return ["dim.","lun.","mar.","mer.","jeu.","ven.","sam."][d.getDay()] + " " + pad(d.getHours()) + ":" + pad(d.getMinutes());
   }
+  var rafraichirOlymp = null;
+  function majOlymp(k, val){
+    if(CONNECTE && !remote){ alert("Connexion au serveur en cours, réessaie dans quelques secondes."); return false; }
+    state.olymp = state.olymp || {};
+    if(val) state.olymp[k] = val; else delete state.olymp[k];
+    if(CONNECTE) remote.pushOlymp(k, val);
+    else sauver();
+    return true;
+  }
   function majCle(num, val){
     num = String(num);
     if(CONNECTE && !remote){ alert("Connexion au serveur en cours, réessaie dans quelques secondes."); return false; }
@@ -4640,6 +6696,202 @@
     q.addEventListener("input", function(){ rechercheCles = q.value; dessiner(); });
     rafraichirCles = dessiner;
     dessiner();
+  }
+
+  /* ---------- olympiades -------------------------------------------------
+     Données reprises de l'artefact « Olympiades du WEI » : 32 équipes,
+     31 matchs, 9 épreuves, 6 shifts et la liste de matériel. Les résultats
+     et les cases de matériel sont partagés comme les clés : une écriture
+     par match, donc deux arbitres peuvent saisir en même temps. */
+  var sectionOlymp = "tableau", epreuveOuverte = null, phaseOlymp = "toutes";
+  function oly(){ return state.olympiades || {equipes:[], epreuves:{}, jeux:[], shifts:[], materiel:[], matchs:[], phases:[]}; }
+  function estPosteOlymp(sh){
+    var n = cle(sh.nom);
+    return n.indexOf("olympiade") > -1 || n.indexOf("maquillage") > -1 || n.indexOf("activite") > -1 ||
+           n.indexOf("ventrigliss") > -1 || n.indexOf("faucheuse") > -1 ||
+           n.indexOf("shootbasket") > -1 || n.indexOf("course scotch") > -1;
+  }
+  function gereOlymp(pid){ return !!pid && mesAffectations(pid).some(estPosteOlymp); }
+  function epreuveDuShift(sh){
+    var n = cle(sh.nom);
+    if(n.indexOf("ventrigliss") > -1) return "vent";
+    if(n.indexOf("faucheuse") > -1) return "fauch";
+    if(n.indexOf("shootbasket") > -1) return "shoot";
+    if(n.indexOf("course scotch") > -1) return "course";
+    if(n.indexOf("8e") > -1 || n.indexOf("relais") > -1) return "eau";
+    if(n.indexOf("1/4") > -1 || n.indexOf("bubble") > -1) return "bubble";
+    if(n.indexOf("1/2") > -1) return "corde";
+    if(n.indexOf("finale") > -1) return "parcours";
+    return null;
+  }
+  function matchDe(id){
+    var L = oly().matchs;
+    for(var i=0;i<L.length;i++) if(L[i].id === id) return L[i];
+    return null;
+  }
+  function equipeCote(m, cote){       // { num, nom } ou null si le match amont n'est pas joué
+    var ref = m[cote] || {};
+    if(ref.seed) return {num:ref.seed, nom:oly().equipes[ref.seed - 1] || ("Équipe " + ref.seed)};
+    var src = matchDe(ref.from);
+    return src ? vainqueur(src) : null;
+  }
+  function vainqueur(m){
+    var r = (state.olymp || {})["m" + m.id];
+    return r && r.cote ? equipeCote(m, r.cote) : null;
+  }
+
+  function vOlymp(){
+    var b0 = el('<button class="lnk sticky-back">← Retour</button>');
+    b0.addEventListener("click", function(){ admin && !moi ? go("admin") : retour(); });
+    app.appendChild(b0);
+    app.appendChild(el('<h2 class="lead">Olympiades</h2>'));
+
+    var joues = oly().matchs.filter(function(m){ return (state.olymp || {})["m" + m.id]; }).length;
+    app.appendChild(el('<p class="meta">' + oly().equipes.length + ' équipes · ' + oly().matchs.length +
+      ' matchs · <b style="color:var(--c1)">' + joues + ' joué' + (joues > 1 ? 's' : '') + '</b> · tournoi de 13h30 à 16h15</p>'));
+
+    var onglets2 = el('<div class="kfil"></div>');
+    [["tableau","Tableau"],["epreuves","Épreuves"],["deroule","Déroulé"],["materiel","Matériel"]].forEach(function(o){
+      var b = el('<button' + (sectionOlymp === o[0] ? ' class="on"' : '') + '>' + o[1] + '</button>');
+      b.addEventListener("click", function(){ sectionOlymp = o[0]; render(); });
+      onglets2.appendChild(b);
+    });
+    app.appendChild(onglets2);
+    var zone = el('<div></div>');
+    app.appendChild(zone);
+
+    function dessine(){
+      zone.innerHTML = "";
+      if(sectionOlymp === "tableau") tableauOlymp(zone);
+      else if(sectionOlymp === "epreuves") epreuvesOlymp(zone);
+      else if(sectionOlymp === "deroule") derouleOlymp(zone);
+      else materielOlymp(zone);
+    }
+    rafraichirOlymp = dessine;
+    dessine();
+  }
+
+  function tableauOlymp(zone){
+    var phases = oly().phases;
+    var f = el('<div class="kfil"></div>');
+    [["toutes","Tout"]].concat(phases.map(function(p){ return [p[0], p[0]]; })).forEach(function(o){
+      var b = el('<button' + (phaseOlymp === o[0] ? ' class="on"' : '') + '>' + esc(o[1]) + '</button>');
+      b.addEventListener("click", function(){ phaseOlymp = o[0]; rafraichirOlymp(); });
+      f.appendChild(b);
+    });
+    zone.appendChild(f);
+
+    phases.forEach(function(ph){
+      if(phaseOlymp !== "toutes" && phaseOlymp !== ph[0]) return;
+      var ms = oly().matchs.filter(function(m){ return m.stage === ph[0]; });
+      if(!ms.length) return;
+      zone.appendChild(el('<h3 class="sec">' + esc(ph[1]) + ' · ' + esc(ph[2]) + '</h3>'));
+      ms.forEach(function(m){
+        var ep = oly().epreuves[m.ep] || {name:m.ep};
+        var d = el('<div class="obox"><div class="oligne"><span class="otag">M' + m.id + '</span>' +
+          '<span class="otag">' + esc(m.time) + '</span><span class="otag">' + esc(m.place) + '</span>' +
+          '<span class="meta">' + esc(ep.name) + '</span></div></div>');
+        var duel = el('<div class="oligne"></div>');
+        var r = (state.olymp || {})["m" + m.id];
+        ["a","b"].forEach(function(cote, i){
+          if(i === 1) duel.appendChild(el('<span class="ovs">contre</span>'));
+          var e = equipeCote(m, cote);
+          if(!e){
+            duel.appendChild(el('<div class="oteam vide">En attente de M' + (m[cote].from || "?") + '</div>'));
+            return;
+          }
+          var b = el('<button class="oteam' + (r && r.cote === cote ? ' gagne' : '') + '">' +
+            '<span class="on">n°' + e.num + '</span>' + esc(e.nom) + (r && r.cote === cote ? ' ✓' : '') + '</button>');
+          b.addEventListener("click", function(){
+            if(r && r.cote === cote) majOlymp("m" + m.id, null);        // on annule
+            else majOlymp("m" + m.id, {cote:cote, par:signature(), t:Date.now()});
+            rafraichirOlymp();
+          });
+          duel.appendChild(b);
+        });
+        d.appendChild(duel);
+        if(r) d.appendChild(el('<p class="meta">Vainqueur saisi par ' + esc(r.par || "?") +
+          ' à ' + heureCourte(r.t) + ' · touche le nom pour annuler.</p>'));
+        zone.appendChild(d);
+      });
+    });
+  }
+
+  function epreuvesOlymp(zone){
+    var jeux = oly().jeux;
+    if(epreuveOuverte){
+      var g = jeux.filter(function(x){ return x.k === epreuveOuverte; })[0];
+      if(g){
+        var b = el('<button class="mini">← Toutes les épreuves</button>');
+        b.addEventListener("click", function(){ epreuveOuverte = null; rafraichirOlymp(); });
+        zone.appendChild(b);
+        zone.appendChild(el('<h3 class="fh" style="font-size:1.5rem">' + esc(g.name) + '</h3>'));
+        zone.appendChild(el('<p class="meta">' + esc(g.stage) + ' · ' + esc(g.time) + ' · ' + esc(g.who) +
+          ' · ' + esc(g.matches) + ' · ' + esc(g.where) + '</p>'));
+        function sec(titre, contenu){
+          if(!contenu) return;
+          zone.appendChild(el('<div class="fsec"><h4>' + titre + '</h4>' + contenu + '</div>'));
+        }
+        function liste(t){ return '<ul>' + t.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join("") + '</ul>'; }
+        sec("But du jeu", '<p>' + esc(g.goal) + '</p>');
+        sec("Règles", liste(g.rules || []));
+        sec("Comment on gagne", '<p>' + esc(g.win) + '</p>');
+        if(g.tie) sec("Égalité", '<p>' + esc(g.tie) + '</p>');
+        if(g.staff && g.staff.length) sec("Qui tient l'atelier", '<ul>' + g.staff.map(function(x){
+          return '<li><b>' + esc(x[0]) + ' personnes</b> — ' + esc(x[1]) + '</li>'; }).join("") + '</ul>');
+        if(g.setup) sec("Installation", liste(g.setup));
+        if(g.flow) sec("Déroulé d\'un match", liste(g.flow));
+        if(g.plan && g.plan.length) sec("Horaires", '<ul>' + g.plan.map(function(x){
+          return '<li><b>' + esc(x[0]) + '</b> — ' + esc(x[1]) + '</li>'; }).join("") + '</ul>');
+        return;
+      }
+    }
+    jeux.forEach(function(g){
+      var c = el('<button class="card" style="border-left-color:var(--c1)"><h3>' + esc(g.name) + '</h3>' +
+        '<div class="meta">' + esc(g.stage) + ' · ' + esc(g.time) + ' · ' + esc(g.who) + '</div>' +
+        '<div class="more">Règles et consignes →</div></button>');
+      c.addEventListener("click", function(){ epreuveOuverte = g.k; rafraichirOlymp(); });
+      zone.appendChild(c);
+    });
+  }
+
+  function derouleOlymp(zone){
+    oly().shifts.forEach(function(sh){
+      var d = el('<div class="obox"><div class="oligne"><span class="otag">' + esc(sh.start) + ' → ' + esc(sh.end) +
+        '</span><span class="otag">' + sh.n + ' personnes</span></div><h3>' + esc(sh.title) + '</h3>' +
+        '<p class="meta">' + esc(sh.role) + '</p></div>');
+      if(sh.where) d.appendChild(el('<p class="meta"><b>Où :</b> ' + esc(sh.where) + '</p>'));
+      if(sh.posts && sh.posts.length) d.appendChild(el('<p class="meta"><b>Postes :</b> ' +
+        sh.posts.map(function(x){ return esc(x[0]) + ' (' + esc(x[1]) + ')'; }).join(" · ") + '</p>'));
+      if(sh.missions && sh.missions.length) d.appendChild(el('<div class="fsec"><h4>Missions</h4><ul>' +
+        sh.missions.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join("") + '</ul></div>'));
+      if(sh.steps && sh.steps.length) d.appendChild(el('<div class="fsec"><h4>Déroulé</h4><ul>' +
+        sh.steps.map(function(x){ return '<li><b>' + esc(x[0]) + '</b> — ' + esc(x[1]) + '</li>'; }).join("") + '</ul></div>'));
+      if(sh.relay) d.appendChild(el('<div class="snote">' + esc(sh.relay) + '</div>'));
+      zone.appendChild(d);
+    });
+  }
+
+  function materielOlymp(zone){
+    var tot = 0, faits = 0;
+    oly().materiel.forEach(function(g, gi){
+      g.items.forEach(function(it, ii){ tot++; if((state.olymp || {})["mat:" + gi + ":" + ii]) faits++; });
+    });
+    zone.appendChild(el('<p class="meta">' + faits + ' sur ' + tot + ' préparés · touche une ligne quand c\'est prêt.</p>'));
+    oly().materiel.forEach(function(g, gi){
+      var d = el('<div class="obox"><h3>' + esc(g.g) + '</h3></div>');
+      g.items.forEach(function(it, ii){
+        var k = "mat:" + gi + ":" + ii, on = !!(state.olymp || {})[k];
+        var r = el('<div class="omat' + (on ? ' ok' : '') + '"><span>' + (on ? '✓ ' : '') + esc(it[0]) + '</span>' +
+          (it[1] ? '<span class="od">' + esc(it[1]) + '</span>' : '') + '</div>');
+        r.addEventListener("click", function(){
+          majOlymp(k, on ? null : {par:signature(), t:Date.now()});
+          rafraichirOlymp();
+        });
+        d.appendChild(r);
+      });
+      zone.appendChild(d);
+    });
   }
 
   /* --- porte admin --- */
@@ -5821,6 +8073,9 @@
   }
 
   /* ---------- démarrage ---------- */
+  document.getElementById("topO").addEventListener("click", function(){
+    if(vue.n === "olymp") retour(); else go("olymp");
+  });
   document.getElementById("topK").addEventListener("click", function(){
     if(vue.n === "cles") retour(); else go("cles");
   });
@@ -5871,7 +8126,7 @@ if (C.firebase && C.firebase.apiKey && W) {
       // le planning : un seul champ JSON, sans les clés (elles ont leur propre champ)
       push(state) {
         const copie = Object.assign({}, state);
-        delete copie.cles;
+        delete copie.cles; delete copie.olymp;
         const json = JSON.stringify(copie);
         if (json === dernier) return;
         dernier = json;
@@ -5880,6 +8135,11 @@ if (C.firebase && C.firebase.apiKey && W) {
       // une clé = un sous-champ : deux remises simultanées ne s'écrasent pas
       pushCle(num, val) {
         const chemin = new FieldPath("cles", String(num));
+        updateDoc(ref, chemin, val ? val : deleteField()).catch(erreur);
+      },
+      // idem pour les olympiades : un match ou une ligne de matériel à la fois
+      pushOlymp(k, val) {
+        const chemin = new FieldPath("olymp", String(k));
         updateDoc(ref, chemin, val ? val : deleteField()).catch(erreur);
       },
       resetCles() {
@@ -5897,6 +8157,7 @@ if (C.firebase && C.firebase.apiKey && W) {
         W.receive(d.json);
       }
       W.recevoirCles(d.cles || {});
+      W.recevoirOlymp(d.olymp || {});
     }, (e) => W.statut("ko", e && e.code ? e.code : ""));
   } catch (e) {
     W.statut("ko", "Firebase injoignable");
