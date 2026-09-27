@@ -5982,6 +5982,11 @@
   /* ---------- état ---------- */
   var state = null, vue = {n:"pick"}, moi = null, admin = false;
 
+  var GRAINE = null;
+  function graine(){            // les données embarquées dans la page, lues une seule fois
+    if(!GRAINE) GRAINE = JSON.parse(document.getElementById("seed").textContent);
+    return GRAINE;
+  }
   function seedData(){
     var s = JSON.parse(document.getElementById("seed").textContent);
     if(s.jours && s.jours.length) return s;
@@ -6093,6 +6098,17 @@
     if(!state.bungalows) state.bungalows = [];
     if(!state.cles) state.cles = {};
     if(!state.olymp) state.olymp = {};
+    // un planning déjà en ligne n'a pas forcément les données des olympiades :
+    // on complète avec celles embarquées dans la page, sans rien écraser
+    if(!state.olympiades || !(state.olympiades.matchs || []).length) state.olympiades = graine().olympiades;
+    if(!state.fiches) state.fiches = {};
+    var fg = graine().fiches || {};
+    Object.keys(fg).forEach(function(k){
+      var f = state.fiches[k];
+      if(!f || (!f.mission && !(f.taches || []).length && !(f.materiel || []).length && !f.referent)){
+        if(fg[k] && (fg[k].mission || (fg[k].taches || []).length)) state.fiches[k] = fg[k];
+      }
+    });
   }
   function telLien(t){ return "tel:" + String(t).replace(/[^+0-9]/g,""); }
   function telAff(t){
