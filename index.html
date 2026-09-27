@@ -253,6 +253,29 @@
        text-transform:none;letter-spacing:0;font-size:.92rem;font-weight:500;color:var(--txt)}
   .opt input{width:auto;margin-top:3px;accent-color:var(--c1)}
   .opt:has(input:checked){border-color:var(--c1)}
+  .grilbox{overflow:auto;max-height:72vh;border:2px solid var(--line);border-radius:12px;margin-top:10px}
+  table.gril{border-collapse:separate;border-spacing:0;font-size:.8rem}
+  .gril th,.gril td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+                    padding:3px 2px;text-align:center;white-space:nowrap}
+  .gril thead th{position:sticky;background:var(--panel-2);z-index:2;min-width:54px;max-width:54px;
+                 font-size:.68rem;line-height:1.2;font-weight:700}
+  .gril thead tr:first-child th{top:0;height:36px}
+  .gril thead tr:nth-child(2) th{top:36px;color:var(--dim);font-weight:600}
+  .gril th.cnom{position:sticky;left:0;background:var(--panel);z-index:3;text-align:left;
+                min-width:172px;max-width:172px;padding-left:9px;overflow:hidden;text-overflow:ellipsis}
+  .gril thead th.cnom{z-index:4}
+  .gril .gc{display:block;color:var(--dim2);font-size:.62rem;letter-spacing:.04em}
+  .gril .gn{color:var(--dim2);font-weight:800;font-size:.7rem;float:right;padding-right:4px}
+  .gril tr.gbde th.cnom,.gril tr.gbde td{background:#0F1A22}
+  .gril td.gq{font-size:.68rem;color:var(--dim);font-variant-numeric:tabular-nums}
+  .gril td.gq.over{color:var(--alert);font-weight:800}
+  .gril td.gq.under{color:var(--c1);font-weight:800}
+  .gril td.g{cursor:pointer;height:27px;color:transparent}
+  .gril td.g:hover{outline:2px solid var(--c1);outline-offset:-2px}
+  .gril td.g.ok{background:#14301f;color:var(--live);font-weight:800}
+  .gril td.g.resp{background:#3A1F20;color:var(--alert);font-weight:800;cursor:default}
+  .gril td.g.ko{color:var(--alert);opacity:.55}
+  .gril td.g.ok.ko{background:#3A2A12;color:var(--c1)}
   .kstats{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 12px}
   .kstat{flex:1;min-width:92px;border:2px solid var(--line);border-radius:13px;padding:10px 12px;background:var(--panel)}
   .kstat b{display:block;font-size:1.5rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
@@ -4204,7 +4227,7 @@
     app.innerHTML = "";
     rafraichirCles = null;
     document.getElementById("topK").hidden = !(admin || gereCles(moi));
-    ({pick:vPick, me:vMoi, fiche:vFiche, planning:vPlanning, plan:vPlan, sos:vSos, cles:vCles,
+    ({pick:vPick, me:vMoi, fiche:vFiche, planning:vPlanning, plan:vPlan, sos:vSos, cles:vCles, tableau:vTableau,
       gate:vGate, admin:vAdmin, edit:vEdit, reglages:vReglages}[vue.n] || vPick)();
     if(!estAdmin && vue.n !== "sos" && vue.n !== "pick" && vue.n !== "me"){
       var mini = sosPetit(); if(mini) app.appendChild(mini);
@@ -4701,9 +4724,122 @@
       grille.appendChild(d);
     });
 
+    var tab = el('<button class="btn ghost">Tableau des affectations</button>');
+    tab.addEventListener("click", function(){ go("tableau", {jour:jid}); });
+    app.appendChild(tab);
     var reg = el('<button class="btn ghost">Personnes, BDE et données</button>');
     reg.addEventListener("click", function(){ go("reglages"); });
     app.appendChild(reg);
+  }
+
+  /* --- admin : tableau noms x shifts ------------------------------------
+     Une ligne par personne, une colonne par shift du jour. On coche la case
+     pour affecter. La ligne grise de chaque BDE rappelle le remplissage du
+     quota, et un point rouge signale un créneau qui en chevauche un autre
+     déjà pris par cette personne. */
+  var filtreCol = "", masqueComplets = false;
+  function vTableau(){
+    var jid = (vue.p && vue.p.jour) || jourAujourdhui() || (state.jours[0] && state.jours[0].id);
+    var b0 = el('<button class="lnk">← Retour aux shifts</button>');
+    b0.addEventListener("click", function(){ go("admin", {jour:jid}); });
+    app.appendChild(b0);
+    app.appendChild(el('<h2 class="lead">Tableau des affectations</h2>'));
+    app.appendChild(onglets(jid, function(id){ go("tableau", {jour:id}); }));
+
+    var barre = el('<div class="tools" style="margin-bottom:8px"></div>');
+    var f = el('<input type="search" placeholder="Filtrer les shifts (nom de poste)" ' +
+               'style="width:auto;min-width:240px" aria-label="Filtrer les shifts">');
+    f.value = filtreCol;
+    f.addEventListener("input", function(){ filtreCol = f.value; dessine(); });
+    var mc = el('<button class="tool">' + (masqueComplets ? "Tous les shifts" : "Seulement les incomplets") + '</button>');
+    mc.addEventListener("click", function(){ masqueComplets = !masqueComplets; render(); });
+    barre.appendChild(f); barre.appendChild(mc);
+    app.appendChild(barre);
+    app.appendChild(el('<p class="meta">Clique une case pour affecter ou retirer. ' +
+      '<b style="color:var(--live)">✓</b> affecté · <b style="color:var(--alert)">R</b> responsable · ' +
+      '<b style="color:var(--alert)">•</b> chevauche un autre de ses shifts.</p>'));
+
+    var boite = el('<div class="grilbox"></div>');
+    app.appendChild(boite);
+
+    function colonnes(){
+      var q = cle(filtreCol);
+      return shiftsDuJour(jid).filter(function(sh){
+        if(sh.tous) return false;
+        if(q && cle(sh.nom).indexOf(q) === -1 && cle(sh.code || "").indexOf(q) === -1) return false;
+        if(masqueComplets && manque(sh) <= 0) return false;
+        return true;
+      });
+    }
+    function etatCase(sh, p){          // { classe, texte } d'une case
+      if(estResp(sh, p.id)) return {c:"g resp", t:"R"};
+      var cls = "g", txt = "";
+      if(sh.equipe.indexOf(p.id) > -1){ cls += " ok"; txt = "✓"; }
+      if(occupe(p.id, sh)){ cls += " ko"; if(!txt) txt = "•"; }
+      return {c:cls, t:txt};
+    }
+    function cellule(sh, p){
+      var e = etatCase(sh, p);
+      return '<td class="' + e.c + '" data-s="' + sh.id + '" data-p="' + p.id + '">' + e.t + '</td>';
+    }
+    function etatQuota(sh, b){
+      if(sh.total) return {c:"gq", t:sh.equipe.length + "/" + sh.total};
+      var c = compte(sh, b.id), n = sh.quotas[b.id] || 0;
+      return {c:"gq" + (c > n ? " over" : c < n ? " under" : ""), t:c + "/" + n};
+    }
+    function quota(sh, b){
+      var e = etatQuota(sh, b);
+      return '<td class="' + e.c + '" data-q="' + sh.id + '|' + b.id + '">' + e.t + '</td>';
+    }
+    function dessine(){
+      var cols = colonnes();
+      if(!cols.length){ boite.innerHTML = '<p class="meta" style="padding:16px">Aucun shift ne correspond.</p>'; return; }
+      var h = '<table class="gril"><thead><tr><th class="cnom">Membre</th>';
+      cols.forEach(function(sh){
+        h += '<th title="' + esc(sh.nom) + '"><span class="gc">' + esc(sh.code || "") + '</span>' +
+             sh.debut + '<br>' + sh.fin + '</th>';
+      });
+      h += '</tr><tr><th class="cnom"></th>';
+      cols.forEach(function(sh){
+        var n = sh.nom.length > 15 ? sh.nom.slice(0, 14) + "…" : sh.nom;
+        h += '<th title="' + esc(sh.nom) + '">' + esc(n) + '</th>';
+      });
+      h += '</tr></thead><tbody>';
+      state.bdes.forEach(function(b){
+        var gens = state.people.filter(function(p){ return p.bde === b.id; })
+                               .sort(function(x, y){ return x.nom.localeCompare(y.nom, "fr"); });
+        if(!gens.length) return;
+        h += '<tr class="gbde"><th class="cnom" style="color:' + b.couleur + '">' + esc(b.nom) + '</th>';
+        cols.forEach(function(sh){ h += quota(sh, b); });
+        h += '</tr>';
+        gens.forEach(function(p){
+          h += '<tr data-p="' + p.id + '"><th class="cnom">' + esc(p.nom) +
+               '<span class="gn">' + mesAffectations(p.id).length + '</span></th>';
+          cols.forEach(function(sh){ h += cellule(sh, p); });
+          h += '</tr>';
+        });
+      });
+      boite.innerHTML = h + '</tbody></table>';
+    }
+    boite.addEventListener("click", function(e){
+      var td = e.target.closest("td.g");
+      if(!td || td.classList.contains("resp")) return;
+      var sh = shift(td.dataset.s), p = pers(td.dataset.p);
+      if(!sh || !p) return;
+      var i = sh.equipe.indexOf(p.id);
+      if(i > -1) sh.equipe.splice(i, 1); else sh.equipe.push(p.id);
+      sauver();
+      // mise à jour ciblée : la ligne de la personne, la ligne de quota de son BDE
+      var ligne = td.parentNode;
+      Array.prototype.forEach.call(ligne.querySelectorAll("td.g"), function(c){
+        var e = etatCase(shift(c.dataset.s), p);
+        c.className = e.c; c.textContent = e.t;
+      });
+      ligne.querySelector(".gn").textContent = mesAffectations(p.id).length;
+      var q = boite.querySelector('td[data-q="' + sh.id + '|' + p.bde + '"]');
+      if(q){ var e2 = etatQuota(sh, bdeDe(p.bde)); q.className = e2.c; q.textContent = e2.t; }
+    });
+    dessine();
   }
 
   /* --- admin : édition d'un shift --- */
