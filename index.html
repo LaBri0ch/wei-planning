@@ -276,6 +276,7 @@
   .gril td.g.resp{background:#3A1F20;color:var(--alert);font-weight:800;cursor:default}
   .gril td.g.ko{color:var(--alert);opacity:.55}
   .gril td.g.ok.ko{background:#3A2A12;color:var(--c1)}
+  .gril td.g.dbl{box-shadow:inset 3px 0 0 var(--c1)}
   .kstats{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 12px}
   .kstat{flex:1;min-width:92px;border:2px solid var(--line);border-radius:13px;padding:10px 12px;background:var(--panel)}
   .kstat b{display:block;font-size:1.5rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
@@ -4757,7 +4758,8 @@
     app.appendChild(barre);
     app.appendChild(el('<p class="meta">Clique une case pour affecter ou retirer. ' +
       '<b style="color:var(--live)">✓</b> affecté · <b style="color:var(--alert)">R</b> responsable · ' +
-      '<b style="color:var(--alert)">•</b> chevauche un autre de ses shifts.</p>'));
+      '<b style="color:var(--alert)">•</b> chevauche un autre de ses shifts · ' +
+      '<b style="color:var(--c1)">≡</b> même poste deux fois de suite.</p>'));
 
     var boite = el('<div class="grilbox"></div>');
     app.appendChild(boite);
@@ -4776,6 +4778,7 @@
       var cls = "g", txt = "";
       if(sh.equipe.indexOf(p.id) > -1){ cls += " ok"; txt = "✓"; }
       if(occupe(p.id, sh)){ cls += " ko"; if(!txt) txt = "•"; }
+      if(enchainePoste(p.id, sh)){ cls += " dbl"; if(!txt) txt = "≡"; }
       return {c:cls, t:txt};
     }
     function cellule(sh, p){
@@ -5035,7 +5038,9 @@
      Tirage au sort sous contraintes, sur les seules places vides :
      - jamais deux créneaux qui se chevauchent (postes de responsable compris) ;
      - charge équilibrée en heures, pas en nombre de shifts ;
-     - on évite d'enchaîner deux créneaux sans au moins 30 min de pause ;
+     - on évite d'enchaîner deux créneaux sans au moins 30 min de pause, et
+       jamais deux fois le même poste à la suite, même quand l'enchaînement
+       est autorisé la nuit ;
      - on évite plus de 3 h d'affilée, et d'enchaîner une fin de nuit (après 2 h)
        avec un créneau du matin (avant 11 h) le même jour ;
      - un responsable n'est pas placé sur un autre poste dans l'heure qui précède
@@ -5071,7 +5076,7 @@
     });
     pool.forEach(function(p){
       base[p.id] = state.shifts.filter(function(o){ return !o.tous && estSur(o, p.id); })
-        .map(function(o){ return [debutDe(o).getTime(), finDe(o).getTime()]; });
+        .map(function(o){ return [debutDe(o).getTime(), finDe(o).getTime(), o.nom]; });
     });
     function charge(L){ var m = 0; for(var i=0;i<L.length;i++) m += L[i][1] - L[i][0]; return m / 60000; }
     function bloc(L, d, f){            // durée du bloc continu qui contiendrait [d,f]
@@ -5100,6 +5105,14 @@
     }
     function chevauche(L, d, f){ for(var i=0;i<L.length;i++) if(L[i][0] < f && d < L[i][1]) return true; return false; }
     var BLOC_MAX = state.blocMax || 180;  // minutes d'affilée au maximum (3 h par défaut, 4 h en option)
+    function memePosteColle(L, d, f, nom){   // deux fois le même poste à la suite
+      for(var i=0;i<L.length;i++){
+        if(L[i][2] !== nom) continue;
+        if(L[i][1] <= d && d - L[i][1] < PAUSE) return true;
+        if(f <= L[i][0] && L[i][0] - f < PAUSE) return true;
+      }
+      return false;
+    }
     function tropLong(L, d, f){        // règle stricte, sauf pour un shift qui dure plus à lui seul
       return bloc(L, d, f) > Math.max(BLOC_MAX, (f - d) / 60000);
     }
@@ -5213,6 +5226,7 @@
           if(chevauche(L, sl.d, sl.f)) return;
           if(chevauche(chefs[p.id], sl.d, sl.f)) return;   // reste à son poste de responsable
           if(tropLong(L, sl.d, sl.f)) return;
+          if(memePosteColle(L, sl.d, sl.f, sl.s.nom)) return;
           if(UNE_NUIT && kn !== null){
             if(autreNuit(L, sl.d, sl.f) || grp[p.id] === -1) return;   // règle stricte
             if(nuitInterdite(p.id, sl.d, sl.f)) return;                // nuit choisie à la main
@@ -5234,7 +5248,7 @@
         if(choix === null){ rates++; trous.push([sl.s, null, sl.d, sl.f]); return; }
         if(bloc(iv[choix], sl.d, sl.f) > BLOC_MAX) pen++;
         pen += nuitMatin(iv[choix], sl.d, sl.f);
-        iv[choix].push([sl.d, sl.f]);
+        iv[choix].push([sl.d, sl.f, sl.s.nom]);
         pris[cle2 + "|" + choix] = true;
         aff.push([sl.s, choix, sl.d, sl.f]);
       });
@@ -5301,7 +5315,7 @@
     function dispo(pid, a){            // contraintes dures pour recevoir le créneau a
       if(occ[a[0].id + "|" + pid] || a[0].equipe.indexOf(pid) > -1 || estResp(a[0], pid)) return false;
       if(UNE_NUIT && (autreNuit(IV[pid], a[2], a[3]) || nuitInterdite(pid, a[2], a[3]))) return false;
-      if(tropLong(IV[pid], a[2], a[3])) return false;
+      if(tropLong(IV[pid], a[2], a[3]) || memePosteColle(IV[pid], a[2], a[3], a[0].nom)) return false;
       return !chevauche(IV[pid], a[2], a[3]) && !chevauche(chefs[pid], a[2], a[3]);
     }
     var C = {}, cout = 0;
@@ -5314,7 +5328,7 @@
       if(P === null){                                            // place vide : on essaie de la pourvoir
         Q = ids[Math.floor(Math.random() * ids.length)];
         if(!dispo(Q, a1)) continue;
-        IV[Q].push([a1[2], a1[3]]);
+        IV[Q].push([a1[2], a1[3], a1[0].nom]);
         cQ = coutP(Q); delta = cQ - C[Q] - TROU;
         if(delta <= 0 || Math.random() < Math.exp(-delta / T)){
           C[Q] = cQ; cout += delta; occ[a1[0].id + "|" + Q] = 1; a1[1] = Q;
@@ -5322,12 +5336,12 @@
       } else if(Math.random() < 0.5){                            // transfert
         Q = ids[Math.floor(Math.random() * ids.length)];
         if(Q === P || !dispo(Q, a1)) continue;
-        retire(IV[P], a1[2], a1[3]); IV[Q].push([a1[2], a1[3]]);
+        retire(IV[P], a1[2], a1[3]); IV[Q].push([a1[2], a1[3], a1[0].nom]);
         cP = coutP(P); cQ = coutP(Q); delta = cP + cQ - C[P] - C[Q];
         if(delta <= 0 || Math.random() < Math.exp(-delta / T)){
           C[P] = cP; C[Q] = cQ; cout += delta;
           delete occ[a1[0].id + "|" + P]; occ[a1[0].id + "|" + Q] = 1; a1[1] = Q;
-        } else { retire(IV[Q], a1[2], a1[3]); IV[P].push([a1[2], a1[3]]); }
+        } else { retire(IV[Q], a1[2], a1[3]); IV[P].push([a1[2], a1[3], a1[0].nom]); }
       } else {                                                   // échange
         var a2 = A[Math.floor(Math.random() * A.length)]; Q = a2[1];
         if(Q === null || Q === P || a2[0] === a1[0]) continue;
@@ -5338,10 +5352,11 @@
            chevauche(IV[Q], a1[2], a1[3]) || chevauche(chefs[Q], a1[2], a1[3]) ||
            (UNE_NUIT && (autreNuit(IV[P], a2[2], a2[3]) || autreNuit(IV[Q], a1[2], a1[3]) ||
                          nuitInterdite(P, a2[2], a2[3]) || nuitInterdite(Q, a1[2], a1[3]))) ||
-           tropLong(IV[P], a2[2], a2[3]) || tropLong(IV[Q], a1[2], a1[3])){
-          IV[P].push([a1[2], a1[3]]); IV[Q].push([a2[2], a2[3]]); continue;
+           tropLong(IV[P], a2[2], a2[3]) || tropLong(IV[Q], a1[2], a1[3]) ||
+           memePosteColle(IV[P], a2[2], a2[3], a2[0].nom) || memePosteColle(IV[Q], a1[2], a1[3], a1[0].nom)){
+          IV[P].push([a1[2], a1[3], a1[0].nom]); IV[Q].push([a2[2], a2[3], a2[0].nom]); continue;
         }
-        IV[P].push([a2[2], a2[3]]); IV[Q].push([a1[2], a1[3]]);
+        IV[P].push([a2[2], a2[3], a2[0].nom]); IV[Q].push([a1[2], a1[3], a1[0].nom]);
         cP = coutP(P); cQ = coutP(Q); delta = cP + cQ - C[P] - C[Q];
         if(delta <= 0 || Math.random() < Math.exp(-delta / T)){
           C[P] = cP; C[Q] = cQ; cout += delta;
@@ -5350,7 +5365,7 @@
           a1[1] = Q; a2[1] = P;
         } else {
           retire(IV[P], a2[2], a2[3]); retire(IV[Q], a1[2], a1[3]);
-          IV[P].push([a1[2], a1[3]]); IV[Q].push([a2[2], a2[3]]);
+          IV[P].push([a1[2], a1[3], a1[0].nom]); IV[Q].push([a2[2], a2[3], a2[0].nom]);
         }
       }
       if(cout < meilleurCout - 1e-9){ meilleurCout = cout; meilleursProprios = A.map(function(a){ return a[1]; }); }
@@ -5438,6 +5453,15 @@
       if(j) r[j] = (r[j] || 0) + q * (f - d) / 3600000;
     });
     return r;
+  }
+  function enchainePoste(pid, sh){   // même poste deux fois à la suite (moins de 30 min d'écart)
+    var d = debutDe(sh), f = finDe(sh);
+    if(!d) return false;
+    return state.shifts.some(function(o){
+      if(o.id === sh.id || o.tous || o.nom !== sh.nom || !estSur(o, pid)) return false;
+      var od = debutDe(o), of2 = finDe(o);
+      return (of2 <= d && d - of2 < 1800000) || (f <= od && od - f < 1800000);
+    });
   }
   function nuitsResp(pid){            // nuits déjà imposées par ses postes de responsable
     var set = {};
